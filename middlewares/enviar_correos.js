@@ -25,7 +25,7 @@ const enviarCorreos = async (res = response) => {
 
     for (let index = 0; index < administradores.length; index++) {
       const element = administradores[index];
-      await transporter.sendMail({
+    var correo=  await transporter.sendMail({
         from: "'Filatelia Peruana 🔔' <solicitudes@filateliaperuana.com>",
         to: "" + element.email,
         subject: "Tienes una nueva solicitud.",
@@ -43,6 +43,7 @@ const enviarCorreos = async (res = response) => {
       });
 
       console.log("Correo enviado a: ", element.email.replace(/\s+/g, ""));
+      console.log("Estado correo: ", correo);
 
     
     }
