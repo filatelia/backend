@@ -18,9 +18,7 @@ const enviarCorreos = async (res = response) => {
         user: process.env.USEMAIL,
         pass: process.env.PSEMAIL,
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
+      
     });
 
     for (let index = 0; index < administradores.length; index++) {
