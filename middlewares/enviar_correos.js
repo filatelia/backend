@@ -12,7 +12,7 @@ const enviarCorreos = async (res = response) => {
 
     const transporter = nodemailer.createTransport({
       host: "mail.filateliaperuana.com",
-      port: 25,
+      port: 465,
       secure: false,
       auth: {
         user: process.env.USEMAIL,
