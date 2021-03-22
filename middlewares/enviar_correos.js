@@ -13,7 +13,7 @@ const enviarCorreos = async (res = response) => {
     const transporter = nodemailer.createTransport({
       host: "mail.filateliaperuana.com",
       port: 25,
-      secure: false,
+      secure: true,
       auth: {
         user: process.env.USEMAIL,
         pass: process.env.PSEMAIL,
@@ -42,7 +42,7 @@ const enviarCorreos = async (res = response) => {
           "<a href='https://www.filateliaperuana.com/'>Filatelia Peruana.</a>",
       });
 
-      console.log("Correo enviado a: ", element.email);
+      console.log("Correo enviado a: ", element.email.replace(/\s+/g, ""));
 
     
     }
