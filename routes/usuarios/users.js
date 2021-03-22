@@ -8,7 +8,7 @@ const { validarExistenciaUsuario, validarEmailDiferenteActualizar } = require('.
 //Rutas para manejar usuarios donde se hacen las validaciones antes de entrar a la ruta
 
 router.get( '/',validarJWT,getUsuario );
-router.post('/', [ validarJWT,  validarDeJWTRoleAdmin, validarExistenciaUsuario] , createUsuario);
+router.post('/', [validarExistenciaUsuario] , createUsuario);
 //router.post('/', createUsuario );
 router.put('/', [validarJWT, validarEmailDiferenteActualizar], updateUusuario);
 router.delete('/:id', [validarJWT, validarDeJWTRoleAdmin], deleteUsuario);

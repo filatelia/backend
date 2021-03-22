@@ -106,6 +106,64 @@ try {
 
 
 };
+
+const mostarSolicitudes = async(req, res = response) =>{
+ 
+  try {
+    console.log("entramos");
+    const token = req.header("x-access-token");
+    const correo = retornarDatosJWT(token);
+  
+    //Buscando el usuario logueado.
+    const usuarioBD = await Usuario.findOne({ email: correo }, { _id: 1 });
+    
+    const solicitudBD = await Solicitud.find( { usuario_id:usuarioBD._id });
+   
+    if (solicitudBD != null) {
+   
+      res.json({
+        ok:true,
+        solicitudes: solicitudBD
+      });
+       
+    } else {
+  
+      res.json({
+        ok:true,
+        solicitudes: "El usuario no tiene solicitudes"
+      });
+        
+    }
+   
+  } catch (e) {
+    res.json({
+      ok: false,
+      msg: "No se ha podido consultar las solicitudes"
+    });
+  
+  }
+  
+  
+}
+const mostarSolicitudesTotales = async (req, res = response) =>{
+
+  const todasSolicitudes = await Solicitud.find();
+ return res.json(
+    {
+      ok: true,
+      todas_solicitudes: todasSolicitudes
+    }
+    ); 
+
+}
+const aprobacion = async () =>{
+  console.log("Entramos");
+}
 module.exports = {
   crearSolicitud,
+  mostarSolicitudes,
+  mostarSolicitudesTotales,
+  aprobacion
+
+
 };
