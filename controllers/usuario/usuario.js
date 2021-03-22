@@ -29,7 +29,7 @@ const createUsuario = async (req, res = response) => {
     const salt = bcrypt.genSaltSync();
     usuario_.password = bcrypt.hashSync(password, salt);
     usuario_.imagenP =
-      "../uploads/imagenes/predeterminadas/" + usuario_.roleuser + ".png";
+      "/imagenes/predeterminadas/" + usuario_.roleuser + ".png";
     console.log("antes de guardar: ", usuario_);
     // Guardar usuario
     await usuario_.save();

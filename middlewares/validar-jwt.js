@@ -1,7 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-
-
 const validarJWT = (req, res, next) => {
 
     // Leer el Token
@@ -37,7 +35,6 @@ const validarJWT = (req, res, next) => {
     }
  
 }
-
 const retornarDatosJWT = (token) => {
 
     // Leer el Token
@@ -58,7 +55,6 @@ const retornarDatosJWT = (token) => {
     }
  
 }
-
 const validarDeJWTRoleAdmin = (req, res, next) => {
 
     // Leer el Token
@@ -81,9 +77,32 @@ const validarDeJWTRoleAdmin = (req, res, next) => {
 
  
 }
+const validarDeJWTRoleCliente = (req, res, next) => {
+
+    // Leer el Token
+    const token = req.header('x-access-token');
+
+        const {roleuser} = jwt.verify( token, process.env.JWT_SECRET );
+        console.log("role user deszde validar admin: ", roleuser);
+
+     
+        if (roleuser.toLowerCase() === 'cliente' ) {
+            next();
+        }else{
+    
+            return res.status(400).json
+            ({
+                msg: "No tienes los permisos necesarios para ésta operación"
+            });
+    
+        }
+
+ 
+}
 
 module.exports = {
     validarJWT,
     validarDeJWTRoleAdmin,
-    retornarDatosJWT
+    retornarDatosJWT,
+    validarDeJWTRoleCliente
 }

@@ -1,4 +1,4 @@
-post http://localhost:3000/api/catalogo/manco_list/
+post https://api.filateliaperu.com/api/catalogo/manco_list/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
 
@@ -20,5 +20,25 @@ content-type: application/json
 x-access-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
 
 {
+
+}
+
+###
+get https://api.filateliaperu.com/api/catalogo/uploads/excel/paises/:pais
+
+content-type: application/json
+
+{
+    
+
+}
+###
+
+get https://api.filateliaperu.com/api/catalogo/uploads/excel/cat-anio/:anioI&:anioF
+
+content-type: application/json
+
+{
+    
 
 }

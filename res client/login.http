@@ -10,12 +10,12 @@ content-type: application/json
 
 
 ###
-post https://api.filateliaperu.com/api/login
+post http://localhost:3000/api/login
 content-type: application/json
 
 {
    
-"email": "dorado@dorado.com",
+"email": "administrador@administrador.com",
 "password": "22102281"
 
 }
@@ -27,6 +27,6 @@ content-type: application/json
 {
    
 "email": "cliente@cliente.com",
-"password": "22102280"
+"password": "22102281"
 
 }

@@ -1,83 +1,39 @@
-const { Schema, model } = require('mongoose');
-const CatalogoSchema = Schema({
-
-
-    Descripcion: {
-        type: String,
-        required: true
+const { Schema, model } = require("mongoose");
+const CatalogoSchema = Schema(
+  {
+    name: {
+      type: String,
+      default: "No asignado",
     },
-    Codigo: {
-        type: String,
-        required: false
+    solicitud: {
+      type: Schema.Types.ObjectId,
+      ref: "Solicitudes",
+      required: true,
+      autopopulate: true
     },
-    Tipo: {
-        type: String,
-        required: true
-    }, 
-    ParaBuscar: {
-        type: String,
-        required: true
+    pais: {
+      type: Schema.Types.ObjectId,
+      ref: "Pais",
+      required: true,
+      autopopulate: true,
     },
-    
- 
-    Pais: {
-        type : Schema.Types.ObjectId,
-        ref: 'Pais',
-        required : true,
-        autopopulate: true
+    valor_catalogo: {
+      type: String,
+      default: "No asignado",
     },
-        
-    Tema: {
-        type : Schema.Types.ObjectId,
-        ref: 'Tema',
-        required : true,
-        autopopulate: true
-    },
-    Anio: {
-        type: Number,
-        required: true
-    },
-    Grupo: {
-        type: Number,
-        required: true
-    },
-    Foto_JPG_800x800_px: {
-        type: String,
-        required: true
-    },
-    Nro_Estampillas: {
-        type: Number,
-        required: true
-    },
-    Descripcion_de_la_serie: {
-        type: String,
-        required: true
-    },
-    Valor_Facial: {
-        type: String,
-        required: false
-    },
-    Numero_de_catalogo: {
-        type: String,
-        required: false
-    },
-    Valor_del_Catalogo: {
-        type: String,
-        required: false
-    },
-
     estado: {
-        type: Boolean,
-        default: true
-    }
-}, { collection: 'bdfc_catalogo' })
+      type: Boolean,
+      default: false,
+    },
+  },
+  { collection: "bdfc_catalogo", timestamps: true }
+);
 
+CatalogoSchema.method("toJSON", function () {
+  const { __v, _id, ...object } = this.toObject();
+  object.uid = _id;
+  return object;
+});
+CatalogoSchema.plugin(require("mongoose-autopopulate"));
 
-CatalogoSchema.method('toJSON', function () {
-    const { __v, _id, ...object } = this.toObject();
-    object.uid = _id;
-    return object;
-})
-CatalogoSchema.plugin(require('mongoose-autopopulate'));
-
-module.exports = model('Catalogo', CatalogoSchema);
+module.exports = model("Catalogo", CatalogoSchema);

@@ -1,12 +1,11 @@
 post http://localhost:3000/api/usuarios
 content-type: application/json
-//x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6ImFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImRvcmFkb0Bkb3JhZG8uY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTQ3MzM0NzMsImV4cCI6MTYxNDgxOTg3M30.lTZ45EORDeso5YdkUbeHeQh8-szlgF-x4Xo5C3EC3qg
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAYWRtaW5pc3RyYWRvci5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjM2MjY4MSwiZXhwIjoxNjE2NDQ5MDgxfQ.dPfWcUFoE5X5dtxpvh7pfWTLGgqh4jgpWmbIX6gxwoc
 
 {
-"name" : "Administrador",
-"email": "administrador@administrador.com",
-"password": "22102281",
-"roleuser": "admin"
+"name" : "Gabriel Gracia Marquez",
+"email": "cliente@cliente.com",
+"password": "22102281"
 }
 
 ###

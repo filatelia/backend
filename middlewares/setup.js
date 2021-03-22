@@ -2,6 +2,7 @@ const Paises = require("../models/catalogo/paises");
 const axios = require("axios");
 const { guardandoBanderas } = require("../middlewares/banderas");
 const {crearPaisesAutom} = require("../middlewares/paises");
+const Tipo_solicitud = require('../models/solicitudes/tipoEstadoSolicitud.model');
 
 const verificarBanderasPaises = async () => {
   console.log("Verificando las banderas de los paises");
@@ -59,6 +60,50 @@ const verificarBanderasPaises = async () => {
   }
 };
 
+const verificarTipoSolicitudYCrearla = async () =>{
+  console.log("verificando tipo de solicitud y crearlos");
+
+  const tipoSolicitud = await Tipo_solicitud.find();
+  if(tipoSolicitud.length>0){
+    console.log("Tipos de solucitud OK");
+    return;
+  }
+  console.log("No se encotraron tipos de solucitud, creando...");
+
+  const nuevoTSolicitud = new Tipo_solicitud();
+  nuevoTSolicitud.name = "En espera de aprobación del catalogo etapa 1";
+  nuevoTSolicitud.abreviacion = "EACE1";
+  nuevoTSolicitud.descripcion = "Se debe esperar la aprobación para poder subir las estampillas del catálogo";
+  await nuevoTSolicitud.save();
+
+  const nuevoTSolicitud_1 = new Tipo_solicitud();
+  nuevoTSolicitud_1.name = "Aprobado catalogo etapa 1";
+  nuevoTSolicitud_1.abreviacion = "ACE1";
+  nuevoTSolicitud_1.descripcion = "Puedes subir tu catalogo con las respectivas estampillas, una vez terminado, haces la solicitud para la aprobación de etapa 2, la publicación";
+  await nuevoTSolicitud_1.save();
+
+  const nuevoTSolicitud_2 = new Tipo_solicitud();
+  nuevoTSolicitud_2.name = "En espera de aprobación del catalogo etapa 2, la publicación del catálogo";
+  nuevoTSolicitud_2.abreviacion = "EACE2";
+  nuevoTSolicitud_2.descripcion = "Se debe esperar la aprobación para que el catalogo sea público para todos";
+  await nuevoTSolicitud_2.save();
+
+
+  const nuevoTSolicitud_3 = new Tipo_solicitud();
+  nuevoTSolicitud_3.name = "Catalogo Publicado";
+  nuevoTSolicitud_3.abreviacion = "ACE2";
+  nuevoTSolicitud_3.descripcion = "El catalogo es público para todos";
+  await nuevoTSolicitud_3.save();
+
+
+ 
+return;
+
+
+}
+
 module.exports = {
   verificarBanderasPaises,
+  verificarTipoSolicitudYCrearla
+  
 };

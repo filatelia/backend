@@ -36,6 +36,7 @@ if (estado_estampilla && mancoListBd != null) {
     );
   
 } else {
+  
   if (mancoListBd == null) {
     const objetoMancolista = new Mancolist();
 

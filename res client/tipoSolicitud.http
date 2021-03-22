@@ -1,0 +1,9 @@
+
+post http://localhost:3000/api/solicitudes/
+content-type: application/json
+
+{
+"name": "Catalogo Publicado",
+"abreviacion": "ACE2",
+"descripcion" : "El catalogo es público para todos"
+}
