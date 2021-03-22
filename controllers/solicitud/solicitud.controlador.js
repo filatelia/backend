@@ -145,9 +145,21 @@ const mostarSolicitudes = async(req, res = response) =>{
   
   
 }
+const mostarSolicitudesTotales = async (req, res = response) =>{
+
+  const todasSolicitudes = await Solicitud.find();
+ return res.json(
+    {
+      ok: true,
+      todas_solicitudes: todasSolicitudes
+    }
+    ); 
+
+}
 module.exports = {
   crearSolicitud,
-  mostarSolicitudes
+  mostarSolicitudes,
+  mostarSolicitudesTotales
 
 
 };
