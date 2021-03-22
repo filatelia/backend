@@ -41,6 +41,10 @@ const enviarCorreos = async (res = response) => {
           "<hr>" +
           "<a href='https://www.filateliaperuana.com/'>Filatelia Peruana.</a>",
       });
+
+      console.log("Correo enviado a: ", element.email);
+
+    
     }
   } catch (e) {
     return res.json({
