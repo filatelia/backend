@@ -156,7 +156,24 @@ const mostarSolicitudesTotales = async (req, res = response) =>{
     ); 
 
 }
-const aprobacion = async () =>{
+const aprobacion = async (req, res = response) =>{
+  const { id_solicitud, mensaje_rechazo } = req.body;
+  if (id_solicitud && id_solicitud != null) {
+
+    const solicitudBD = await Solicitud.findById(id_solicitud);
+    if(solicitudBD != null){}
+    else{} 
+    
+  } else {
+    
+  }
+
+  if(mensaje_rechazo && mensaje_rechazo != null){
+
+  }
+
+
+
   console.log("Entramos");
 }
 module.exports = {

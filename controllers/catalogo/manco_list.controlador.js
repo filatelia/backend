@@ -68,7 +68,7 @@ const compartirManco_list = async (req, res = response) => {
     });
   }
 
-  const objMancoListBD = await Mancolist.findOne({ id_usuario: id });
+  const objMancoListBD = await Mancolist.find({ id_usuario: id });
   try {
     if (objMancoListBD != null) {
       return res.json({

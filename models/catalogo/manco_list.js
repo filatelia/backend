@@ -10,7 +10,7 @@ const manco_listSchema = Schema(
     },
     id_estampilla: {
       type: Schema.Types.ObjectId,
-      ref: "Catalogo",
+      ref: "Estampillas",
       required: true,
       autopopulate: true,
     },
