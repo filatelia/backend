@@ -5,7 +5,7 @@ content-type: application/json
 "name" : "galleta"
 
 }
-api/catalogo/uploads/excel/actualizar-cat-excel
+
 ###
 GET http://localhost:3000/api/catalogo/paises/all
 content-type: application/json
@@ -16,3 +16,10 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 ###
 get http://localhost:3000/api/catalogo/uploads
 content-type: application/json
+
+
+
+###
+get http://localhost:3000/api/catalogo/uploads/excel/mis-catalogos
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiUGFyYSBwcnVlYmFzIGVudmlvIGVtYWlsIiwiZW1haWwiOiJwcnVlYmFzLWZpbGF0ZWxpYUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2NTI3NjkwLCJleHAiOjE2MTY2MTQwOTB9.2TBGwCr-zPrbp3eE5l1nu8DejH91-D75uCe16O3k5jw

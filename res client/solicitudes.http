@@ -1,5 +1,5 @@
 //Nueva solicitud
-post http://localhost:3000/api/solicitudes/
+post https://api.filateliaperu.com/api/solicitudes/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiUGFyYSBwcnVlYmFzIGVudmlvIGVtYWlsIiwiZW1haWwiOiJwcnVlYmFzLWZpbGF0ZWxpYUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2NTIyNDEyLCJleHAiOjE2MTY2MDg4MTJ9.Va1dRdefGuMqLZaNDcD2J0ilhFwWjJUa4x1Hpc0xKHE
 
