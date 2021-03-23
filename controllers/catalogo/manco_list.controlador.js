@@ -45,10 +45,16 @@ if (estado_estampilla && mancoListBd != null) {
 
     const guardado = await objetoMancolista.save();
 
-    console.log("guardado", guardado);
+    return res.json({
+      ok: true,
+      estampilla_agregada: guardado
+    });
   }else{
     const eliminarMancolist = await Mancolist.findByIdAndDelete(mancoListBd._id);
-    console.log("Eliminado -->", eliminarMancolist);
+    return res.json({
+      ok: true,
+      estampilla_eliminada: eliminarMancolist
+    });
   }
 }
 
