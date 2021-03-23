@@ -8,11 +8,14 @@ const enviarCorreos = async (res = response) => {
     console.log("entramos a correo");
 
     //Consultar usuarios administrador
+    //Consultar usuarios administrador
+    //Consultar usuarios administrador
+    //Consultar usuarios administrador
     const administradores = await consultarUsuariosAdmin();
 
     const transporter = nodemailer.createTransport({
       host: "mail.filateliaperuana.com",
-      port: 26,
+      port: 25,
       secure: false,
       auth: {
         user: process.env.USEMAIL,
