@@ -11,8 +11,8 @@ const { validarJWT,validarDeJWTRoleAdmin } = require('../../middlewares/index.mi
 
 //router.post( '/', [validarJWT, validarDeJWTRoleAdmin, verificarTemaYCrearlo ], crearCatalogo);
 router.post( '/', [ ], crearCatalogo);
-router.delete( '/:id', [ ], eliminarCatalogo);
-router.put( '/actualizar-cat-excel', [ ], editarCatExcel);
+router.delete( '/:id', [validarJWT ], eliminarCatalogo);
+router.put( '/actualizar-cat-excel', [validarJWT ], editarCatExcel);
 
 router.get( '/', [], mostrarCatalogo);
 router.get( '/paises/:pais', [], mostrarCatalogoPais);
