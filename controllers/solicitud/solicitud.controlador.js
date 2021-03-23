@@ -29,7 +29,7 @@ const crearSolicitud = async (req, res = response) => {
       });
       console.log("abreviacion: ", abreviacionConIdRecibido);
 
-      if (abreviacionConIdRecibido.abreviacion == "EACE1") {
+      if (abreviacionConIdRecibido.abreviacion == "ACE1") {
         var { _id } = await Tipo_solicitud.findOne(
           { abreviacion: "EACE2" },
           { _id: 1 }
@@ -282,8 +282,17 @@ const aprobacion = async (req, res = response) => {
 
     solicitudBDA.tipoEstadoSolicitud_id = _id;
     var solicitudActuaizada = await solicitudBDA.save();
+
+    const catalogoBD = await Catalogo.findOne({ solicitud: id_solicitud });
+    catalogoBD.estado = true;
+    await catalogoBD.save();
+
+
+
     return res.json({
       ok: true,
+      catalogo_Publico: true,
+      catalogo_publico: catalogoBD,
       solicitudAceptada: solicitudActuaizada,
     });
   }
@@ -300,17 +309,7 @@ const aprobacion = async (req, res = response) => {
       solicitudAceptada: solicitudActuaizada,
     });
   }
-  if (abreviacionConIdRecibido.abreviacion == "ACE2") {
-    const catalogoBD = await Catalogo.findOne({ solicitud: id_solicitud });
-    catalogoBD.estado = true;
-
-    var cambios = await catalogoBD.save();
-
-    return res.json({
-      ok: true,
-      solicitudAceptada: cambios,
-    });
-  }
+  
 };
 module.exports = {
   crearSolicitud,

@@ -1,36 +1,40 @@
-
+//Nueva solicitud
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2xpZW50ZSBtb2RpZmljYWRvIiwiZW1haWwiOiJjbGllbnRlQGNsaWVudGUuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY0NTMwMTMsImV4cCI6MTYxNjUzOTQxM30.tfcHJGy0TFvNTeqTVHf1VkCEMRUTv_RwxmT4xC_lXjw
 
 {
 
-"catalogo_nombre": "Prueba para todas estapas", 
-"pais" : "Colombia", 
+"catalogo_nombre": "Prueba 1, para llevar a publicación, etapa por etapa", 
+"pais" : "Peru", 
 "valor_catalogo" :"" 
 }
 
 ###
 
+//Cuando se envia solo la solicitud, es para crear una segunda.
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2xpZW50ZSBtb2RpZmljYWRvIiwiZW1haWwiOiJjbGllbnRlQGNsaWVudGUuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY0NTMwMTMsImV4cCI6MTYxNjUzOTQxM30.tfcHJGy0TFvNTeqTVHf1VkCEMRUTv_RwxmT4xC_lXjw
 
 {
 
-"id_solicitud": "60592bfac3b4bf0fd452a37a"
+"id_solicitud": "6059f8653cef5204b8b7f16e"
 }
 ###
+//Consultar todas las solicitudes del usuario logado
 get https://api.filateliaperu.com/api/solicitudes/mis-solicitudes/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUBjbGllbnRlLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2MzYzMjY4LCJleHAiOjE2MTY0NDk2Njh9.GU8zH-jnt1kRSabkcyUwP8u5Nj4l1zfIPLs_VoHf-6w
 
 ###
+//Cnsultar todas las solicitudes existentes, solo para admin 
 get https://api.filateliaperu.com/api/solicitudes
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
 
 ###
+//para rechazar
 post https://api.filateliaperu.com/api/solicitudes/aprobacion
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
@@ -38,4 +42,14 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 {
    "id_solicitud": "605925ebd404e5c76d398c28",
    "mensaje_rechazo": "Los datos no concuerdan con lo solicitado"
+}
+
+###
+//Para aprobar
+post http://localhost:3000/api/solicitudes/aprobacion
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
+
+{
+   "id_solicitud": "6059f8653cef5204b8b7f16e"
 }
