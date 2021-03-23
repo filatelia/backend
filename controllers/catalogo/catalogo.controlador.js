@@ -6,60 +6,18 @@ const Tema = require("../../models/catalogo/temas");
 const Img = require("../../models/catalogo/uploads");
 const fs = require("fs");
 const Path = require("path");
-const Estampillas = require("../../models/catalogo/estampillas.modelo");
+const Estampillas = require('../../models/catalogo/estampillas.modelo');
 const { getPaisByName } = require("../catalogo/pais.controlador");
 const Pais = require("../../models/catalogo/paises");
 const { crearTema } = require("../../middlewares/index.middle");
+
 const { isValidObjectId } = require("mongoose");
 const { retornarDatosJWT } = require("../../middlewares/index.middle");
 
+
 const crearCatalogo = async (req, res = response) => {
   try {
-    //Validando que sí se esté enviando información
-    if (!req.files || req.files == null) {
-      return res.json({
-        ok: false,
-        mensaje: "Debes enviar un archivo",
-      });
-    }
-
-    console.log("documento recibido", req.files);
-    const nombreSeparado = req.files.sampleFile.name.split(".");
-    const formatoArchivo = nombreSeparado[nombreSeparado.length - 1];
-    if (formatoArchivo.toLowerCase() != "xlsx") {
-      return res.json({
-        ok: false,
-        mensaje: "Solo se permiten archivos de formato .xlsx",
-        formato_enviado: formatoArchivo,
-      });
-    }
-
     const datos = procesarExcel(req.files);
-    const idCatalogo = req.body.id_catalogo;
-    console.log("ID catalogo: ", idCatalogo);
-
-    //Validando que exista un catalogo para asociar a las estampillas
-    if (!idCatalogo || idCatalogo == null) {
-      return res.json({
-        ok: false,
-        mensaje: "Debes asociar las estampillas a un catalogo",
-      });
-    }
-    //Validando que el id que se recibe sea un id valido
-    if (!isValidObjectId(idCatalogo)) {
-      return res.json({
-        ok: false,
-        mensaje: "Debes enviar un catalogo válido",
-      });
-    }
-    var catalogoBD = await Catalogo.findById(idCatalogo);
-    //validando que el id enviado si es de un catalogo en a bd
-    if (!catalogoBD || catalogoBD == null) {
-      return res.json({
-        ok: false,
-        mensaje: "No existe el catalogo que deseas asociar.",
-      });
-    }
     var completos = [];
     var inCompletos = [];
 
@@ -92,8 +50,8 @@ const crearCatalogo = async (req, res = response) => {
 
         //Buscando id pais con el nombre
         var pais = await buscarPaisNombre(datosFinal[index].Pais);
-        if (pais) {
-          var _id = pais;
+        if(pais){
+          var _id=pais
           datosFinal[index].Pais = _id;
 
           //Buscar o crear tema por nombre
@@ -104,15 +62,16 @@ const crearCatalogo = async (req, res = response) => {
 
           console.log("tema creadossssss->", temaCreado);
           datosFinal[index].Tema = temaCreado;
-          datosFinal[index].Catalogo = idCatalogo;
 
-          var nuevoCatalogo = new Estampillas(datosFinal[index]);
-          console.log("Nuevo catalogo", nuevoCatalogo);
+
+        var nuevoCatalogo = new Estampillas(datosFinal[index]);
+        console.log("Nuevo catalogo", nuevoCatalogo);
 
           const guardar = await nuevoCatalogo.save();
           console.log("Guardar::::", guardar);
-        } else {
-          inCompletos.push(element);
+        }
+        else{
+          inCompletos.push(element)
         }
       } else {
         contador = contador + 1;
@@ -259,46 +218,49 @@ const mostrarCatalogoPais = async (req, res) => {
 //Mostrar catalogo por rango de años
 const mostrarCatalogoAnio = async (req, res) => {
   const { anioI, anioF } = req.params;
-  try {
-    if (Number(anioI) && Number(anioF)) {
-      console.log("anio f", Number(anioF));
-      const catalogoCompleto = await Estampillas.find({
-        $and: [
-          {
-            Anio: {
-              $gte: Number(anioI),
-            },
+try {
+  if ( Number(anioI) && Number(anioF)) {
+    console.log("anio f", Number(anioF));
+    const catalogoCompleto = await Estampillas.find({
+      $and: [
+        {
+          Anio: {
+            $gte: Number(anioI),
           },
+        },
 
-          {
-            Anio: {
-              $lte: Number(anioF),
-            },
+        {
+          Anio: {
+            $lte: Number(anioF),
           },
-        ],
-      });
-
-      res.json({
-        ok: true,
-        catalogoPorPais: catalogoCompleto,
-      });
-    } else {
-      res.json({
-        ok: false,
-        catalogoPorPais: "Recierda que debes enviar valores numéricos",
-        datos_recibidos: "Año inicial: " + anioI + " | Año final: " + anioF,
-      });
-    }
-  } catch (e) {
-    return res.json({
-      ok: false,
-      mensaje:
-        "Error crítico, comunicate con el administrador | catalogoControlador-> mostrarCatalogoAnio()",
+        },
+      ],
     });
+
+    res.json({
+      ok: true,
+      catalogoPorPais: catalogoCompleto,
+    });
+  }else{
+    res.json({
+      ok: false,
+      catalogoPorPais: "Recierda que debes enviar valores numéricos",
+      datos_recibidos: "Año inicial: "+anioI+" | Año final: "+anioF
+    });
+
   }
+
+} catch (e) {
+  return res.json({
+    ok:false,
+    mensaje: "Error crítico, comunicate con el administrador | catalogoControlador-> mostrarCatalogoAnio()"
+  });
+
+}
 };
 
 const mostrarCatalogo = async (req, res) => {
+
   const catalogoCompleto = await Catalogo.find({ estado: true });
   var cat = [];
   for (let index = 0; index < catalogoCompleto.length; index++) {
@@ -308,9 +270,9 @@ const mostrarCatalogo = async (req, res) => {
     cat.push(nuevoCat);
   }
 
-  return res.json({
+  res.json({
     ok: true,
-    catalogoCompleto: cat,
+    catalogoCompleto: catalogoCompleto,
   });
 };
 const eliminarCatalogo = async (req, res) => {
