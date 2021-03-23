@@ -22,7 +22,12 @@ catalogo: {
         type: String,
         required: true
     },
-    
+    Catalogo: {
+        type : Schema.Types.ObjectId,
+        ref: 'Catalogo',
+        required : true,
+        autopopulate: true
+    }, 
  
     Pais: {
         type : Schema.Types.ObjectId,

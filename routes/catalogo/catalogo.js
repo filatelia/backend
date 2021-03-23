@@ -10,13 +10,13 @@ const { validarJWT,validarDeJWTRoleAdmin } = require('../../middlewares/index.mi
 
 
 //router.post( '/', [validarJWT, validarDeJWTRoleAdmin, verificarTemaYCrearlo ], crearCatalogo);
-router.post( '/', [ ], crearCatalogo);
-router.delete( '/:id', [ ], eliminarCatalogo);
-router.put( '/actualizar-cat-excel', [ ], editarCatExcel);
+router.post( '/', [validarJWT ], crearCatalogo);
+router.delete( '/:id', [validarJWT ], eliminarCatalogo);
+router.put( '/actualizar-cat-excel', [validarJWT ], editarCatExcel);
 
-router.get( '/', [], mostrarCatalogo);
-router.get( '/paises/:pais', [], mostrarCatalogoPais);
-router.get( '/cat-anio/:anioI&:anioF', [], mostrarCatalogoAnio);
+router.get( '/', [validarJWT], mostrarCatalogo);
+router.get( '/paises/:pais', [validarJWT], mostrarCatalogoPais);
+router.get( '/cat-anio/:anioI&:anioF', [validarJWT], mostrarCatalogoAnio);
 
 
 module.exports = router;

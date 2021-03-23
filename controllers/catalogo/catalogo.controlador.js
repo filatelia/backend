@@ -14,6 +14,15 @@ const { crearTema } = require("../../middlewares/index.middle");
 const crearCatalogo = async (req, res = response) => {
   try {
     const datos = procesarExcel(req.files);
+    const idCatalogo = req.body.id_catalogo;
+    console.log("ID catalogo: ", idCatalogo);
+    if (!idCatalogo || idCatalogo == null) {
+      res.json(
+        {
+          ok:false,
+          mensaje: "Debes enviar asociar las estampillas a un catalogo"
+        });
+    } 
     var completos = [];
     var inCompletos = [];
 
@@ -58,6 +67,7 @@ const crearCatalogo = async (req, res = response) => {
 
           console.log("tema creadossssss->", temaCreado);
           datosFinal[index].Tema = temaCreado;
+          datosFinal[index].Catalogo = idCatalogo;
 
 
         var nuevoCatalogo = new Estampillas(datosFinal[index]);
@@ -117,6 +127,9 @@ const crearCatalogo = async (req, res = response) => {
           estampillas_erroneas: inCompletos,
         });
       }
+
+
+
     }
   } catch (e) {
     return res.json({
@@ -256,7 +269,7 @@ try {
 };
 
 const mostrarCatalogo = async (req, res) => {
-  const catalogoCompleto = await Estampillas.find();
+  const catalogoCompleto = await Estampillas.find({});
 
   res.json({
     ok: true,
