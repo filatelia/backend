@@ -6,7 +6,7 @@ const { validarJWT, validarDeJWTRoleCliente, validarDeJWTRoleAdmin } = require('
 
 router.post('/tipo/',  creartipo);
 router.post('/', [validarJWT, validarDeJWTRoleCliente], crearSolicitud);
-router.get('/mis-solicitudes/', [validarJWT, validarDeJWTRoleCliente], mostarSolicitudes);
+router.get('/mis-solicitudes/', [validarJWT, validarDeJWTRoleCliente],  mostarSolicitudes);
 router.get('/', [validarJWT, validarDeJWTRoleAdmin], mostarSolicitudesTotales);
 router.post('/aprobacion', [validarJWT, validarDeJWTRoleAdmin], aprobacion);
 
