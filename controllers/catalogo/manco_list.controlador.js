@@ -45,16 +45,10 @@ if (estado_estampilla && mancoListBd != null) {
 
     const guardado = await objetoMancolista.save();
 
-    return res.json({
-      ok: true,
-      estampilla_agregada: guardado
-    });
+    console.log("guardado", guardado);
   }else{
     const eliminarMancolist = await Mancolist.findByIdAndDelete(mancoListBd._id);
-    return res.json({
-      ok: true,
-      estampilla_eliminada: eliminarMancolist
-    });
+    console.log("Eliminado -->", eliminarMancolist);
   }
 }
 
@@ -106,7 +100,7 @@ const verMancolistPropia = async (req, res = response) => {
     console.log("retornar datos token", email);
 
     const { _id } = await Usuario.findOne({ email });
-    const obj = await Mancolist.find({ id_usuario: _id });
+    const obj = await Mancolist.findOne({ id_usuario: _id });
 
     return res.json({
       ok: true,

@@ -82,12 +82,6 @@ const verificarTipoSolicitudYCrearla = async () =>{
   nuevoTSolicitud_1.descripcion = "Puedes subir tu catalogo con las respectivas estampillas, una vez terminado, haces la solicitud para la aprobación de etapa 2, la publicación";
   await nuevoTSolicitud_1.save();
 
-  const nuevoTSolicitud_12 = new Tipo_solicitud();
-  nuevoTSolicitud_12.name = "Rechazado catalogo etapa 1";
-  nuevoTSolicitud_12.abreviacion = "RCE1";
-  nuevoTSolicitud_12.descripcion = "";
-  await nuevoTSolicitud_12.save();
-
   const nuevoTSolicitud_2 = new Tipo_solicitud();
   nuevoTSolicitud_2.name = "En espera de aprobación del catalogo etapa 2, la publicación del catálogo";
   nuevoTSolicitud_2.abreviacion = "EACE2";
@@ -101,11 +95,6 @@ const verificarTipoSolicitudYCrearla = async () =>{
   nuevoTSolicitud_3.descripcion = "El catalogo es público para todos";
   await nuevoTSolicitud_3.save();
 
-  const nuevoTSolicitud_31 = new Tipo_solicitud();
-  nuevoTSolicitud_31.name = "Catalogo Rechazado";
-  nuevoTSolicitud_31.abreviacion = "RCE2";
-  nuevoTSolicitud_31.descripcion = "";
-  await nuevoTSolicitud_31.save();
 
  
 return;
