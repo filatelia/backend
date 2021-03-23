@@ -17,43 +17,42 @@ const crearSolicitud = async (req, res = response) => {
 
     console.log("solicitud recibida: ", solicitudRecibida);
 
-    if(solicitudRecibida.id_solicitud && solicitudRecibida.id_solicitud != null){
+    if (
+      solicitudRecibida.id_solicitud &&
+      solicitudRecibida.id_solicitud != null
+    ) {
       console.log("para el primer if");
-      var id_estadoSolicitud=  solicitudRecibida.id_solicitud;
+      var id_estadoSolicitud = solicitudRecibida.id_solicitud;
       const abreviacionSolicitud = await Solicitud.findById(id_estadoSolicitud);
-      const abreviacionConIdRecibido = await Tipo_solicitud.findOne(
-        { _id:abreviacionSolicitud.tipoEstadoSolicitud_id },
-        
-      );
+      const abreviacionConIdRecibido = await Tipo_solicitud.findOne({
+        _id: abreviacionSolicitud.tipoEstadoSolicitud_id,
+      });
       console.log("abreviacion: ", abreviacionConIdRecibido);
-    
+
       if (abreviacionConIdRecibido.abreviacion == "EACE1") {
         var { _id } = await Tipo_solicitud.findOne(
           { abreviacion: "EACE2" },
           { _id: 1 }
         );
-  
+
         abreviacionSolicitud.tipoEstadoSolicitud_id = _id;
         console.log("Abreviacion: ", abreviacionSolicitud);
         var solicitudActuaizada = await abreviacionSolicitud.save();
-  
+
         return res.json({
           ok: true,
           solicitudEnviada: solicitudActuaizada,
         });
-      }else{
+      } else {
         return res.json({
           ok: true,
-          mensaje: "No puedes hacer ésta solicitud pues el estado de la solicitud es: "+abreviacionConIdRecibido.abreviacion,
-          descripcion: abreviacionConIdRecibido.name
+          mensaje:
+            "No puedes hacer ésta solicitud pues el estado de la solicitud es: " +
+            abreviacionConIdRecibido.abreviacion,
+          descripcion: abreviacionConIdRecibido.name,
         });
       }
     }
-
-
-
-
-
 
     if (!solicitudRecibida || solicitudRecibida == null) {
       return res.json({
@@ -232,6 +231,33 @@ const aprobacion = async (req, res = response) => {
         solicitudRechazada: solicitudActuaizada,
       });
     }
+    if (abreviacionConIdRecibido.abreviacion == "ACE2") {
+      var { _id } = await Tipo_solicitud.findOne(
+        { abreviacion: "RCE2" },
+        { _id: 1 }
+      );
+
+      var catalogoEnBDActivo = await Catalogo.findOne({ solicitud:id_solicitud });
+
+      catalogoEnBDActivo.estado = false,
+       await catalogoEnBDActivo.save();
+
+
+      solicitudBDA.tipoEstadoSolicitud_id = _id;
+      solicitudBDA.observacion_rechazo = mensaje_rechazo;
+      var solicitudActuaizada = await solicitudBDA.save();
+
+      return res.json({
+        ok: true,
+        msg: "Has dado de baja correctamente el catalogo",
+        catalogoAnulado: solicitudActuaizada,
+      });
+    }
+    return res.json({
+      ok: false,
+      msg: "No puedes rechazar un catalogo de estado: "+abreviacionConIdRecibido.abreviacion,
+      texto: abreviacionConIdRecibido.descripcion
+    });
   }
 
   //Modificando estados aceptados
