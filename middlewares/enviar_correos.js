@@ -14,7 +14,7 @@ const enviarCorreos = async (res = response) => {
     const administradores = await consultarUsuariosAdmin();
 
     const transporter = nodemailer.createTransport({
-      host: "mail.filateliaperuana.com",
+      host: "api.filateliaperu.com",
       port: 25,
       secure: false,
       auth: {
