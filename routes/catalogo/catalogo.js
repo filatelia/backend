@@ -14,7 +14,7 @@ router.post( '/', [ ], crearCatalogo);
 router.delete( '/:id', [validarJWT ], eliminarCatalogo);
 router.put( '/actualizar-cat-excel', [validarJWT ], editarCatExcel);
 
-router.get( '/', [validarJWT], mostrarCatalogo);
+router.get( '/', [], mostrarCatalogo);
 router.get( '/paises/:pais', [validarJWT], mostrarCatalogoPais);
 router.get( '/cat-anio/:anioI&:anioF', [validarJWT], mostrarCatalogoAnio);
 
