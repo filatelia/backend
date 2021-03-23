@@ -299,10 +299,18 @@ const mostrarCatalogoAnio = async (req, res) => {
 
 const mostrarCatalogo = async (req, res) => {
   const catalogoCompleto = await Catalogo.find({ estado: true });
+  var cat = [];
+  for (let index = 0; index < catalogoCompleto.length; index++) {
+    const element = catalogoCompleto[index]._id;
+    var nuevoCat = await Estampillas.find({Catalogo:element});
 
-  res.json({
+    cat.push(nuevoCat);
+    
+  }
+
+  return res.json({
     ok: true,
-    catalogoCompleto: catalogoCompleto,
+    catalogoCompleto: cat,
   });
 };
 const eliminarCatalogo = async (req, res) => {
