@@ -30,7 +30,7 @@ const enviarCorreos = async (res = response) => {
       const element = administradores[index];
     var correo=  await transporter.sendMail({
         from: "'Filatelia Peruana 🔔' <solicitudes@filateliaperuana.com>",
-        to: "" + element.email,
+        to: element.email,
         subject: "Tienes una nueva solicitud.",
         html:
           "<h1>Hola " +
