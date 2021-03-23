@@ -11,6 +11,10 @@ const { getPaisByName } = require("../catalogo/pais.controlador");
 const Pais = require("../../models/catalogo/paises");
 const { crearTema } = require("../../middlewares/index.middle");
 
+const { isValidObjectId } = require("mongoose");
+const { retornarDatosJWT } = require("../../middlewares/index.middle");
+
+
 const crearCatalogo = async (req, res = response) => {
   try {
     const datos = procesarExcel(req.files);
@@ -256,7 +260,15 @@ try {
 };
 
 const mostrarCatalogo = async (req, res) => {
-  const catalogoCompleto = await Estampillas.find();
+
+  const catalogoCompleto = await Catalogo.find({ estado: true });
+  var cat = [];
+  for (let index = 0; index < catalogoCompleto.length; index++) {
+    const element = catalogoCompleto[index]._id;
+    var nuevoCat = await Estampillas.find({ Catalogo: element });
+
+    cat.push(nuevoCat);
+  }
 
   res.json({
     ok: true,
@@ -282,6 +294,28 @@ const eliminarCatalogo = async (req, res) => {
       error: e,
     });
   }
+};
+
+const mostrarMisCatalogos = async (req, res) => {
+  //{"sort" : ['datefield', 'asc']}
+  const token = req.header("x-access-token");
+
+  var email = retornarDatosJWT(token);
+
+  const catalogoBD = await Catalogo.find();
+
+  var catalosgos = [];
+  for (let index = 0; index < catalogoBD.length; index++) {
+    const element = catalogoBD[index].solicitud;
+
+    if (element.usuario_id.email == email) {
+      catalosgos.push(element);
+    }
+  }
+  return res.json({
+    ok: true,
+    catalogo: catalosgos,
+  });
 };
 
 //funciones
@@ -423,4 +457,5 @@ module.exports = {
   editarCatExcel,
   mostrarCatalogoPais,
   mostrarCatalogoAnio,
+  mostrarMisCatalogos,
 };

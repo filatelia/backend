@@ -8,6 +8,7 @@ const enviarCorreos = async (res = response) => {
     console.log("entramos a correo");
 
     //Consultar usuarios administrador
+    //Consultar usuarios administrador
     const administradores = await consultarUsuariosAdmin();
 
     const transporter = nodemailer.createTransport({
@@ -15,8 +16,8 @@ const enviarCorreos = async (res = response) => {
       port: 26,
       secure: false,
       auth: {
-        user: process.env.USEMAIL,
-        pass: process.env.PSEMAIL,
+        user: 'solicitudes@filateliaperuana.com',
+        pass: '22102281',
       },
       tls: {
         rejectUnauthorized: false,
@@ -26,8 +27,8 @@ const enviarCorreos = async (res = response) => {
     for (let index = 0; index < administradores.length; index++) {
       const element = administradores[index];
     var correo=  await transporter.sendMail({
-        from: "'Filatelia Peruana 🔔' <solicitudes@filateliaperuana.com>",
-        to: "" + element.email,
+        from: 'Filatelia Peruana <solicitudes@filateliaperuana.com>',
+        to: element.email,
         subject: "Tienes una nueva solicitud.",
         html:
           "<h1>Hola " +

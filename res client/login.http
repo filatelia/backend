@@ -30,3 +30,15 @@ content-type: application/json
 "password": "22102281"
 
 }
+
+###
+//Para enviar emails
+post https://api.filateliaperu.com/api/login
+content-type: application/json
+
+{
+   
+"email": "pruebas-filatelia@yopmail.com",
+"password": "22102281"
+
+}
