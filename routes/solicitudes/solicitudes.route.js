@@ -5,8 +5,10 @@ const {  crearSolicitud, mostarSolicitudes, mostarSolicitudesTotales, aprobacion
 const { validarJWT, validarDeJWTRoleCliente, validarDeJWTRoleAdmin } = require('../../middlewares/validar-jwt');
 
 router.post('/tipo/',  creartipo);
-router.post('/', [validarJWT, validarDeJWTRoleCliente], crearSolicitud);
+
+router.post('/', [validarJWT], crearSolicitud);
 router.get('/mis-solicitudes/', [validarJWT, validarDeJWTRoleCliente],  mostarSolicitudes);
+
 router.get('/', [validarJWT, validarDeJWTRoleAdmin], mostarSolicitudesTotales);
 router.post('/aprobacion', [validarJWT, validarDeJWTRoleAdmin], aprobacion);
 
