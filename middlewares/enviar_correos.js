@@ -17,7 +17,7 @@ const enviarCorreos = async (res = response) => {
       secure: false,
       auth: {
         user: 'solicitudes@filateliaperuana.com',
-        pass: '22102281',
+        pass: 'rotdxdgfnozhbhsq',
       },
       tls: {
         rejectUnauthorized: false,
