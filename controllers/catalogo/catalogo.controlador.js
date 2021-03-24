@@ -402,18 +402,18 @@ const mostrarMisEstampillas = async (req, res) => {
 };
 
 const mostrarCatalogoId = async (req, res) =>{
-  var id_catalogo = req.params.id;
-  console.log("id_catalogo", id_catalogo);
+  var id_solicitud = req.params.id;
+  console.log("id_solicitud", id_solicitud);
 
-  if(!id_catalogo || id_catalogo == null || !isValidObjectId(id_catalogo) ){
+  if(!id_solicitud || id_solicitud == null || !isValidObjectId(id_solicitud) ){
 
     return res.json({
       ok: false,
-      msg: "Debes enviar un catalogo valido"
+      msg: "Debes enviar una solicitud valido"
     });
   }
 
-  var catalogo = await Catalogo.findById(id_catalogo);
+  var catalogo = await Catalogo.findOne({solicitud:id_solicitud});
   if (catalogo == null) {
     return res.json(
       {
