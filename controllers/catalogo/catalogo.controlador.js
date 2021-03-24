@@ -401,6 +401,36 @@ const mostrarMisEstampillas = async (req, res) => {
   });
 };
 
+const mostrarCatalogoId = async (req, res) =>{
+  var id_catalogo = req.params.id;
+  console.log("id_catalogo", id_catalogo);
+
+  if(!id_catalogo || id_catalogo == null || !isValidObjectId(id_catalogo) ){
+
+    return res.json({
+      ok: false,
+      msg: "Debes enviar un catalogo valido"
+    });
+  }
+
+  var catalogo = await Catalogo.findById(id_catalogo);
+  if (catalogo == null) {
+    return res.json(
+      {
+        ok:false,
+        msg: "No existe el catalogo que deseas buscar"
+      }
+    );
+  }
+
+  return res.json(
+    {
+      ok: true,
+      catalogo: catalogo
+    }
+  );
+}
+
 //funciones
 function procesarExcel(exc) {
   try {
@@ -540,6 +570,8 @@ async function buscandoUrlImgCat(name) {
   }
 }
 
+
+
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -549,4 +581,5 @@ module.exports = {
   mostrarCatalogoAnio,
   mostrarMisCatalogos,
   mostrarMisEstampillas,
+  mostrarCatalogoId
 };
