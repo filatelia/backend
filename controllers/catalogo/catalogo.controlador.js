@@ -9,7 +9,7 @@ const Path = require("path");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 const { getPaisByName } = require("../catalogo/pais.controlador");
 const Pais = require("../../models/catalogo/paises");
-const { crearTema } = require("../../middlewares/index.middle");
+const { crearTema, enviarCorreos } = require("../../middlewares/index.middle");
 const { isValidObjectId } = require("mongoose");
 const { retornarDatosJWT } = require("../../middlewares/index.middle");
 const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
@@ -199,9 +199,12 @@ var id_solicitud = await Catalogo.findOne({_id:id_catalogo});
       abreviacionSolicitud.tipoEstadoSolicitud_id = _id;
       console.log("Abreviacion: ", abreviacionSolicitud);
       var solicitudActuaizada = await abreviacionSolicitud.save();
+      await enviarCorreos(null, solicitudActuaizada.usuario_id.email, solicitudActuaizada.usuario_id.name,
+        solicitudActuaizada.tipoEstadoSolicitud_id.descripcion
+        ); 
 
       return solicitudActuaizada;
-    } 
+    }
   }
 }
 //Actualizar estapillas repetidas desde el excel.

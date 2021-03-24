@@ -5,7 +5,10 @@ const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
 const Usuario = require("../../models/usuario/usuario");
 const Pais = require("../../models/catalogo/paises");
 const Catalogo = require("../../models/catalogo/catalogo");
-const { enviarCorreos } = require("../../middlewares/index.middle");
+const {
+  enviarCorreos,
+  enviarCorreoAprobacion,
+} = require("../../middlewares/index.middle");
 const solicitudesModel = require("../../models/solicitudes/solicitudes.model");
 
 const crearSolicitud = async (req, res = response) => {
@@ -14,6 +17,11 @@ const crearSolicitud = async (req, res = response) => {
 
     //Se reciben todos los datos del usuario al crear la solicitud
     const solicitudRecibida = req.body;
+    //Con el token se busca el correo.
+    const correo = retornarDatosJWT(token);
+
+    //Buscando el usuario logueado.
+    const usuarioBD = await Usuario.findOne({ email: correo });
 
     console.log("solicitud recibida: ", solicitudRecibida);
 
@@ -36,6 +44,12 @@ const crearSolicitud = async (req, res = response) => {
         abreviacionSolicitud.tipoEstadoSolicitud_id = _id;
         console.log("Abreviacion: ", abreviacionSolicitud);
         var solicitudActuaizada = await abreviacionSolicitud.save();
+        await enviarCorreos(
+          null,
+          usuarioBD.email,
+          usuarioBD.name,
+          solicitudActuaizada.tipoEstadoSolicitud_id.descripcion
+        );
 
         return res.json({
           ok: true,
@@ -71,11 +85,6 @@ const crearSolicitud = async (req, res = response) => {
     ) {
       solicitudRecibida.valor_catalogo = "No asignado";
     }
-    //Con el token se busca el correo.
-    const correo = retornarDatosJWT(token);
-
-    //Buscando el usuario logueado.
-    const usuarioBD = await Usuario.findOne({ email: correo });
 
     //Verificamos si el que envia la solicitud es el administrador y se aprueba inmediatamente
 
@@ -118,7 +127,10 @@ const crearSolicitud = async (req, res = response) => {
 
     //guardando la nueva solicitud
     const solicitudGuardada = await nuevaSolicitud.save();
-console.log("solicitudGuardada.tipoEstadoSolicitud_id.descripcion",solicitudGuardada.tipoEstadoSolicitud_id.descripcion);
+    console.log(
+      "solicitudGuardada.tipoEstadoSolicitud_id.descripcion",
+      solicitudGuardada.tipoEstadoSolicitud_id.descripcion
+    );
     //Creando nuevo catálogo
     var nuevoCatalogo = {};
     if (usuarioBD.roleuser == "admin") {
@@ -234,7 +246,7 @@ const aprobacion = async (req, res = response) => {
     { _id: id_estadoSolicitud },
     { abreviacion: 1 }
   );
-
+  
   //Modificando los estados rechazados
   if (mensaje_rechazo && mensaje_rechazo != null) {
     if (abreviacionConIdRecibido.abreviacion == "EACE1") {
@@ -246,6 +258,7 @@ const aprobacion = async (req, res = response) => {
       solicitudBDA.tipoEstadoSolicitud_id = _id;
       solicitudBDA.observacion_rechazo = mensaje_rechazo;
       var solicitudActuaizada = await solicitudBDA.save();
+      await enviarCorreoAprobacion(solicitudActuaizada);
       return res.json({
         ok: true,
         solicitudRechazada: solicitudActuaizada,
@@ -260,6 +273,7 @@ const aprobacion = async (req, res = response) => {
       solicitudBDA.tipoEstadoSolicitud_id = _id;
       solicitudBDA.observacion_rechazo = mensaje_rechazo;
       var solicitudActuaizada = await solicitudBDA.save();
+      await enviarCorreoAprobacion(solicitudActuaizada);
 
       return res.json({
         ok: true,
@@ -281,6 +295,8 @@ const aprobacion = async (req, res = response) => {
       solicitudBDA.tipoEstadoSolicitud_id = _id;
       solicitudBDA.observacion_rechazo = mensaje_rechazo;
       var solicitudActuaizada = await solicitudBDA.save();
+      await enviarCorreoAprobacion(solicitudActuaizada);
+
 
       return res.json({
         ok: true,
@@ -288,6 +304,7 @@ const aprobacion = async (req, res = response) => {
         catalogoAnulado: solicitudActuaizada,
       });
     }
+
     return res.json({
       ok: false,
       msg:
@@ -306,6 +323,9 @@ const aprobacion = async (req, res = response) => {
 
     solicitudBDA.tipoEstadoSolicitud_id = _id;
     var solicitudActuaizada = await solicitudBDA.save();
+    console.log("EACE1");
+    await enviarCorreoAprobacion(solicitudActuaizada);
+
     return res.json({
       ok: true,
       solicitudAceptada: solicitudActuaizada,
@@ -323,6 +343,10 @@ const aprobacion = async (req, res = response) => {
     const catalogoBD = await Catalogo.findOne({ solicitud: id_solicitud });
     catalogoBD.estado = true;
     await catalogoBD.save();
+    console.log("EACE2");
+
+    await enviarCorreoAprobacion(solicitudActuaizada);
+
 
     return res.json({
       ok: true,
@@ -339,11 +363,15 @@ const aprobacion = async (req, res = response) => {
 
     solicitudBDA.tipoEstadoSolicitud_id = _id;
     var solicitudActuaizada = await solicitudBDA.save();
+    await enviarCorreoAprobacion(solicitudActuaizada);
+    console.log("ACE1");
+
     return res.json({
       ok: true,
       solicitudAceptada: solicitudActuaizada,
     });
   }
+
 };
 module.exports = {
   crearSolicitud,

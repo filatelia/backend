@@ -1,20 +1,20 @@
 //Nueva solicitud cliente
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoicHJ1ZWJhMSIsImVtYWlsIjoicHJ1ZWJhMUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2NjA1OTMzLCJleHAiOjE2MTY2OTIzMzN9.YiNO7Amf2fkWKxzx7PJ3tkPLujbmiovBiBZqw0LIOm0
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MTgyOTgsImV4cCI6MTYxNjcwNDY5OH0.vaaXjrwZ-ipQps0P9t9VHigSesWkblPDf81sXIc164I
 
 {
 
-"catalogo_nombre": "PPPPPP", 
+"catalogo_nombre": "Prueba correos", 
 "pais" : "Peru", 
-"valor_catalogo" :"PPPPPP" 
+"valor_catalogo" :"02:35 pm" 
 }
 
 ###
 //Nueva solicitud admion
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjUzMTA2NiwiZXhwIjoxNjE2NjE3NDY2fQ.tK0yTvZO3ZxP4cgnxdi0R3zm9R5LjrwIlW2KW3SqHPs
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MTgwNjMsImV4cCI6MTYxNjcwNDQ2M30.KWxa1i6cM57_u12Ndv6vJiKgpqf9G9sIOBy3xNtAzYY
 
 {
 
@@ -30,11 +30,11 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 //Cuando se envia solo la solicitud, es para crear una segunda.
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2xpZW50ZSBtb2RpZmljYWRvIiwiZW1haWwiOiJjbGllbnRlQGNsaWVudGUuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY0NTMwMTMsImV4cCI6MTYxNjUzOTQxM30.tfcHJGy0TFvNTeqTVHf1VkCEMRUTv_RwxmT4xC_lXjw
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiY2xpZW50ZSBkZSBwcnVlYmEiLCJlbWFpbCI6ImFsZXhpc2RvcmFkb0B1bmljYXVjYS5lZHUuY28iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjYxMDc3NCwiZXhwIjoxNjE2Njk3MTc0fQ.OjAX_V3FSvjX_Uv0ZFgVMBAuw5M7ItIRYKVA6qeVtKc
 
 {
 
-"id_solicitud": "6059f8653cef5204b8b7f16e"
+"id_solicitud": "605ba354ff504e1e6c05475e"
 }
 ###
 //Consultar todas las solicitudes del usuario logado
@@ -50,13 +50,12 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 
 ###
 //para rechazar
-post https://api.filateliaperu.com/api/solicitudes/aprobacion
+post http://localhost:3000/api/solicitudes/aprobacion
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyBEb3JhZG8iLCJlbWFpbCI6ImFsZXhpczExZGltZW5AZ21haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MTgyNDYsImV4cCI6MTYxNjcwNDY0Nn0.cJjhRKZpzV1ZXsqsdyfDXxBxVh5sK910Sx3EZSdIS0A
 
 {
-   "id_solicitud": "605925ebd404e5c76d398c28",
-   "mensaje_rechazo": "Los datos no concuerdan con lo solicitado"
+   "id_solicitud": "605ba4a3223b312b686f75b0"
 }
 
 ###
