@@ -118,22 +118,21 @@ const crearSolicitud = async (req, res = response) => {
 
     //guardando la nueva solicitud
     const solicitudGuardada = await nuevaSolicitud.save();
-
+console.log("solicitudGuardada.tipoEstadoSolicitud_id.descripcion",solicitudGuardada.tipoEstadoSolicitud_id.descripcion);
     //Creando nuevo catálogo
     var nuevoCatalogo = {};
     if (usuarioBD.roleuser == "admin") {
-      nuevoCatalogo = await crearCatalogoAdmin(solicitudGuardada);
-      
-    }else{
-    nuevoCatalogo = await crearCatalogo(solicitudGuardada);
-
+      await crearCatalogoAdmin(solicitudGuardada);
+    } else {
+      await crearCatalogo(solicitudGuardada);
+      await enviarCorreos(
+        null,
+        usuarioBD.email,
+        usuarioBD.name,
+        solicitudGuardada.tipoEstadoSolicitud_id.descripcion
+      );
+      //Enviar correo de satisfaccion
     }
-
-    console.log("Guardado -->", nuevoCatalogo);
-
-    //Enviar correo de satisfaccion
-    const estadoCorreo = await enviarCorreos();
-    console.log("estado correo: ", estadoCorreo);
 
     return res.json({
       ok: true,
@@ -149,7 +148,6 @@ const crearSolicitud = async (req, res = response) => {
     });
   }
 };
-
 
 const crearCatalogo = async (solicitudGuardada) => {
   try {

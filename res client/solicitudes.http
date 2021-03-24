@@ -1,13 +1,13 @@
 //Nueva solicitud cliente
-post https://api.filateliaperu.com/api/solicitudes/
+post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiUGFyYSBwcnVlYmFzIGVudmlvIGVtYWlsIiwiZW1haWwiOiJwcnVlYmFzLWZpbGF0ZWxpYUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2NTIyNDEyLCJleHAiOjE2MTY2MDg4MTJ9.Va1dRdefGuMqLZaNDcD2J0ilhFwWjJUa4x1Hpc0xKHE
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoicHJ1ZWJhMSIsImVtYWlsIjoicHJ1ZWJhMUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2NjA1OTMzLCJleHAiOjE2MTY2OTIzMzN9.YiNO7Amf2fkWKxzx7PJ3tkPLujbmiovBiBZqw0LIOm0
 
 {
 
-"catalogo_nombre": "PAra email", 
+"catalogo_nombre": "PPPPPP", 
 "pais" : "Peru", 
-"valor_catalogo" :"Para email" 
+"valor_catalogo" :"PPPPPP" 
 }
 
 ###
