@@ -12,7 +12,6 @@ const TemasSchema = Schema({
     },
     imagen : {
         type:String,
-        require: true,
     }
 }, { collection: 'bdfc_temas' });
 

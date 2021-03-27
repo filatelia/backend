@@ -15,7 +15,7 @@ content-type: application/json
 
 {
    
-"email": "alexis11dimen@gmail.com",
+"email": "cliente@yopmail.com",
 "password": "22102281"
 
 }
@@ -33,12 +33,12 @@ content-type: application/json
 
 ###
 //Para enviar emails
-post https://api.filateliaperu.com/api/login
+post http://localhost:3000/api/login
 content-type: application/json
 
 {
    
-"email": "pruebas-filatelia@yopmail.com",
+"email": "administrador@yopmail.com",
 "password": "22102281"
 
 }

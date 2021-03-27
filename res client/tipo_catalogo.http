@@ -1,0 +1,4 @@
+post http://localhost:3000/api/catalogo/tipo-catalogo
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODEwNzE1LCJleHAiOjE2MTY4OTcxMTV9.tUIatwcTXLjtKMUuL8AkP7FuxNiazjARLE3atUNb-UM
+

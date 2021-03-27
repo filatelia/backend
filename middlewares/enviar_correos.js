@@ -23,11 +23,9 @@ function transporter() {
   return transporter;
 }
 const enviarCorreos = async (
-  emailAdmin,
   emailCliente,
   nombreUsuraio,
-  mensajeEstadoSolicitud,
-  res = response
+  mensajeEstadoSolicitud
 ) => {
   console.log("mensajeEstadoSolicitud", mensajeEstadoSolicitud);
   var email = "";
@@ -127,7 +125,7 @@ async function mensaje(
       mensajeEstadoSolicitud +
       " </p>" +
       "<br><p>Cordialmente,</p>" +
-      "Equipo de solicutudes de Filatelia Peruana.<br><br>" +
+      "Equipo de solicitudes de Filatelia Peruana.<br><br>" +
       '<br><br><img width="100%" src="' +
       process.env.URLFRONT +
       'assets/img/logo.png">',

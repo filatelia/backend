@@ -37,6 +37,6 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 
 ###
 
-get http://localhost:3000/api/catalogo/uploads/excel/catalogos/605a99f46e6c8027df0244b9
+get http://localhost:3000/api/catalogo/uploads/excel/catalogos/605a6a396b9551150612f501
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MjAzODQsImV4cCI6MTYxNjcwNjc4NH0.jEE8D9gd1zDNWfZsiKUS2YcCncJpdmiLmccucDR5z6Q

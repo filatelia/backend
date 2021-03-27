@@ -1,6 +1,10 @@
 const { Schema, model } = require("mongoose");
 const SolicitudesSchema = Schema(
   {
+    catalogo_nombre_interno: {
+      type: String,
+      required: true,
+    },
     usuario_id: {
       type: Schema.Types.ObjectId,
       ref: "Usuarios",
@@ -13,25 +17,26 @@ const SolicitudesSchema = Schema(
       required: true,
       autopopulate: true,
     },
-    
-    pais: {
+
+    tipo_catalogo: {
       type: Schema.Types.ObjectId,
-      ref: "Pais",
+      ref: "TipoCatalogo",
       required: true,
       autopopulate: true,
     },
-    catalogo_nombre: {
-     type: String
+    pais: {
+      type: Schema.Types.ObjectId,
+      ref: "Pais",
+      autopopulate: true,
     },
-    valor_catalogo: {
-      type: String
-     },
-
-    observacion_rechazo: {
+    tema: {
+      type: Schema.Types.ObjectId,
+      ref: "Tema",
+      autopopulate: true,
+    },
+    mensaje_rechazo: {
       type: String
     }
-
-
   },
   { collection: "bdfu_solicitudes", timestamps: true }
 );

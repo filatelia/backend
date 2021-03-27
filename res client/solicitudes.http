@@ -1,42 +1,55 @@
-//Nueva solicitud cliente
+
+//Nueva solicitud Cliente
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MTgyOTgsImV4cCI6MTYxNjcwNDY5OH0.vaaXjrwZ-ipQps0P9t9VHigSesWkblPDf81sXIc164I
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODE1MjU1LCJleHAiOjE2MTY5MDE2NTV9.OdErLHGmg3EV64LM1hUKUxcKOqkf0DVjVtglM5az6AY
 
 {
 
-"catalogo_nombre": "Prueba correos", 
-"pais" : "Peru", 
-"valor_catalogo" :"02:35 pm" 
+"nombre_catalogo_solicitud": "Prueba para video", 
+"tipo_catalogo_solicitud" :"605e0c253da4940844a1c938", 
+"pais_catalogo_solicitud" : "Peru",
+"tema_catalogo_solicitud": "Video"
+
 }
 
 ###
 //Nueva solicitud admion
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MTgwNjMsImV4cCI6MTYxNjcwNDQ2M30.KWxa1i6cM57_u12Ndv6vJiKgpqf9G9sIOBy3xNtAzYY
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
 
 {
 
-"catalogo_nombre": "Solicitud admin", 
-"pais" : "Peru", 
-"valor_catalogo" :"Debe aprobarse automáticamente" 
+"nombre_catalogo_solicitud": "Prueba para aprobar", 
+"tipo_catalogo_solicitud" :"605e0c253da4940844a1c938", 
+"tema_catalogo_solicitud": "Video"
+
 }
-
-
 
 ###
 
 //Cuando se envia solo la solicitud, es para crear una segunda.
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiY2xpZW50ZSBkZSBwcnVlYmEiLCJlbWFpbCI6ImFsZXhpc2RvcmFkb0B1bmljYXVjYS5lZHUuY28iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjYxMDc3NCwiZXhwIjoxNjE2Njk3MTc0fQ.OjAX_V3FSvjX_Uv0ZFgVMBAuw5M7ItIRYKVA6qeVtKc
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODE1MjU1LCJleHAiOjE2MTY5MDE2NTV9.OdErLHGmg3EV64LM1hUKUxcKOqkf0DVjVtglM5az6AY
 
 {
 
-"id_solicitud": "605ba354ff504e1e6c05475e"
+"id_solicitud": "605ea693c6e32a1e4c7e5f24"
 }
 ###
+
+post http://localhost:3000/api/solicitudes/aprobacion
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
+
+{
+   "id_solicitud": "605ebc0f84b18e192c4c1260",
+   "mensaje_rechazo": "Se rechaza porque incumple con las políticas internas"
+}
+###
+
 //Consultar todas las solicitudes del usuario logado
 get https://api.filateliaperu.com/api/solicitudes/mis-solicitudes/
 content-type: application/json
@@ -52,10 +65,10 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 //para rechazar
 post http://localhost:3000/api/solicitudes/aprobacion
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyBEb3JhZG8iLCJlbWFpbCI6ImFsZXhpczExZGltZW5AZ21haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MTgyNDYsImV4cCI6MTYxNjcwNDY0Nn0.cJjhRKZpzV1ZXsqsdyfDXxBxVh5sK910Sx3EZSdIS0A
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
 
 {
-   "id_solicitud": "605ba4a3223b312b686f75b0"
+   "id_solicitud": "605e9a03c3a21b1664ad90bb"
 }
 
 ###
