@@ -46,7 +46,7 @@ const UsuarioSchema = Schema(
     },
     telefono: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
@@ -73,7 +73,6 @@ const UsuarioSchema = Schema(
     codigopostal: {
       type: String,
     },
-
     roleuser: {
       type: String,
       default: "cliente",
@@ -82,6 +81,11 @@ const UsuarioSchema = Schema(
       type: Boolean,
       default: true,
     },
+    token: {
+      type: String,
+      default: '',
+    },
+    
   },
   { collection: "bdfu_usuarios" }
 );

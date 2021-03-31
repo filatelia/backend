@@ -6,6 +6,6 @@ const { getTemas } = require('../../controllers/catalogo/temas.controlador');
 const { validarJWT } = require('../../middlewares/validar-jwt');
 const router = Router();
 
-router.get( '/',[validarJWT], getTemas);
+router.get( '/',[], getTemas);
 
 module.exports = router;

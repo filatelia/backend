@@ -1,6 +1,8 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../../models/usuario/usuario");
+const Pais = require("../../models/catalogo/paises");
+
 const {
   eliminarImagenServidor,
   crearImagen,
@@ -20,14 +22,26 @@ const getUsuario = async (req, res) => {
 };
 
 //Función para crear un usuario.
+const buscarPaisNombre = async (names) => {
+  const para_buscar = names.toLowerCase().replace( /[^-A-Za-z0-9]+/g, '' );
+  console.log(para_buscar)
+  
+  const paisEncontrado = await Pais.findOne({name: {$regex: para_buscar,$options: 'i'} }, { _id: 1 });
+  return paisEncontrado;
+};
 
 const createUsuario = async (req, res = response) => {
-  const { email, password } = req.body;
+  const { email, password,pais_usuario } = req.body;
   try {
+    
+    var pais=await buscarPaisNombre(pais_usuario);
+    console.log(pais)
+    if(!pais)throw {msg:'pais no encontrado',ok:false}
     const usuario_ = new Usuario(req.body);
 
     const salt = bcrypt.genSaltSync();
     usuario_.password = bcrypt.hashSync(password, salt);
+    usuario_.pais_usuario=pais._id
     usuario_.imagenP =
       "/imagenes/predeterminadas/" + usuario_.roleuser + ".png";
     console.log("antes de guardar: ", usuario_);
@@ -36,7 +50,6 @@ const createUsuario = async (req, res = response) => {
 
     res.json({
       ok: true,
-      usuario_,
     });
   } catch (error) {
     console.log(error);
