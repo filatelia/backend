@@ -15,7 +15,7 @@ content-type: application/json
 
 {
    
-"email": "dorado@dorado.com",
+"email": "cliente@yopmail.com",
 "password": "22102281"
 
 }
@@ -26,7 +26,19 @@ content-type: application/json
 
 {
    
-"email": "cliente@cliente.com",
+"email": "club@yopmail.com",
+"password": "22102281"
+
+}
+
+###
+//Para enviar emails
+post http://localhost:3000/api/login
+content-type: application/json
+
+{
+   
+"email": "administrador@yopmail.com",
 "password": "22102281"
 
 }

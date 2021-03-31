@@ -5,7 +5,7 @@ var mongo = require("mongoose");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
 
 const actualizarMancolist = async (req, res = response) => {
-  const { id_estampilla, estado_estampilla } = req.body;
+  const { id_estampilla, estado_estampilla, name } = req.body;
 
   const token = req.header("x-access-token");
 
@@ -16,43 +16,49 @@ const actualizarMancolist = async (req, res = response) => {
   const id_usuario = _id;
   console.log("id usuario", id_usuario);
   console.log("id estampilla", id_estampilla);
+  console.log("Name", name);
 
   const mancoListBd = await Mancolist.findOne({
-    $and: [{ id_usuario }, { id_estampilla }],
+    $and: [{ id_usuario }, { id_estampilla }, { name }],
   });
 
   //console.log("Buscar ->", mancoListBd);
-if (estado_estampilla && mancoListBd != null) {
-  
-  mancoListBd.estado_estampilla = estado_estampilla;
- const estampillaActualizada = await mancoListBd.save();
-  return res.json(
-    {
+  if (estado_estampilla && mancoListBd != null) {
+    mancoListBd.estado_estampilla = estado_estampilla;
+    const estampillaActualizada = await mancoListBd.save();
+    return res.json({
       ok: true,
       mensaje: "Se ha actualizado el estado de la estampilla de la mancolista",
-      estampilla: estampillaActualizada
+      estampilla: estampillaActualizada,
+    });
+  } else {
+    if (mancoListBd == null) {
+      const objetoMancolista = new Mancolist();
 
+      objetoMancolista.id_usuario = id_usuario;
+      objetoMancolista.id_estampilla = id_estampilla;
+      if (!name || name == null) {
+        objetoMancolista.name = "General";
+      } else {
+        objetoMancolista.name = name;
+      }
+
+      const guardado = await objetoMancolista.save();
+
+      return res.json({
+        ok: true,
+        estampilla_agregada: guardado,
+      });
+    } else {
+      const eliminarMancolist = await Mancolist.findByIdAndDelete(
+        mancoListBd._id
+      );
+      return res.json({
+        ok: true,
+        estampilla_eliminada: eliminarMancolist,
+      });
     }
-    );
-  
-} else {
-  
-  if (mancoListBd == null) {
-    const objetoMancolista = new Mancolist();
-
-    objetoMancolista.id_usuario = id_usuario;
-    objetoMancolista.id_estampilla = id_estampilla;
-
-    const guardado = await objetoMancolista.save();
-
-    console.log("guardado", guardado);
-  }else{
-    const eliminarMancolist = await Mancolist.findByIdAndDelete(mancoListBd._id);
-    console.log("Eliminado -->", eliminarMancolist);
   }
-}
-
-
 };
 
 /*
@@ -100,7 +106,16 @@ const verMancolistPropia = async (req, res = response) => {
     console.log("retornar datos token", email);
 
     const { _id } = await Usuario.findOne({ email });
-    const obj = await Mancolist.findOne({ id_usuario: _id });
+    const obj = await Mancolist.find({
+      $and: [
+        {
+          id_usuario: _id,
+        },
+        {
+          name: "general",
+        },
+      ],
+    });
 
     return res.json({
       ok: true,

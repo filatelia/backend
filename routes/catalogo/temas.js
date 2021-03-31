@@ -2,11 +2,10 @@
     Ruta: /api/catalogo/temas
 */
 const { Router } = require('express');
-const { getTemas, createTema, updateTema, deleteTema } = require('../../controllers/catalogo/temas.controlador');
+const { getTemas } = require('../../controllers/catalogo/temas.controlador');
+const { validarJWT } = require('../../middlewares/validar-jwt');
 const router = Router();
 
-router.get( '/',getTemas);
-router.post( '/', createTema);
-router.put( '/:id', updateTema);
-router.delete( '/:id', deleteTema);
+router.get( '/',[validarJWT], getTemas);
+
 module.exports = router;

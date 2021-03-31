@@ -2,10 +2,11 @@ const { Schema, model } = require("mongoose");
 
 const manco_listSchema = Schema(
   {
-    name: {
-      type: String,
-      unique: true
-  },
+      name: {
+          type: String,
+          required: true,
+          unique: true
+      },
     id_usuario: {
       type: Schema.Types.ObjectId,
       ref: "Usuarios",

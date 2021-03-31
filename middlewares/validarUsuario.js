@@ -63,9 +63,13 @@ const validarPermisos = async (req, res, next) => {
 
 
 }
+const validarDatosRecibidosUsuarios = async (req, res = response, next) => {
+console.log("Entramos a validar");
+}
 
 module.exports = {
     validarExistenciaUsuario,
     validarPermisos,
-    validarEmailDiferenteActualizar
+    validarEmailDiferenteActualizar,
+    validarDatosRecibidosUsuarios
 }

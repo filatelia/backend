@@ -1,8 +1,18 @@
 const Paises = require("../models/catalogo/paises");
 const axios = require("axios");
 const { guardandoBanderas } = require("../middlewares/banderas");
-const {crearPaisesAutom} = require("../middlewares/paises");
-const Tipo_solicitud = require('../models/solicitudes/tipoEstadoSolicitud.model');
+const { crearPaisesAutom } = require("../middlewares/paises");
+const Tipo_solicitud = require("../models/solicitudes/tipoEstadoSolicitud.model");
+const Tipo_Catalogo = require("../models/catalogo/tipo_catalogo");
+const Color = require('colors');
+
+const initial_setup = async () => {
+  console.log(Color.blue("Ejecutando initial setup..."));
+
+  await verificarBanderasPaises();
+  await verificarTipoSolicitudYCrearla();
+  await VerificarTipoCatalogoYCrarlo();
+};
 
 const verificarBanderasPaises = async () => {
   console.log("Verificando las banderas de los paises");
@@ -22,49 +32,38 @@ const verificarBanderasPaises = async () => {
     //mapeando los datos obtenidos del servicio, usando sólo lo que necesitamos
     const upaises = await datosPaises.data.map((datos) => ({
       name: datos.name,
-      
+
       uriBandertas: datos.flag,
       moneda_nombre: datos.currencies[0].name,
       moneda_code: datos.currencies[0].code,
       abreviatura_uno: datos.alpha2Code,
       abreviatura_dos: datos.alpha3Code,
       img:
-        "/imagenes/banderas_paises/" +
-        datos.alpha3Code.toLowerCase() +
-        ".svg",
+        "/imagenes/banderas_paises/" + datos.alpha3Code.toLowerCase() + ".svg",
     }));
     const resBan = await guardandoBanderas(await upaises);
 
     //se verifica que todo haya salido bien en la descarga de las imagen al servidor
     if (resBan.estado == 200) {
       console.log("Se han creado : ", resBan.banderas, " banderas");
-  
-    }else{
+    } else {
       console.log("error al crear los paieses: ", resBan);
     }
 
-    const paisesCreados= await crearPaisesAutom(upaises);
+    const paisesCreados = await crearPaisesAutom(upaises);
     console.log("creando pasises: ", paisesCreados);
 
     console.log("Paises creados: ", paisesCreados.total);
-
-
-
-
-
-
-
-
   } else {
     console.log("*Paises OK");
   }
 };
 
-const verificarTipoSolicitudYCrearla = async () =>{
+const verificarTipoSolicitudYCrearla = async () => {
   console.log("verificando tipo de solicitud y crearlos");
 
   const tipoSolicitud = await Tipo_solicitud.find();
-  if(tipoSolicitud.length>0){
+  if (tipoSolicitud.length > 0) {
     console.log("Tipos de solucitud OK");
     return;
   }
@@ -73,21 +72,24 @@ const verificarTipoSolicitudYCrearla = async () =>{
   const nuevoTSolicitud = new Tipo_solicitud();
   nuevoTSolicitud.name = "En espera de aprobación del catalogo etapa 1";
   nuevoTSolicitud.abreviacion = "EACE1";
-  nuevoTSolicitud.descripcion = "Se debe esperar la aprobación para poder subir las estampillas del catálogo";
+  nuevoTSolicitud.descripcion =
+    "Se debe esperar la aprobación para poder subir las estampillas del catálogo";
   await nuevoTSolicitud.save();
 
   const nuevoTSolicitud_1 = new Tipo_solicitud();
   nuevoTSolicitud_1.name = "Aprobado catalogo etapa 1";
   nuevoTSolicitud_1.abreviacion = "ACE1";
-  nuevoTSolicitud_1.descripcion = "Puedes subir tu catalogo con las respectivas estampillas, una vez terminado, haces la solicitud para la aprobación de etapa 2, la publicación";
+  nuevoTSolicitud_1.descripcion =
+    "Puedes subir tu catalogo con las respectivas estampillas, una vez terminado, haces la solicitud para la aprobación de etapa 2, la publicación";
   await nuevoTSolicitud_1.save();
 
   const nuevoTSolicitud_2 = new Tipo_solicitud();
-  nuevoTSolicitud_2.name = "En espera de aprobación del catalogo etapa 2, la publicación del catálogo";
+  nuevoTSolicitud_2.name =
+    "En espera de aprobación del catalogo etapa 2, la publicación del catálogo";
   nuevoTSolicitud_2.abreviacion = "EACE2";
-  nuevoTSolicitud_2.descripcion = "Se debe esperar la aprobación para que el catalogo sea público para todos";
+  nuevoTSolicitud_2.descripcion =
+    "Se debe esperar la aprobación para que el catalogo sea público para todos";
   await nuevoTSolicitud_2.save();
-
 
   const nuevoTSolicitud_3 = new Tipo_solicitud();
   nuevoTSolicitud_3.name = "Catalogo Publicado";
@@ -96,14 +98,29 @@ const verificarTipoSolicitudYCrearla = async () =>{
   await nuevoTSolicitud_3.save();
 
 
- 
-return;
+  return;
+};
+const VerificarTipoCatalogoYCrarlo = async () => {
+  console.log("Verificando existencia de Tipo Catalgo");
 
+  const tipoCatalogoBd = await Tipo_Catalogo.find();
+  if (tipoCatalogoBd.length == 0) {
+    console.log("No existe en BD Tipo Catalogo");
+    console.log("Creando en BD Tipo Catalogo..");
 
-}
+    var objTipoCatalogo = new Tipo_Catalogo();
+    objTipoCatalogo.name = "Temático";
+    await objTipoCatalogo.save();
+
+    var objTipoCatalogo1 = new Tipo_Catalogo();
+    objTipoCatalogo1.name = "País";
+    await objTipoCatalogo1.save();
+    console.log("*Se crearon 2 Tipos de Catalogos.");
+  }
+};
 
 module.exports = {
   verificarBanderasPaises,
-  verificarTipoSolicitudYCrearla
-  
+  verificarTipoSolicitudYCrearla,
+  initial_setup,
 };

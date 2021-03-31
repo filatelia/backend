@@ -9,7 +9,11 @@ const Path = require("path");
 const Estampillas = require('../../models/catalogo/estampillas.modelo');
 const { getPaisByName } = require("../catalogo/pais.controlador");
 const Pais = require("../../models/catalogo/paises");
-const { crearTema } = require("../../middlewares/index.middle");
+const { crearTema, enviarCorreos } = require("../../middlewares/index.middle");
+const { isValidObjectId } = require("mongoose");
+const { retornarDatosJWT } = require("../../middlewares/index.middle");
+const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
+const Solicitud = require("../../models/solicitudes/solicitudes.model");
 
 const crearCatalogo = async (req, res = response) => {
   try {
@@ -25,7 +29,7 @@ const crearCatalogo = async (req, res = response) => {
         inCompletos.push(element);
       }
     }
-    const datosFinal = await validarEstampillasRepetidas(completos);
+    const datosFinal = await validarEstampillasRepetidas(completos, idCatalogo);
     var contador = 0;
     var repetidos = [];
     var noRepetidos = [];
@@ -74,6 +78,8 @@ const crearCatalogo = async (req, res = response) => {
         repetidos.push(datosFinal[index]);
       }
     }
+
+  await crearSolicitud(idCatalogo);
     console.log("Contador: ", contador);
     if (inCompletos.length == 0 && contador == 0) {
       return res.json({
@@ -127,6 +133,37 @@ const crearCatalogo = async (req, res = response) => {
     });
   }
 };
+async function crearSolicitud(id_catalogo) {
+console.log("Id catalogo", id_catalogo);
+var id_solicitud = await Catalogo.findOne({_id:id_catalogo});
+
+  console.log("Id solicitud desde excel", id_solicitud);
+  if (id_solicitud._id && id_solicitud.solicitud != null) {
+    var id_estadoSolicitud = id_solicitud.solicitud;
+    const abreviacionSolicitud = await Solicitud.findById(id_estadoSolicitud);
+    console.log("abreviacionSolicitud --->", abreviacionSolicitud);
+    const abreviacionConIdRecibido = await Tipo_solicitud.findOne({
+      _id: abreviacionSolicitud.tipoEstadoSolicitud_id,
+    });
+
+    if (abreviacionConIdRecibido.abreviacion == "ACE1") {
+      console.log("ACE1 ---> pasa a EACE2");
+      var { _id } = await Tipo_solicitud.findOne(
+        { abreviacion: "EACE2" },
+        { _id: 1 }
+      );
+
+      abreviacionSolicitud.tipoEstadoSolicitud_id = _id;
+      console.log("Abreviacion: ", abreviacionSolicitud);
+      var solicitudActuaizada = await abreviacionSolicitud.save();
+      await enviarCorreos(null, solicitudActuaizada.usuario_id.email, solicitudActuaizada.usuario_id.name,
+        solicitudActuaizada.tipoEstadoSolicitud_id.descripcion
+        ); 
+
+      return solicitudActuaizada;
+    }
+  }
+}
 //Actualizar estapillas repetidas desde el excel.
 const editarCatExcel = async (req, res = response) => {
   try {
@@ -256,7 +293,14 @@ try {
 };
 
 const mostrarCatalogo = async (req, res) => {
-  const catalogoCompleto = await Estampillas.find();
+  const catalogoCompleto = await Catalogo.find({ estado: true });
+  var cat = [];
+  for (let index = 0; index < catalogoCompleto.length; index++) {
+    const element = catalogoCompleto[index]._id;
+    var nuevoCat = await Estampillas.find({ Catalogo: element });
+
+    cat.push(nuevoCat);
+  }
 
   res.json({
     ok: true,
@@ -283,6 +327,68 @@ const eliminarCatalogo = async (req, res) => {
     });
   }
 };
+
+const mostrarMisCatalogos = async (req, res) => {
+  //{"sort" : ['datefield', 'asc']}
+  const token = req.header("x-access-token");
+
+  var email = retornarDatosJWT(token);
+
+  const catalogoBD = await Catalogo.find();
+
+  var catalosgos = [];
+  for (let index = 0; index < catalogoBD.length; index++) {
+    const element = catalogoBD[index].solicitud;
+
+    if (element.usuario_id.email == email) {
+      catalosgos.push(catalogoBD[index]);
+    }
+  }
+  return res.json({
+    ok: true,
+    catalogo: catalosgos,
+  });
+};
+const mostrarMisEstampillas = async (req, res) => {
+  var id_catalogo = req.query.id_catalogo;
+
+  var estampillasCat = await Estampillas.find({ Catalogo: id_catalogo });
+
+  return res.json({
+    ok: true,
+    estampillas: estampillasCat,
+  });
+};
+
+const mostrarCatalogoId = async (req, res) =>{
+  var id_solicitud = req.params.id;
+  console.log("id_solicitud", id_solicitud);
+
+  if(!id_solicitud || id_solicitud == null || !isValidObjectId(id_solicitud) ){
+
+    return res.json({
+      ok: false,
+      msg: "Debes enviar una solicitud valido"
+    });
+  }
+
+  var catalogo = await Catalogo.findOne({solicitud:id_solicitud});
+  if (catalogo == null) {
+    return res.json(
+      {
+        ok:false,
+        msg: "No existe el catalogo que deseas buscar"
+      }
+    );
+  }
+
+  return res.json(
+    {
+      ok: true,
+      catalogo: catalogo
+    }
+  );
+}
 
 //funciones
 function procesarExcel(exc) {
@@ -368,16 +474,23 @@ function validarCamposExcel(datos) {
   return datos;
 }
 //Se verifica si las espampillas subidas ya existen en la base de datos
-async function validarEstampillasRepetidas(datosValidados) {
+async function validarEstampillasRepetidas(datosValidados, id_catalogo) {
   var estampillasRepetidas = [];
   for (let index = 0; index < datosValidados.length; index++) {
     const element = datosValidados[index];
     if (element.completo == true) {
       const buscarRepetido = await Estampillas.findOne({
-        ParaBuscar: element.Foto_JPG_800x800_px.toLowerCase().replace(
-          /\s+/g,
-          ""
-        ),
+        $and: [
+          {
+            ParaBuscar: element.Foto_JPG_800x800_px.toLowerCase().replace(
+              /\s+/g,
+              ""
+            ),
+          },
+          {
+            Catalogo: id_catalogo,
+          },
+        ],
       });
       if (buscarRepetido != null) {
         element.repetido = true;
@@ -416,6 +529,8 @@ async function buscandoUrlImgCat(name) {
   }
 }
 
+
+
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -423,4 +538,7 @@ module.exports = {
   editarCatExcel,
   mostrarCatalogoPais,
   mostrarCatalogoAnio,
+  mostrarMisCatalogos,
+  mostrarMisEstampillas,
+  mostrarCatalogoId
 };

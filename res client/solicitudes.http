@@ -1,6 +1,38 @@
+<<<<<<< HEAD
+=======
+
+//Nueva solicitud Cliente
+post http://localhost:3000/api/solicitudes/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODE1MjU1LCJleHAiOjE2MTY5MDE2NTV9.OdErLHGmg3EV64LM1hUKUxcKOqkf0DVjVtglM5az6AY
+
+{
+
+"nombre_catalogo_solicitud": "Prueba para video", 
+"tipo_catalogo_solicitud" :"605e0c253da4940844a1c938", 
+"pais_catalogo_solicitud" : "Peru",
+"tema_catalogo_solicitud": "Video"
+
+}
+
+###
+//Nueva solicitud admion
+post http://localhost:3000/api/solicitudes/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
+
+{
+
+"nombre_catalogo_solicitud": "Prueba para aprobar", 
+"tipo_catalogo_solicitud" :"605e0c253da4940844a1c938", 
+"tema_catalogo_solicitud": "Video"
+
+}
+>>>>>>> 806c50b2f95b58ae55c59db7c1f665463cee2318
 
 post https://api.filateliaperu.com/api/solicitudes/
 content-type: application/json
+<<<<<<< HEAD
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUBjbGllbnRlLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2MzYzMjY4LCJleHAiOjE2MTY0NDk2Njh9.GU8zH-jnt1kRSabkcyUwP8u5Nj4l1zfIPLs_VoHf-6w
 
 {
@@ -8,9 +40,31 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 "catalogo_nombre": "Cat prueba con correo", //No oblicagotio
 "pais" : "Peru", //Obligatorio, seleciconar desde lista plegable y enviar nombre
 "valor_catalogo" :"" //Nop obligatorio
+=======
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODE1MjU1LCJleHAiOjE2MTY5MDE2NTV9.OdErLHGmg3EV64LM1hUKUxcKOqkf0DVjVtglM5az6AY
+
+{
+
+"id_solicitud": "605ea693c6e32a1e4c7e5f24"
+>>>>>>> 806c50b2f95b58ae55c59db7c1f665463cee2318
 }
 
 ###
+<<<<<<< HEAD
+=======
+
+post http://localhost:3000/api/solicitudes/aprobacion
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
+
+{
+   "id_solicitud": "605ebc0f84b18e192c4c1260",
+   "mensaje_rechazo": "Se rechaza porque incumple con las políticas internas"
+}
+###
+
+//Consultar todas las solicitudes del usuario logado
+>>>>>>> 806c50b2f95b58ae55c59db7c1f665463cee2318
 get https://api.filateliaperu.com/api/solicitudes/mis-solicitudes/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUBjbGllbnRlLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2MzYzMjY4LCJleHAiOjE2MTY0NDk2Njh9.GU8zH-jnt1kRSabkcyUwP8u5Nj4l1zfIPLs_VoHf-6w
@@ -21,6 +75,20 @@ content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
 
 ###
+<<<<<<< HEAD
+=======
+//para rechazar
+post http://localhost:3000/api/solicitudes/aprobacion
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
+
+{
+   "id_solicitud": "605e9a03c3a21b1664ad90bb"
+}
+
+###
+//Para aprobar
+>>>>>>> 806c50b2f95b58ae55c59db7c1f665463cee2318
 post http://localhost:3000/api/solicitudes/aprobacion
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
