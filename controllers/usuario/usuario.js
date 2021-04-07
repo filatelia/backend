@@ -20,6 +20,30 @@ const getUsuario = async (req, res) => {
     usuarios,
   });
 };
+const getUsuarioId = async (req, res) => {
+  const token = req.header("x-access-token");
+  const email = retornarDatosJWT(token);
+
+  try{
+    if (email != null) {
+      const user = await Usuario.findOne({ email },{_id:1,name:1,name:email,apellidos:1,nickname:1,tipo_catalogo:0,pais_usuario:0,temas:0,paises_coleccionados:0});
+      res.status(200).send({
+        ok: true,
+        data:user,
+      });
+    }
+    throw "not token";
+  }
+  catch($e){
+    res.status(500).send({
+      ok: false,
+      msg:$e
+    });
+  }
+  
+  
+  
+};
 
 //Función para crear un usuario.
 const buscarPaisNombre = async (names) => {
@@ -206,4 +230,5 @@ module.exports = {
   createUsuario,
   deleteUsuario,
   updateUusuario,
+  getUsuarioId
 };

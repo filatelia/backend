@@ -9,7 +9,6 @@ const login = async( req, res = response ) => {
     
     try {
         const usuarioDB = await Usuario.findOne({ email });
-        console.log(usuarioDB);
         
         if ( !usuarioDB ) {
             return res.status(404).json({
@@ -25,17 +24,17 @@ const login = async( req, res = response ) => {
                 msg: 'Email o contraseña invalidos.'
             });
         }
-        const token = await generarJWT( usuarioDB.roleuser, usuarioDB.name, usuarioDB.email, usuarioDB.uid, usuarioDB.estado );
-        res.json({
+        const token = await generarJWT( usuarioDB.roleuser, usuarioDB.name, usuarioDB.email, usuarioDB._id, usuarioDB.estado );
+
+        var data={
             ok: true,
-            
             token: token,
+            uid:  usuarioDB._id,
             email:  usuarioDB.email,
             name: usuarioDB.name,
             role:  usuarioDB.roleuser,
-            
-
-        })
+        }
+        res.json(data)
 
     } catch (error) {
         console.log(error);

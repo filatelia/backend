@@ -3,15 +3,17 @@
 */
 const { Router } = require('express');
 const router = Router();
-const { actualizarMancolist, compartirManco_list, verMancolistPropia,createMancolist,getMancoListCat } = require('../../controllers/catalogo/manco_list.controlador');
+const { actualizarMancolist, compartirManco_list,verMancolistCatId, verMancolistPropia,catMancolist,getMancoListCat } = require('../../controllers/catalogo/manco_list.controlador');
 const { validarJWT } = require("../../middlewares/validar-jwt");
 
 router.get( '/listar/:id', compartirManco_list);
 router.post( '/',[validarJWT], actualizarMancolist);
-router.post( '/create-cat',[validarJWT], createMancolist);
+router.post( '/create-cat',[validarJWT], catMancolist);
+router.put( '/update-cat',[validarJWT], catMancolist);
 router.get( '/manco-list-cat',[validarJWT], getMancoListCat);
 
 router.post( '/listar/',[validarJWT], verMancolistPropia);
+router.get( '/listar-id-cat',[], verMancolistCatId);
 
 module.exports = router;
 //Adasdasdasgit
