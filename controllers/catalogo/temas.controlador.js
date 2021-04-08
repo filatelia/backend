@@ -8,6 +8,24 @@ const getTemas = async(req, res) => {
         temas
     });
 }
+const getTema = async(req, res) => {
+    try{
+        var {tema}=req.params
+        const temas = await Tema.findOne({ParaBuscar:tema});
+        res.json({
+            ok: true,
+            data:temas
+        });
+    }
+    catch($e){
+        res.status(400)
+        .send({
+            ok:false,
+            msg:$e
+        })
+    }
+}
+
 
 const createTema = async(name) => {
 
@@ -115,6 +133,7 @@ const updateTema = async (req, res = response) => {
 
 module.exports = {
     getTemas,
+    getTema,
     createTema,
     deleteTema,
     updateTema

@@ -124,6 +124,7 @@ const crearSolicitudAdmin = async (
   correo
 ) => {
   try {
+   
     //Creamos Objeto para guardar
     var objNuevaSolicitud = new Solicitud();
 
@@ -150,12 +151,12 @@ const crearSolicitudAdmin = async (
     var buscarTemaEnBD = {};
     if (nameTipoCatalogo == "Temático") {
       //Coomo el tema ya fue creado, se puede asociar
-      buscarTemaEnBD = await buscarTema(tema_catalogo_solicitud);
+      // buscarTemaEnBD = await buscarTema(tema_catalogo_solicitud);
 
-      console.log("Tema en bd", buscarTemaEnBD);
+      // console.log("Tema en bd", buscarTemaEnBD);
 
-      //Asociando tema
-      objNuevaSolicitud.tema = buscarTemaEnBD._id;
+      // //Asociando tema
+      objNuevaSolicitud.tema = tema_catalogo_solicitud;
     }
     if (nameTipoCatalogo == "País") {
       paisEnBD = await buscarPaisPorNombre(pais_catalogo_solicitud);
@@ -164,8 +165,7 @@ const crearSolicitudAdmin = async (
 
     //Asociar ID de tipo estado solicitud
     var primeraSolicitud = await buscarIdConAbreviación("ACE2");
-    console.log("Priemrasmso", primeraSolicitud);
-
+    
     //ASociando tipo estado solicitud
     objNuevaSolicitud.tipoEstadoSolicitud_id = primeraSolicitud._id;
     var primera = await objNuevaSolicitud.save();
@@ -178,7 +178,7 @@ const crearSolicitudAdmin = async (
       primera._id,
       paisEnBD._id,
       tipo_catalogo_solicitud,
-      buscarTemaEnBD._id,
+      tema_catalogo_solicitud,
       true
     );
 

@@ -2,6 +2,7 @@ const { response } = require("express");
 const Pais = require("../../models/catalogo/paises");
 const fs = require("fs");
 const Path = require("path");
+const Estampillas = require("../../models/catalogo/estampillas.modelo");
 
 const getPaisById = async (req, res = response) => {
   const _id = req.params.pid;
@@ -51,9 +52,46 @@ const getTodosPaises = async (req, res = response) => {
 
   return paisEncontrado;
 };
-
+const getPaisCatalogo = async (req, res = response) => {
+  const pais = await Estampillas.aggregate([
+    {
+      $match:{}
+    },
+    {
+      $group:{
+        _id:"$Pais",
+      }
+    },
+    {
+      $project:{
+        _id:1,
+      }
+    },
+    {
+      $lookup: {
+          from: "bdfc_pais",
+          localField: "_id",
+          foreignField: "_id",
+          as: "pais",
+      },
+    },
+    {
+      $project:{
+        _id:1,
+        pais:{$arrayElemAt: ["$pais", 0]},
+      }
+    },
+    
+  ]);
+ 
+  res.status(200).send({
+    data:pais,
+    ok:true
+  })
+};
 module.exports = {
   getPaisByName,
   getPaisById,
   getTodosPaises,
+  getPaisCatalogo,
 };

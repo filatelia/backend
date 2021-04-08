@@ -17,7 +17,7 @@ const {
 const { validarNuevaSolicitud } = require("../../middlewares/index.middle");
 
 router.post("/tipo/", creartipo);
-router.post("/", [validarJWT, validarNuevaSolicitud], crearSolicitud);
+router.post("/", [validarJWT], crearSolicitud);
 router.get(
   "/mis-solicitudes/",
   [validarJWT, validarDeJWTRoleCliente],

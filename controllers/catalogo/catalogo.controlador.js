@@ -14,6 +14,7 @@ const { isValidObjectId } = require("mongoose");
 const { retornarDatosJWT } = require("../../middlewares/index.middle");
 const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
 const Solicitud = require("../../models/solicitudes/solicitudes.model");
+const { ObjectId } = require("mongoose").Types;
 
 const crearCatalogo = async (req, res = response) => {
   try {
@@ -294,28 +295,68 @@ const mostrarCatalogoPais = async (req, res) => {
 //Mostrar catalogo por rango de años
 const mostrarCatalogoAnio = async (req, res) => {
   const { anioI, anioF } = req.params;
+  const { pais, tema } = req.query;
   try {
+    var query={}
+    if(pais&&pais!=''){
+      query={Pais:ObjectId(pais)};
+    }
+    else if(tema&&tema!=''){
+      query={Tema:ObjectId(tema)};
+    }
     if (Number(anioI) && Number(anioF)) {
-      console.log("anio f", Number(anioF));
-      const catalogoCompleto = await Estampillas.find({
+      const estampillas = await Estampillas.find({
         $and: [
           {
             Anio: {
               $gte: Number(anioI),
             },
           },
-
           {
             Anio: {
               $lte: Number(anioF),
             },
           },
+          query
         ],
-      });
+      }).count();
+
+      const catalogoCompleto = await Estampillas.aggregate([
+        {
+          $match:{
+            $and: [
+              {
+                Anio: {
+                  $gte: Number(anioI),
+                },
+              },
+              {
+                Anio: {
+                  $lte: Number(anioF),
+                },
+              },
+              query
+            ],
+          }
+        },
+        {
+          $group:{
+            _id:"$Anio"
+          }
+        },
+        {
+          $project:{
+            anio:"$_id"
+          }
+        }
+      ]);
 
       res.json({
         ok: true,
-        catalogoPorPais: catalogoCompleto,
+        data: catalogoCompleto,
+        total: estampillas,
+        start: Number(anioI),
+        end: Number(anioF),
       });
     } else {
       res.json({
@@ -570,7 +611,84 @@ async function buscandoUrlImgCat(name) {
 }
 
 
+const estampillaPage=async(req,res)=>{
+  try{
+    let {perpage,page,tipo,pais,tema,anios,q,start,end}=req.query
+    page=parseInt(page)||1
+    perpage=parseInt(perpage)||10
+    var query={};
+    
+    if(anios&&anios!=''){
+      anios=JSON.parse(anios)
+      query={$or:[]}
+      anios.forEach(element => {
+        query.$or.push({
+          Anio:element
+        })
+      });
+      console.log(query)
+    }
 
+    if(q&&q!=''){
+      if(!query.$or) query.$or=[]
+      console.log(isNaN(q))
+      if(!isNaN(q)){
+        query.$or.push({
+          Anio:q
+        })
+      }
+      else{
+        query.$or.push({
+          Descripcion:{$regex: q,$options: 'i'},
+        })
+        query.$or.push({
+          Descripcion_de_la_serie:{$regex: q,$options: 'i'},
+        })
+        query.$or.push({
+          Valor_Facial:{$regex: q,$options: 'i'},
+        })
+        query.$or.push({
+          Codigo:{$regex: q,$options: 'i'},
+        })
+      }
+    }
+    if(start!=0&&end!=0){
+      query.$and=[
+        {
+          Anio: {
+            $gte: Number(start),
+          },
+        },
+        {
+          Anio: {
+            $lte: Number(end),
+          },
+        },
+        
+      ];
+    }
+
+    if(pais&&pais!=''){
+      query.Pais=ObjectId(pais.trim())
+    }
+    else if(tema&&tema!=''){
+      query.Tema=ObjectId(tema)
+    }
+    var estampillas=await Estampillas.find(query,{Catalogo:0}).skip((perpage*page)-perpage).limit(perpage)
+    var count=await Estampillas.find(query).count()
+    res.status(200).send({
+      data:estampillas,
+      current:page,
+      pages:Math.ceil(count/perpage)
+    })
+  }
+  catch($e){
+    res.status(400).send({
+      msg:$e,
+      ok:false
+    })
+  }
+}
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -580,5 +698,6 @@ module.exports = {
   mostrarCatalogoAnio,
   mostrarMisCatalogos,
   mostrarMisEstampillas,
-  mostrarCatalogoId
+  mostrarCatalogoId,
+  estampillaPage
 };
