@@ -116,38 +116,79 @@ const updateTema = async (req, res = response) => {
     });
   }
 };
-const validarDatosRecibidosMostrarDatosDuenio = async (req, res = response) => {
-  const { nombre_tema } = req.body;
+const validarDatosRecibidosMostrarDatosDuenio = async (req, res = response, next) => {
+  const { nombre_tema } = req.params;
 
+  if (!nombre_tema || nombre_tema == null || nombre_tema == "" ){
+    return res.json({
+      ok: false,
+      msg: "Debes enviar un nombre de tema"
+    });
+
+  }
   //buscando existencia de tema
   const existeTema = await buscarTema(nombre_tema);
-try {
+  try {
     //validando si no existe tema para retornar ok
     //si existe se retorna toda la información del cliente dueño
-    if (existeTema != null) {
+    if (existeTema == null) {
       return res.json({
         ok: true,
-        msg: "No existe tema, puede crearlo",
+        msg: true,
       });
     }
-  
-    var solicitudBd = await buscarSolicitudIdTema(existeTema._id);
+    else{
+      next();
+    }
+
+
+
+  } catch (e) {
     return res.json({
-        ok: false,
-        msg: solicitudBd
+      ok: false,
+      msg: "ha ocurrido un error fatal, validarDatosRecibidosMostrarDatosDuenio",
+      error: e
     });
 
-} catch (e) {
-    return res.json({
-        ok: "error",
-        msg: "ha ocurrido un error fatal, validarDatosRecibidosMostrarDatosDuenio",
-        error: e
-    });
-
-}
+  }
 };
 
-const mostrarDatosDuenio = async () => {};
+const mostrarDatosDuenio = async (req, res) => {
+
+  try {
+
+    const { nombre_tema } = req.params;
+    const existeTema = await buscarTema(nombre_tema);
+    
+    var datosBD = await buscarSolicitudIdTema(existeTema._id);
+     datosBD = datosBD.usuario_id;
+     if(!datosBD.apellidos){
+      datosBD.apellidos="";
+     }
+
+     var datosDuenio = new Object();
+     datosDuenio.nombre_completo = datosBD.name+ " "+datosBD.apellidos ||"aa" ;
+     datosDuenio.correo = datosBD.email;
+     datosDuenio.telefono = datosBD.telefono;
+     datosDuenio.apodo = datosBD.nickname;
+
+    return res.json({
+      ok: true,
+      msg: datosDuenio
+    });
+    
+  } catch (error) {
+    return res.json({
+      ok: false,
+      msg: "Ha ocurrido un error faltal | mostrarDatosDuenio ",
+      error: error
+    });
+  }
+
+  
+
+
+};
 
 module.exports = {
   getTemas,
