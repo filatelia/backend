@@ -64,6 +64,7 @@ const validarPermisos = async (req, res, next) => {
 
 }
 const validarDatosRecibidosUsuarios = async (req, res = response, next) => {
+
 next()
 }
 
