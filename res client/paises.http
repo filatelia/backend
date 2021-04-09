@@ -1,0 +1,7 @@
+get http://localhost:3000/api/solicitudes/mostrar-usuario/6053ed14e8b8240da847beaa
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiX2lkIjoiNjA1YTY3Zjg2Yjk1NTExNTA2MTJmNGZjIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTc5OTY4NjEsImV4cCI6MTYxODA4MzI2MX0.FUDmxtBq5bBBpnzU054SHWtXAUs_6VS_5krH_KOiil8
+
+{
+
+}
