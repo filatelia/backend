@@ -15,6 +15,8 @@ const {
   validarDeJWTRoleAdmin,
 } = require("../../middlewares/validar-jwt");
 const { validarNuevaSolicitud } = require("../../middlewares/index.middle");
+const { mostrarDatosDuenioPorPais, validarDatosRecibidosMostrarDatosDuenioPais } = require('../../middlewares/solicitudes');
+
 
 router.post("/tipo/", creartipo);
 router.post("/", [validarJWT], crearSolicitud);
@@ -24,6 +26,7 @@ router.get(
   mostarSolicitudes
 );
 router.get("/", [validarJWT, validarDeJWTRoleAdmin], mostarSolicitudesTotales);
+router.get("/mostrar-usuario/:id_pais", [validarJWT, validarDatosRecibidosMostrarDatosDuenioPais], mostrarDatosDuenioPorPais);
 router.post("/aprobacion", [validarJWT, validarDeJWTRoleAdmin], aprobacion);
 
 module.exports = router;

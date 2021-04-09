@@ -6,8 +6,10 @@ const { buscarIdConAbreviación } = require("./tipo_estado_solicitiud");
 const { crearCatalogo } = require("./catalogo");
 const { enviarCorreos } = require("./enviar_correos");
 const Solicitudes = require("../models/solicitudes/solicitudes.model");
+const Paises = require('../models/catalogo/paises');
 
 const Solicitud = require("../models/solicitudes/solicitudes.model");
+const { isValidObjectId } = require("mongoose");
 
 const crearPrimeraSolicitud = async (
   nombre_catalogo_solicitud,
@@ -200,10 +202,92 @@ const buscarSolicitudIdTema = async (id) =>{
   return solicitudBD;
 
 }
+const validarDatosRecibidosMostrarDatosDuenioPais = async (req, res, next) =>{
+
+  
+  const { id_pais } = req.params;
+
+  if (!id_pais || id_pais == null || id_pais == "" ){
+    return res.json({
+      ok: false,
+      msg: "Debes enviar un id país"
+    });
+
+}
+
+//Validando que sea un id pais valido
+if(!isValidObjectId(id_pais))
+{
+  return res.json({
+    ok: false,
+    msg: "Debes enviar un id país válido"
+  });
+
+}
+
+  //buscando existencia de pais en catalogo
+  const existePais = await buscarDatosUsuarioPorIdPais(id_pais);
+  try {
+    //validando si no existe tema para retornar ok
+    //si existe se retorna toda la información del cliente dueño
+    if (existePais == null) {
+      return res.json({
+        ok: true,
+        msg: true,
+      });
+    }
+    else{
+      next();
+    }
+
+
+
+  } catch (e) {
+    return res.json({
+      ok: false,
+      msg: "ha ocurrido un error fatal, validarDatosRecibidosMostrarDatosDuenio",
+      error: e
+    });
+
+  }
+
+
+}
+
+async function buscarDatosUsuarioPorIdPais(id_pais) {
+  var datosBD = await Solicitudes.findOne( { pais:id_pais } ); 
+  datosBD= datosBD.usuario_id;
+
+  if(datosBD != null){
+    var datosDuenio = new Object();
+       datosDuenio.nombre_completo = datosBD.name+ " "+datosBD.apellidos ||"aa" ;
+       datosDuenio.correo = datosBD.email;
+       datosDuenio.telefono = datosBD.telefono;
+       datosDuenio.apodo = datosBD.nickname;
+    return datosDuenio;
+  }
+  return null;
+    
+}
+
+const mostrarDatosDuenioPorPais = async (req, res) =>{
+
+  const { id_pais } = req.params;
+
+  const datosUsuarioBD = await buscarDatosUsuarioPorIdPais(id_pais);
+
+return res.json({
+  ok: true,
+  msg: datosUsuarioBD
+});
+
+}
 
 module.exports = {
   crearPrimeraSolicitud,
   crearSegundaSolicitud,
   crearSolicitudAdmin,
-  buscarSolicitudIdTema
+  buscarSolicitudIdTema,
+  mostrarDatosDuenioPorPais,
+  validarDatosRecibidosMostrarDatosDuenioPais
 };
