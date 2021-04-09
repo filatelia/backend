@@ -194,8 +194,16 @@ const crearSolicitudAdmin = async (
   }
 };
 
+const buscarSolicitudIdTema = async (id) =>{
+
+  const solicitudBD = await Solicitud.findOne({ tema:id });
+  return solicitudBD;
+
+}
+
 module.exports = {
   crearPrimeraSolicitud,
   crearSegundaSolicitud,
   crearSolicitudAdmin,
+  buscarSolicitudIdTema
 };
