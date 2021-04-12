@@ -480,9 +480,9 @@ function procesarExcel(exc) {
     const nombreHoja = ex.SheetNames;
     let datos = excel.utils.sheet_to_json(ex.Sheets[nombreHoja[0]]);
     var datosValidos = new Array();
-    var datosValidados = validarCamposExcel(datos);
+    //var datosValidados = validarCamposExcel(datos);
 
-    return datosValidados;
+    return datos;
   } catch (e) {
     console.log("error: ", e);
   }
@@ -699,5 +699,7 @@ module.exports = {
   mostrarMisCatalogos,
   mostrarMisEstampillas,
   mostrarCatalogoId,
-  estampillaPage
+  estampillaPage,
+  procesarExcel,
+  crearSolicitud
 };

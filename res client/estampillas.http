@@ -1,0 +1,6 @@
+get http://localhost:3000/api/reportes/generar-excel/asd
+content-type: application/json
+
+{
+
+}

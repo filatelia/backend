@@ -2,7 +2,7 @@
     Path: '/api/login'
 */
 const { Router } = require('express');
-const { login } = require('../../controllers/auth/login');
+const { login, generarTMes } = require('../../controllers/auth/login');
 const { check } = require('express-validator');
 const { validarCampos } = require('../../middlewares/validar-campos');
 const { validarJWT } = require('../../middlewares/validar-jwt');
@@ -17,6 +17,9 @@ router.post( '/',
     ],
     login
 );
+
+router.get('/token-mes',[validarJWT], generarTMes );
+
 
 
 /*

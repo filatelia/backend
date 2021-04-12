@@ -1,92 +1,88 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require("mongoose");
 const EstampillasSchema = Schema({
-
-catalogo: {
-    type : Schema.Types.ObjectId,
-    ref: 'Catalogo',
-    autopopulate: true
-},
-    Descripcion: {
-        type: String,
-        required: true
-    },
-    Codigo: {
-        type: String,
-        required: false
-    },
-    Tipo: {
-        type: String,
-        required: true
-    }, 
-    ParaBuscar: {
-        type: String,
-        required: true
-    },
-    Catalogo: {
-        type : Schema.Types.ObjectId,
-        ref: 'Catalogo',
-        required : true,
-        autopopulate: true
-    }, 
- 
-    Pais: {
-        type : Schema.Types.ObjectId,
-        ref: 'Pais',
-        required : true,
-        autopopulate: true
-    },
-        
-    Tema: {
-        type : Schema.Types.ObjectId,
-        ref: 'Tema',
-        required : true,
-        autopopulate: true
-    },
-    Anio: {
-        type: Number,
-        required: true
-    },
-    Grupo: {
-        type: Number,
-        required: true
-    },
-    Foto_JPG_800x800_px: {
-        type: String,
-        required: true
-    },
-    Nro_Estampillas: {
-        type: Number,
-        required: true
-    },
-    Descripcion_de_la_serie: {
-        type: String,
-        required: true
-    },
-    Valor_Facial: {
-        type: String,
-        required: false
-    },
-    Numero_de_catalogo: {
-        type: String,
-        required: false
-    },
-    Valor_del_Catalogo: {
-        type: String,
-        required: false
+    CATALOGO: {
+        type: Schema.Types.ObjectId,
+        ref: "Catalogo",
+        required: true,
+        autopopulate: true,
     },
 
-    estado: {
-        type: Boolean,
-        default: true
-    }
-}, { collection: 'bdfc_estampillas' })
+    FOTO_ESTAMPILLAS: {
+        type: Schema.Types.ObjectId,
+        ref: "uploads_imagen",
+        required: true,
+        autopopulate: true,
+    },
 
+    CODIGO: {
+        type: String,
+        required: true,
+    },
+    DESCRIPCION_ESTAMPILLA: {
+        type: String,
+    },
 
-EstampillasSchema.method('toJSON', function () {
+    ANIO: {
+        type: String,
+        required: true,
+    },
+    CATEGORIA: {
+        type: String,
+        required: true,
+    },
+
+    GRUPO: {
+        type: String,
+    },
+
+    NRO_ESTAMPILLAS: {
+        type: String,
+    },
+
+    TITULO_DE_LA_SERIE: {
+        type: String,
+        required: true,
+    },
+
+    NUMERO_DE_CATALOGO: {
+        type: String,
+    },
+    VALOR_FACIAL: {
+        type: String,
+        required: true,
+    },
+
+    TIPO_MONEDA_VALOR_FACIAL: {
+        type: String,
+        required: true,
+    },
+    VALOR_CATALOGO_NUEVO: {
+        type: String,
+    },
+
+    VALOR_DEL_CATALOGO_USADO: {
+        type: String,
+    },
+    MONEDA_VALOR_CATALOGO_NUEVO_USADO: {
+        type: String,
+    },
+    TIPO: {
+        type: String,
+        required: true,
+    },
+    VARIANTES_ERRORES: [{
+        type: Schema.Types.ObjectId,
+        ref: "Variantes_errores",
+        autopopulate: true,
+    }],
+
+}, { collection: "bdfc_estampillas" });
+
+EstampillasSchema.method("toJSON", function() {
     const { __v, _id, ...object } = this.toObject();
     object.uid = _id;
     return object;
-})
-EstampillasSchema.plugin(require('mongoose-autopopulate'));
+});
+EstampillasSchema.plugin(require("mongoose-autopopulate"));
 
-module.exports = model('Estampillas', EstampillasSchema);
+module.exports = model("Estampillas", EstampillasSchema);
