@@ -28,5 +28,6 @@ router.get(
 router.get("/", [validarJWT, validarDeJWTRoleAdmin], mostarSolicitudesTotales);
 router.get("/mostrar-usuario/:id_pais", [validarJWT, validarDatosRecibidosMostrarDatosDuenioPais], mostrarDatosDuenioPorPais);
 router.post("/aprobacion", [validarJWT, validarDeJWTRoleAdmin], aprobacion);
+router.get("/formato/:cantidad", [ ], mostrarDatosDuenioPorPais);
 
 module.exports = router;

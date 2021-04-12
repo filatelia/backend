@@ -64,6 +64,9 @@ app.use("/api/catalogo/", require("./routes/catalogo/mostrarImgs"));
 app.use("/api/catalogo/manco_list/", require("./routes/catalogo/manco_list"));
 app.use("/api/catalogo/tipo-catalogo", require("./routes/catalogo/tipo_catalogo"));
 app.use("/api/solicitudes/", require("./routes/solicitudes/solicitudes.route"));
+app.use("/api/estampillas/", require("./routes/catalogo/estampillas.ruta"));
+app.use("/api/variantes-errores/", require("./routes/catalogo/variantes_errrores.ruta"));
+app.use("/api/reportes/", require("./routes/reportes/formato-excel.ruta"));
 
 app.use("/api/pruebas", require("./routes/pruebas/excel"));
 

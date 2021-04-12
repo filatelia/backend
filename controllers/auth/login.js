@@ -1,7 +1,8 @@
 const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const Usuario = require('../../models/usuario/usuario');
-const { generarJWT } = require('../../helpers/jwt');
+const { generarJWT, generarJWTMes } = require('../../helpers/jwt');
+const { retornarDatosJWT  } = require('../../middlewares/validar-jwt');
 
 const login = async( req, res = response ) => {
 
@@ -45,7 +46,38 @@ const login = async( req, res = response ) => {
     }
 
 };
+const generarTMes = async(req, res=response)=>{
+try {
+    
+    const token = req.header("x-access-token");
 
+   const email= await retornarDatosJWT(token);
+   const usuarioDB = await Usuario.findOne({ email });
+        
+   if ( !usuarioDB ) {
+       return res.status(404).json({
+           ok: false,
+           msg: 'Email o contraseña invalidos.'
+       });
+   }
+
+   const tokenMes = await generarJWTMes(usuarioDB.roleuser, usuarioDB.name, usuarioDB.email, usuarioDB._id, usuarioDB.estado);
+   return res.json({
+       ok:true,
+       token: tokenMes
+   });
+} catch (error) {
+    return res.json(
+        {
+            ok: false,
+            msg: "Error faltal | generarTMes",
+            error: error
+        }
+    );
+    
+}
+
+}
 const renewToken = async(req, res = response) => {
 
     const uid = req.uid;
@@ -58,5 +90,6 @@ const renewToken = async(req, res = response) => {
 
 module.exports = {
     login,
-    renewToken
+    renewToken,
+    generarTMes
 }

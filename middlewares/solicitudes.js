@@ -47,7 +47,7 @@ const crearPrimeraSolicitud = async (
     console.log("===============")
     if (nameTipoCatalogo == "Temático") {
       //Coomo el tema ya fue creado, se puede asociar
-      // buscarTemaEnBD = await buscarTema(tema_catalogo_solicitud);
+       buscarTemaEnBD = await buscarTema(tema_catalogo_solicitud);
 
       // console.log("Tema en bd", buscarTemaEnBD);
       console.log("===============1")
