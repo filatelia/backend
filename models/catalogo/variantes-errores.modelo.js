@@ -8,6 +8,12 @@ const Variantes_errores_Schema = Schema({
     Imagen_variantes_errores: {
         type: String,
     },
+    nombre_imagen_excel: {
+        type: String,
+    },
+    codigo_excel: {
+        type: String,
+    },
 
     
    
