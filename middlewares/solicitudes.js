@@ -71,13 +71,23 @@ const crearPrimeraSolicitud = async (
     //Creando catalogo
     console.log("Primera", primera);
     console.log("Antes de entrar a crear cataloho");
-    await crearCatalogo(
+
+    //validando que nombre de tema no exista.
+
+   var cat= await crearCatalogo(
       nombre_catalogo_solicitud,
       primera._id,
       paisEnBD._id,
       tipo_catalogo_solicitud,
       buscarTemaEnBD._id
     );
+    if (cat == null) {
+      return res.json({
+        ok: false,
+        msg: "Catalogo ya existe, no se puede agregar"
+      });
+      
+    }
 
     await enviarCorreos(
       usuarioBD.email,
