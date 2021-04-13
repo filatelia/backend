@@ -11,7 +11,7 @@ const {
 const { eliminarCatalogo } = require("../../middlewares/catalogo");
 const { consultarDatosConCorreo } = require("../../middlewares/usuario");
 const { buscarNombreTipoCatalogo } = require("../../middlewares/tipo_catalogo");
-const { buscarTema } = require("../../middlewares/temas");
+const { buscarTema, crearNuevoTema } = require("../../middlewares/temas");
 const { buscarPaisPorNombre } = require("../../middlewares/paises");
 const {
   crearPrimeraSolicitud,
