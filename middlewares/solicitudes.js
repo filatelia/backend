@@ -82,6 +82,7 @@ const crearPrimeraSolicitud = async (
       buscarTemaEnBD._id
     );
     if (cat == null) {
+      console.log("Error en crear catálogo");
       return res.json({
         ok: false,
         msg: "Catalogo ya existe, no se puede agregar"
