@@ -6,6 +6,7 @@ const crearNuevoTema = async (nombreTema) => {
     var objTema = new Temas();
     objTema.name = nombreTema;
     objTema.ParaBuscar = ParaBuscar;
+    objTema.imagen= "/imagenes/predeterminadas/temas.png";
 
     var nuevoTema = await objTema.save();
     return nuevoTema;

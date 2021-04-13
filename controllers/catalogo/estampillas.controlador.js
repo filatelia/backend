@@ -133,7 +133,7 @@ var ids= [];
 
   return res.json({
     ok: true,
-    msg: aaaa,
+    msg: Estampillas.find( { CATALOGO:idCatalogo }  ),
   });
 };
 
