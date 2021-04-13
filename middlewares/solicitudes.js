@@ -1,7 +1,7 @@
 const { buscarPaisPorNombre } = require("./paises");
 const { buscarNombreTipoCatalogo } = require("./tipo_catalogo");
 const { consultarDatosConCorreo } = require("./usuario");
-const { buscarTema } = require("./temas");
+const { buscarTema, crearNuevoTema } = require("./temas");
 const { buscarIdConAbreviación } = require("./tipo_estado_solicitiud");
 const { crearCatalogo } = require("./catalogo");
 const { enviarCorreos } = require("./enviar_correos");
