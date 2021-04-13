@@ -43,13 +43,20 @@ const crearVariantesYErrores = async (req, res = response) => {
 };
 
 async function agregarVariantesErroresEstampilla(id_estampilla, id_variantes) {
-  var variantesBD = await Estampillas.findById(id_estampilla);
-
-  variantesBD.VARIANTES_ERRORES.push(id_variantes);
-  const estampillaModificada = await variantesBD.save();
-  console.log("variantesBD.VARIANTES_ERRORES", estampillaModificada);
+ try {
+   
+   var variantesBD = await Estampillas.findById(id_estampilla);
+ 
+   variantesBD.VARIANTES_ERRORES.push(id_variantes);
+   const estampillaModificada = await variantesBD.save();
+   return estampillaModificada;
+ } catch (error) {
+   console.log("Error agregarVariantesErroresEstampilla", error);
+   return null;
+ }
 }
 
 module.exports = {
   crearVariantesYErrores,
+  agregarVariantesErroresEstampilla
 };

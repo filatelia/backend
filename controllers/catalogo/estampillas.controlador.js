@@ -1,12 +1,18 @@
 const { response } = require("express");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
-
+const Imagenes = require("../../models/catalogo/uploads");
 const { v4: idUnico } = require("uuid");
-const { guardarImagenEstampilla } = require("./uploads.controlador");
+const {
+  guardarImagenEstampilla,
+  guardarImagenVariantesErrores,
+} = require("./uploads.controlador");
 const { procesarExcel, crearSolicitud } = require("./catalogo.controlador");
 const { isValidObjectId } = require("mongoose");
 const catalogo = require("../../models/catalogo/catalogo");
-
+const VariantesErrores_ = require("../../models/catalogo/variantes-errores.modelo");
+const {
+  agregarVariantesErroresEstampilla,
+} = require("../../controllers/catalogo/variantes-errores.controlador");
 const crearEstampillaIndividual = async (req, res = response) => {
   try {
     console.log(req.files);
@@ -42,6 +48,7 @@ const crearEstampillaIndividual = async (req, res = response) => {
     });
   }
 };
+
 const subirEstampillasExcel = async (req, res = response) => {
   //Validando que sí se esté enviando información
   if (!req.files || req.files == null) {
@@ -65,8 +72,6 @@ const subirEstampillasExcel = async (req, res = response) => {
 
   var datos = procesarExcel(req.files);
   const idCatalogo = req.body.id_catalogo;
-  console.log("ID catalogo: ", idCatalogo);
-  console.log("Datos ->", datos);
 
   //Validando que exista un catalogo para asociar a las estampillas
   if (!idCatalogo || idCatalogo == null) {
@@ -92,8 +97,8 @@ const subirEstampillasExcel = async (req, res = response) => {
     });
   }
 
+  //Validando datos recibidos y preparandolos para el servidor
   var datosValidados = validarCamposExcel(datos);
-  console.log("Datos validados ->", datosValidados);
 
   var completos = new Array();
   var incompletos = new Array();
@@ -105,15 +110,34 @@ const subirEstampillasExcel = async (req, res = response) => {
     } else {
       incompletos.push(data);
     }
-    console.log("Completos ->", completos);
-    console.log("Incompletos ->", incompletos);
+  });
 
-    //Agrupar variantes y errores
-    var datosFinal = agruparVariantes(completos);
+  //Guardando estampillas
+  var estampillasGuardadas = await guardarEstampillas(completos, idCatalogo);
+
+  //Agrupar variantes y errores
+  console.log("Agrupando variantes y errores...");
+
+  var variantesErrores = agruparVariantes(completos);
+var ids= [];
+  for (let index = 0; index < variantesErrores.length; index++) {
+    const element = variantesErrores[index];
+
+    ids = Object.keys(element);
+    
+  }
+
+  //Asociando variables y errores a estampilla
+  // await asociarVariablesYErrores(variantesErrores);
+  var aaaa = await asociarVariablesYErrores(completos);
+
+  return res.json({
+    ok: true,
+    msg: aaaa,
   });
 };
+
 function validarCamposExcel(datos) {
-  console.log("Datos recibidos ->", datos);
   var datosAValidar = new Array();
 
   //Validando que tenga datos
@@ -220,8 +244,17 @@ function validarCamposExcel(datos) {
         data.VARIANTES_ERRORES == null ||
         data.VARIANTES_ERRORES == ""
       ) {
-        data.VARIANTES_ERRORES = [];
-        data.FOTO_VARIANTES_ERRORES = [];
+        data.VARIANTES_ERRORES = null;
+        if (
+          !data.FOTO_VARIANTES_ERRORES ||
+          data.FOTO_VARIANTES_ERRORES == null ||
+          data.FOTO_VARIANTES_ERRORES == ""
+        ) {
+          data.FOTO_VARIANTES_ERRORES = null;
+        } else {
+          console.log("encontre");
+          data.COMPLETA = false;
+        }
       } else {
         //Como VARIANTES_ERRORES existe, se debe validar si existe un nombre en la foto de variantes y errores
         if (
@@ -235,8 +268,6 @@ function validarCamposExcel(datos) {
     });
 
     return datosAValidar;
-
-    console.log("datos despues de asignar ->", datosAValidar);
   } else {
     return null;
   }
@@ -246,159 +277,129 @@ function agruparVariantes(datos) {
   if (datos.length > 0) {
     var datosAgrupados = new Array();
     var codigos = new Array();
-    var repetidos = new Array();
-    var variantes = new Object();
+    codigos = datos;
+    var arrayObjetos = new Array();
     var variantes_errores = new Object();
-    datosAgrupados = datos;
-
+    var variantes = new Object();
     var contador = 0;
+    for (let index = 0; index < datos.length; index++) {
+      const element = datos[index];
 
-    datosAgrupados.map((data, i) => {
-      if (data.CODIGO in variantes_errores) {
-        console.log("Está", data.CODIGO);
-        codigos = [];
+      contador = 0;
+      if (variantes_errores[element.CODIGO]) {
+        console.log("Existe");
         variantes = {};
-        variantes_errores[data.CODIGO].map((er) => {
-          codigos.push(er);
-        });
-
-        if (data.VARIANTES_ERRORES.length == 0) {
-          variantes_errores[data.CODIGO] = codigos;
-        } else {
-          variantes.id = data.CODIGO;
-          variantes.descripcion = data.VARIANTES_ERRORES;
-          variantes.foto = data.FOTO_VARIANTES_ERRORES;
-          codigos.push(variantes);
-
-          variantes_errores[data.CODIGO] = codigos;
-        }
+        variantes.id = element.CODIGO;
+        variantes.descripcion = element.VARIANTES_ERRORES;
+        variantes.imagen = element.FOTO_VARIANTES_ERRORES;
+        variantes_errores[element.CODIGO].push(variantes);
       } else {
-        codigos = [];
+        console.log("No existe");
         variantes = {};
 
-        //Validando que exista la descripción
-        variantes.id = data.CODIGO;
-
-        if (data.VARIANTES_ERRORES.length == 0) {
-          variantes_errores[data.CODIGO] = [];
-        } else {
-          variantes.descripcion = data.VARIANTES_ERRORES;
-          variantes.foto = data.FOTO_VARIANTES_ERRORES;
-          codigos.push(variantes);
-          variantes_errores[data.CODIGO] = codigos;
-        }
+        variantes.id = element.CODIGO;
+        variantes.descripcion = element.VARIANTES_ERRORES;
+        variantes.imagen = element.FOTO_VARIANTES_ERRORES;
+        variantes_errores[element.CODIGO] = [variantes];
       }
-    });
-    console.log("Variantes", variantes_errores);
-    console.log("codigos", codigos);
+    }
+
+    return [variantes_errores];
   } else {
     return null;
   }
 }
-const crearCatalogo = async (req, res = response) => {
-  try {
-    const datosFinal = await validarEstampillasRepetidas(completos, idCatalogo);
-    var contador = 0;
-    var repetidos = [];
-    var noRepetidos = [];
-    for (let index = 0; index < datosFinal.length; index++) {
-      if (datosFinal[index].repetido == false) {
-        noRepetidos.push(datosFinal[index]);
+async function guardarEstampillas(datos, id_catalogo) {
+  var datosGuardar = [];
+  estampillasGuardadas = [];
+  var temporal = [];
+  for (let index = 0; index < datos.length; index++) {
+    var element = datos[index];
 
-        const element = datosFinal[
-          index
-        ].Foto_JPG_800x800_px.toLowerCase().replace(/\s+/g, "");
-        datosFinal[index].ParaBuscar = datosFinal[
-          index
-        ].Foto_JPG_800x800_px.toLowerCase().replace(/\s+/g, "");
-
-        const urlImagenCat = await buscandoUrlImgCat(element);
-
-        datosFinal[index].Foto_JPG_800x800_px = urlImagenCat;
-
-        //Buscando id pais con el nombre
-        var pais = await buscarPaisNombre(datosFinal[index].Pais);
-        if (pais) {
-          var _id = pais;
-          datosFinal[index].Pais = _id;
-
-          //Buscar o crear tema por nombre
-
-          console.log("tema enviado", datosFinal[index].Tema);
-
-          var temaCreado = await crearTema(datosFinal[index].Tema);
-
-          console.log("tema creadossssss->", temaCreado);
-          datosFinal[index].Tema = temaCreado;
-          datosFinal[index].Catalogo = idCatalogo;
-
-          var nuevoCatalogo = new Estampillas(datosFinal[index]);
-          console.log("Nuevo catalogo", nuevoCatalogo);
-
-          const guardar = await nuevoCatalogo.save();
-          console.log("Guardar::::", guardar);
-        } else {
-          inCompletos.push(element);
-        }
-      } else {
-        contador = contador + 1;
-        repetidos.push(datosFinal[index]);
-      }
-    }
-
-    console.log("Contador: ", contador);
-    if (inCompletos.length == 0 && contador == 0) {
-      return res.json({
-        ok: true,
-        tipo_mensaje: "100",
-        msg:
-          "Excel procesado, individualizado, validado y creado en forma de catálogo en un 100%",
-        total_estampillas: completos.length,
-      });
-    } else {
-      if (contador != 0 && inCompletos.length != 0) {
-        return res.json({
-          ok: true,
-          tipo_mensaje: "f.r",
-          msg:
-            "Hubieron problemas para guardar todos los archivos porque datos *obligatorios del excel no estaban, si desea guardar todos los archivos revise el excel y otros se omitieron porque estaban repetidos",
-          archivos_subidos: noRepetidos.length,
-          numero_estampillas_incompletas: inCompletos.length,
-          numero_estampillas_repetidas: contador,
-          estampillas_erroneas: inCompletos,
-          estampillas_repetidas: repetidos,
-        });
-      } else {
-        if (contador != 0) {
-          return res.json({
-            ok: true,
-            tipo_mensaje: "r",
-            msg: "Se omitieron algunas estampillas por estar repetidas",
-            archivos_subidos: noRepetidos.length,
-            total_estampillas_omitidas: contador,
-            estampillas_repetidas: repetidos,
-          });
-        }
-        return res.json({
-          ok: true,
-          tipo_mensaje: "f",
-          msg:
-            "Hubieron problemas para guardar todos los archivos porque datos *obligatorios del excel no estaban, si desea guardar todos los archivos revise el excel",
-          archivos_subidos: completos.length,
-          errores: inCompletos.length,
-          estampillas_erroneas: inCompletos,
-        });
-      }
-    }
-  } catch (e) {
-    return res.json({
-      ok: false,
-      tipo_mensaje: "catch",
-      msg: "Has subido un documento que no tiene el formato correcto",
-      error: e,
+    //consultando id estampilla
+    const imagenEstampillaBD = await Imagenes.findOne({
+      codigo_estampilla: element.CODIGO,
     });
+    if (imagenEstampillaBD != null) {
+      var estampillaBD = await Estampillas.findOne({ CODIGO: element.CODIGO });
+      if (estampillaBD == null) {
+        //asociando datos para guardar
+
+        temporal.CATALOGO = id_catalogo;
+        temporal.FOTO_ESTAMPILLAS = imagenEstampillaBD._id;
+        temporal.CODIGO = element.CODIGO;
+        temporal.DESCRIPCION_ESTAMPILLA = element.DESCRIPCION_ESTAMPILLA;
+        temporal.ANIO = element.ANIO;
+        temporal.CATEGORIA = element.CATEGORIA;
+        temporal.GRUPO = element.GRUPO;
+        temporal.NRO_ESTAMPILLAS = element.NRO_ESTAMPILLAS;
+        temporal.TITULO_DE_LA_SERIE = element.TITULO_DE_LA_SERIE;
+        temporal.NUMERO_DE_CATALOGO = element.NUMERO_DE_CATALOGO;
+        temporal.VALOR_FACIAL = element.VALOR_FACIAL;
+        temporal.TIPO_MONEDA_VALOR_FACIAL = element.TIPO_MONEDA_VALOR_FACIAL;
+        temporal.VALOR_CATALOGO_NUEVO = element.VALOR_CATALOGO_NUEVO;
+        temporal.VALOR_DEL_CATALOGO_USADO = element.VALOR_DEL_CATALOGO_USADO;
+        temporal.MONEDA_VALOR_CATALOGO_NUEVO_USADO =
+          element.MONEDA_VALOR_CATALOGO_NUEVO_USADO;
+        temporal.TIPO = element.TIPO;
+
+        const objEstampilla = new Estampillas(temporal);
+
+        const estampillaGuardada = await objEstampilla.save();
+        if (estampillaGuardada._id) {
+          element.guardado = false;
+          datosGuardar.push(element);
+        } else {
+          element.guardado = false;
+          datosGuardar.push(element);
+        }
+      }
+    } else {
+      element.guardado = false;
+      datosGuardar.push(element);
+    }
   }
-};
+  return datosGuardar;
+}
+
+async function asociarVariablesYErrores(data) {
+var asociados = new Array();
+  for (let index = 0; index < data.length; index++) {
+    const element = data[index];
+    var objeto= new Object();
+
+    objeto.nombre_imagen_excel =  element.FOTO_VARIANTES_ERRORES;
+        objeto.Descripcion = element.VARIANTES_ERRORES;
+        objeto.codigo_excel = element.CODIGO;
+
+        console.log("Objeto", objeto);
+  
+        var objVariantes = new VariantesErrores_(objeto);
+        const varianteGuardada = await objVariantes.save();
+        if (varianteGuardada._id) {
+          //Buscando estampilla con codigo
+          var estampillaBD = await Estampillas.findOne({ CODIGO: element.CODIGO });
+          if (estampillaBD == null) {
+            console.log("Null en buscar estampilla");
+          } else {
+            const modificarEstampilla = await agregarVariantesErroresEstampilla(
+              estampillaBD._id,
+              varianteGuardada._id
+            );
+            if (modificarEstampilla._id) {
+              console.log("variante y error asociada en BD");
+              asociados.push(modificarEstampilla);
+            } else {
+              console.log("Null en modificar estampilla");
+            }
+          }
+        } else {
+          console.log("Null en guardar variante");
+        }
+    
+  }
+
+}
 module.exports = {
   crearEstampillaIndividual,
   subirEstampillasExcel,
