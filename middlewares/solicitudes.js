@@ -20,8 +20,10 @@ const crearPrimeraSolicitud = async (
 ) => {
   try {
     //Creamos Objeto para guardar
-    var objNuevaSolicitud = new Solicitud();
+console.log("Creando primera solicitud");
 
+    var objNuevaSolicitud = new Solicitud();
+console.log("1");
     //Asociando nombre de catalogo interno
     objNuevaSolicitud.catalogo_nombre_interno = nombre_catalogo_solicitud;
 
@@ -33,15 +35,21 @@ const crearPrimeraSolicitud = async (
         msg: "Usuario no válido.",
       });
     }
+console.log("2");
+
     //Asociando el id del cliente a la solcitud
     objNuevaSolicitud.usuario_id = usuarioBD._id;
+    console.log("3");
 
     //Asociando tipo catalogo.
     objNuevaSolicitud.tipo_catalogo = tipo_catalogo_solicitud;
+    console.log("4");
 
     var nameTipoCatalogo = await buscarNombreTipoCatalogo(
       tipo_catalogo_solicitud
     );
+console.log("5");
+
     var paisEnBD = {};
     var buscarTemaEnBD = {};
     console.log("===============")
