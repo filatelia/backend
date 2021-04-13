@@ -98,7 +98,7 @@ console.log("5");
     );
     return primera;
   } catch (e) {
-    console.log("Error --->",e);
+    //console.log("Error --->",e);
     console.log("Error al crear la solicitud. Catch solicitudes middlewears");
     return null;
   }
