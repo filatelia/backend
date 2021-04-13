@@ -38,7 +38,12 @@ const crearSolicitud = async (req, res) => {
       pais_catalogo_solicitud,
       tema_catalogo_solicitud,
     } = req.body;
-
+    console.log("nombre_catalogo_solicitud ->", nombre_catalogo_solicitud);
+    console.log("tipo_catalogo_solicitud ->", tipo_catalogo_solicitud);
+    console.log("pais_catalogo_solicitud ->", pais_catalogo_solicitud);
+    console.log("tema_catalogo_solicitud ->", tema_catalogo_solicitud);
+    console.log("correo ->", correo);
+    
 
     //Con el token se busca el correo.
     const correo = retornarDatosJWT(token);
@@ -74,6 +79,7 @@ const crearSolicitud = async (req, res) => {
         console.log("crear un catalogo nuevo");
 
         var ter = await crearNuevoTema(tema_catalogo_solicitud);
+        console.log("tema_catalogo_solicitud -->", tema_catalogo_solicitud);
         console.log("ter", ter);
       } else {
         console.log("tema duplicado");
