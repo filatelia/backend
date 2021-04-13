@@ -10,7 +10,7 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 "nombre_catalogo_solicitud": "Prueba para video", 
 "tipo_catalogo_solicitud" :"605fc7fef45d98d0fcfc7892", 
 "pais_catalogo_solicitud" : "Peru",
-"tema_catalogo_solicitud": "Video"
+"tema_catalogo_solicitud": "Tema Prueba"
 
 }
 

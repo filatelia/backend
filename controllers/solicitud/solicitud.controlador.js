@@ -5,6 +5,7 @@ const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
 const Usuario = require("../../models/usuario/usuario");
 const Pais = require("../../models/catalogo/paises");
 const Catalogo = require("../../models/catalogo/catalogo");
+const colors= require('colors');
 const {
   eliminarEstampillasConIdCatalogo,
 } = require("../../middlewares/estampillas");
@@ -38,15 +39,18 @@ const crearSolicitud = async (req, res) => {
       pais_catalogo_solicitud,
       tema_catalogo_solicitud,
     } = req.body;
+
+    console.log("req.body", req.body);
+
     console.log("nombre_catalogo_solicitud ->", nombre_catalogo_solicitud);
     console.log("tipo_catalogo_solicitud ->", tipo_catalogo_solicitud);
     console.log("pais_catalogo_solicitud ->", pais_catalogo_solicitud);
     console.log("tema_catalogo_solicitud ->", tema_catalogo_solicitud);
-    console.log("correo ->", correo);
     
 
     //Con el token se busca el correo.
     const correo = retornarDatosJWT(token);
+
     var usuarioBDA = await Usuario.findOne({ email: correo });
     if (usuarioBDA.roleuser == "admin") {
       var solicitudAdmin = await crearSolicitudAdmin(
@@ -72,7 +76,7 @@ const crearSolicitud = async (req, res) => {
     }
 
     if (!id_solicitud || id_solicitud == null) {
-      console.log("primera solicitud");
+      console.log(colors.red("primera solicitud"));
 
       var existeTema = await buscarTema(tema_catalogo_solicitud);
       if (existeTema == null) {
@@ -119,7 +123,6 @@ const crearSolicitud = async (req, res) => {
       }
     }
   } catch (e) {
-    console.log(req.body);
 
     return res.json({
       ok: false,
