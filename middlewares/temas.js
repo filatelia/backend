@@ -8,7 +8,6 @@ const crearNuevoTema = async (nombreTema) => {
     objTema.ParaBuscar = ParaBuscar;
 
     var nuevoTema = await objTema.save();
-    console.log("Nuevo tema ->", nuevoTema);
     return nuevoTema;
   } catch (e) {
     console.log("Error al crear el tema desde cath", e);
