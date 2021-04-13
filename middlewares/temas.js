@@ -7,7 +7,7 @@ const crearNuevoTema = async (nombreTema) => {
     objTema.name = nombreTema;
     objTema.ParaBuscar = ParaBuscar;
 
-    var nuevoTema = objTema.save();
+    var nuevoTema = await objTema.save();
     console.log("Nuevo tema ->", nuevoTema);
     return nuevoTema;
   } catch (e) {
