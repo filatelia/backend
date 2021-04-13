@@ -65,6 +65,16 @@ const crearSolicitud = async (req, res) => {
     }
 
     if (!id_solicitud || id_solicitud == null) {
+  
+      var existeTema= await buscarTema(tema_catalogo_solicitud);
+      if(existeTema == null){
+        await crearNuevoTema(tema_catalogo_solicitud);
+      }else{
+        return res.json({
+          ok: false,
+          msg: "Tema duplicado"
+        });
+      }
       var prime = await crearPrimeraSolicitud(
         nombre_catalogo_solicitud,
         tipo_catalogo_solicitud,
