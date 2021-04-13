@@ -62,7 +62,7 @@ const crearPrimeraSolicitud = async (
 
     //Asociar ID de tipo estado solicitud
     var primeraSolicitud = await buscarIdConAbreviación("EACE1");
-    console.log("Priemrasmso", primeraSolicitud);
+    console.log("Primera solicitud", primeraSolicitud);
 
     //ASociando tipo estado solicitud
     objNuevaSolicitud.tipoEstadoSolicitud_id = primeraSolicitud._id;
@@ -97,6 +97,7 @@ const crearPrimeraSolicitud = async (
     );
     return primera;
   } catch (e) {
+    console.log("Error --->",e);
     console.log("Error al crear la solicitud. Catch solicitudes middlewears");
     return null;
   }
