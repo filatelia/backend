@@ -3,12 +3,12 @@
 //Nueva solicitud Cliente
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODE1MjU1LCJleHAiOjE2MTY5MDE2NTV9.OdErLHGmg3EV64LM1hUKUxcKOqkf0DVjVtglM5az6AY
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiX2lkIjoiNjA1YTY3Zjg2Yjk1NTExNTA2MTJmNGZjIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTgzNDU4NDEsImV4cCI6MTYxODQzMjI0MX0.5qCJG97igBH4PYHwWM_HZ4Fid3T4jT_9aNGG3Gx-6gM
 
 {
 
 "nombre_catalogo_solicitud": "Prueba para video", 
-"tipo_catalogo_solicitud" :"605e0c253da4940844a1c938", 
+"tipo_catalogo_solicitud" :"605fc7fef45d98d0fcfc7892", 
 "pais_catalogo_solicitud" : "Peru",
 "tema_catalogo_solicitud": "Video"
 

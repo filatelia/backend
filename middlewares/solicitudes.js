@@ -21,8 +21,13 @@ const crearPrimeraSolicitud = async (
   try {
     //Creamos Objeto para guardar
 console.log("Creando primera solicitud");
+console.log("nombre_catalogo_solicitud", nombre_catalogo_solicitud);
+console.log("tipo_catalogo_solicitud", tipo_catalogo_solicitud);
+console.log("pais_catalogo_solicitud", pais_catalogo_solicitud);
+console.log("tema_catalogo_solicitud", tema_catalogo_solicitud);
+console.log("correo", correo);
 
-    var objNuevaSolicitud = new Solicitud();
+var objNuevaSolicitud = new Solicitud();
 console.log("1");
     //Asociando nombre de catalogo interno
     objNuevaSolicitud.catalogo_nombre_interno = nombre_catalogo_solicitud;

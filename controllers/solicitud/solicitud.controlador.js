@@ -38,6 +38,8 @@ const crearSolicitud = async (req, res) => {
       pais_catalogo_solicitud,
       tema_catalogo_solicitud,
     } = req.body;
+
+
     //Con el token se busca el correo.
     const correo = retornarDatosJWT(token);
     var usuarioBDA = await Usuario.findOne({ email: correo });
@@ -65,19 +67,20 @@ const crearSolicitud = async (req, res) => {
     }
 
     if (!id_solicitud || id_solicitud == null) {
-console.log("primera solicitud");
-  
-      var existeTema= await buscarTema(tema_catalogo_solicitud);
-      if(existeTema == null){
-console.log("crear un catalogo nuevo");
+      console.log("primera solicitud");
 
-        await crearNuevoTema(tema_catalogo_solicitud);
-      }else{
-console.log("tema duplicado");
+      var existeTema = await buscarTema(tema_catalogo_solicitud);
+      if (existeTema == null) {
+        console.log("crear un catalogo nuevo");
+
+        var ter = await crearNuevoTema(tema_catalogo_solicitud);
+        console.log("ter", ter);
+      } else {
+        console.log("tema duplicado");
 
         return res.json({
           ok: false,
-          msg: "Tema duplicado"
+          msg: "Tema duplicado",
         });
       }
       var prime = await crearPrimeraSolicitud(
@@ -110,6 +113,8 @@ console.log("tema duplicado");
       }
     }
   } catch (e) {
+    console.log(req.body);
+
     return res.json({
       ok: false,
       mensaje: "No se ha podido crear la solicitud",
