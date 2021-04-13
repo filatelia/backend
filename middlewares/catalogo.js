@@ -11,6 +11,12 @@ const crearCatalogo = async (
 ) => {
   try {
     console.log("Entramos a catalogo");
+    //Validando que nombre tema no exista
+    var catalogoBD = await Catalogo.findOne({ name:nombreCatalogo });
+    if(catalogoBD != null){
+      return null;
+    }
+
     var nuevoCat = new Catalogo();
     nuevoCat.name = nombreCatalogo;
     nuevoCat.solicitud = id_solicitud;
