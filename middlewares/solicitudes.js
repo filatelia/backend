@@ -61,7 +61,7 @@ console.log("5");
       console.log("===============1")
 
       //Asociando tema
-      objNuevaSolicitud.tema = tema_catalogo_solicitud;
+      objNuevaSolicitud.tema = buscarTemaEnBD._id;
     }
     if (nameTipoCatalogo == "País") {
       paisEnBD = await buscarPaisPorNombre(pais_catalogo_solicitud);
