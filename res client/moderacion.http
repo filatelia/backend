@@ -1,4 +1,4 @@
-
+//Creando nuevo reporte
 post http://localhost:3000/api/moderacion/crear-reporte
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
@@ -6,5 +6,27 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 {
    
 "apodo_us_reportado": "cliente_prueba",
+"razones_reporte": "Reporte de prueba video"
+}
+
+###
+//consultando todos reportes
+get http://localhost:3000/api/moderacion/mostrar-todos-reportes
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJfaWQiOiI2MDc3NGFjZTFlODc3MzFmZWNlZGFiYjkiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxODQzMjY0NywiZXhwIjoxNjE4NTE5MDQ3fQ.9cIGj7hOsrOrZURzep5o4rhAwGIENNipfAjL2i8lPYw
+
+{
+   
+"apodo_us_reportado": "cliente_prueba",
 "razones_reporte": "Reporte de prueba para envío de correo"
+}
+###
+
+
+get http://localhost:3000/api/moderacion/dar-baja/60774a431e87731fecedabb8
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJfaWQiOiI2MDc3NGFjZTFlODc3MzFmZWNlZGFiYjkiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxODQzMjY0NywiZXhwIjoxNjE4NTE5MDQ3fQ.9cIGj7hOsrOrZURzep5o4rhAwGIENNipfAjL2i8lPYw
+
+{
+
 }

@@ -61,7 +61,7 @@ const validarDeJWTRoleAdmin = (req, res, next) => {
     const token = req.header('x-access-token');
 
         const {roleuser} = jwt.verify( token, process.env.JWT_SECRET );
-        console.log("role user deszde validar admin: ", roleuser);
+        console.log(roleuser);
 
      
         if (roleuser.toLowerCase() === 'admin' ) {

@@ -123,7 +123,7 @@ const crearCatalogo = async (req, res = response) => {
       }
     }
 
-  await crearSolicitud(idCatalogo);
+    await crearSolicitud(idCatalogo);
     console.log("Contador: ", contador);
     if (inCompletos.length == 0 && contador == 0) {
       return res.json({
@@ -178,8 +178,8 @@ const crearCatalogo = async (req, res = response) => {
   }
 };
 async function crearSolicitud(id_catalogo) {
-console.log("Id catalogo", id_catalogo);
-var id_solicitud = await Catalogo.findOne({_id:id_catalogo});
+  console.log("Id catalogo", id_catalogo);
+  var id_solicitud = await Catalogo.findOne({ _id: id_catalogo });
 
   console.log("Id solicitud desde excel", id_solicitud);
   if (id_solicitud._id && id_solicitud.solicitud != null) {
@@ -200,9 +200,12 @@ var id_solicitud = await Catalogo.findOne({_id:id_catalogo});
       abreviacionSolicitud.tipoEstadoSolicitud_id = _id;
       console.log("Abreviacion: ", abreviacionSolicitud);
       var solicitudActuaizada = await abreviacionSolicitud.save();
-      await enviarCorreos(null, solicitudActuaizada.usuario_id.email, solicitudActuaizada.usuario_id.name,
+      await enviarCorreos(
+        null,
+        solicitudActuaizada.usuario_id.email,
+        solicitudActuaizada.usuario_id.name,
         solicitudActuaizada.tipoEstadoSolicitud_id.descripcion
-        ); 
+      );
 
       return solicitudActuaizada;
     }
@@ -297,12 +300,11 @@ const mostrarCatalogoAnio = async (req, res) => {
   const { anioI, anioF } = req.params;
   const { pais, tema } = req.query;
   try {
-    var query={}
-    if(pais&&pais!=''){
-      query={Pais:ObjectId(pais)};
-    }
-    else if(tema&&tema!=''){
-      query={Tema:ObjectId(tema)};
+    var query = {};
+    if (pais && pais != "") {
+      query = { Pais: ObjectId(pais) };
+    } else if (tema && tema != "") {
+      query = { Tema: ObjectId(tema) };
     }
     if (Number(anioI) && Number(anioF)) {
       const estampillas = await Estampillas.find({
@@ -317,13 +319,13 @@ const mostrarCatalogoAnio = async (req, res) => {
               $lte: Number(anioF),
             },
           },
-          query
+          query,
         ],
       }).count();
 
       const catalogoCompleto = await Estampillas.aggregate([
         {
-          $match:{
+          $match: {
             $and: [
               {
                 Anio: {
@@ -335,20 +337,20 @@ const mostrarCatalogoAnio = async (req, res) => {
                   $lte: Number(anioF),
                 },
               },
-              query
+              query,
             ],
-          }
+          },
         },
         {
-          $group:{
-            _id:"$Anio"
-          }
+          $group: {
+            _id: "$Anio",
+          },
         },
         {
-          $project:{
-            anio:"$_id"
-          }
-        }
+          $project: {
+            anio: "$_id",
+          },
+        },
       ]);
 
       res.json({
@@ -380,7 +382,7 @@ const mostrarCatalogo = async (req, res) => {
   for (let index = 0; index < catalogoCompleto.length; index++) {
     const element = catalogoCompleto[index]._id;
     var nuevoCat = await Estampillas.find({ Catalogo: element });
-    if(nuevoCat.length>0) cat.push(nuevoCat);
+    if (nuevoCat.length > 0) cat.push(nuevoCat);
   }
 
   return res.json({
@@ -441,35 +443,30 @@ const mostrarMisEstampillas = async (req, res) => {
   });
 };
 
-const mostrarCatalogoId = async (req, res) =>{
+const mostrarCatalogoId = async (req, res) => {
   var id_solicitud = req.params.id;
   console.log("id_solicitud", id_solicitud);
 
-  if(!id_solicitud || id_solicitud == null || !isValidObjectId(id_solicitud) ){
-
+  if (!id_solicitud || id_solicitud == null || !isValidObjectId(id_solicitud)) {
     return res.json({
       ok: false,
-      msg: "Debes enviar una solicitud valido"
+      msg: "Debes enviar una solicitud valido",
     });
   }
 
-  var catalogo = await Catalogo.findOne({solicitud:id_solicitud});
+  var catalogo = await Catalogo.findOne({ solicitud: id_solicitud });
   if (catalogo == null) {
-    return res.json(
-      {
-        ok:false,
-        msg: "No existe el catalogo que deseas buscar"
-      }
-    );
+    return res.json({
+      ok: false,
+      msg: "No existe el catalogo que deseas buscar",
+    });
   }
 
-  return res.json(
-    {
-      ok: true,
-      catalogo: catalogo
-    }
-  );
-}
+  return res.json({
+    ok: true,
+    catalogo: catalogo,
+  });
+};
 
 //funciones
 function procesarExcel(exc) {
@@ -610,50 +607,48 @@ async function buscandoUrlImgCat(name) {
   }
 }
 
+const estampillaPage = async (req, res) => {
+  try {
+    let { perpage, page, tipo, pais, tema, anios, q, start, end } = req.query;
+    page = parseInt(page) || 1;
+    perpage = parseInt(perpage) || 10;
+    var query = {};
 
-const estampillaPage=async(req,res)=>{
-  try{
-    let {perpage,page,tipo,pais,tema,anios,q,start,end}=req.query
-    page=parseInt(page)||1
-    perpage=parseInt(perpage)||10
-    var query={};
-    
-    if(anios&&anios!=''){
-      anios=JSON.parse(anios)
-      query={$or:[]}
-      anios.forEach(element => {
+    if (anios && anios != "") {
+      anios = JSON.parse(anios);
+      query = { $or: [] };
+      anios.forEach((element) => {
         query.$or.push({
-          Anio:element
-        })
+          Anio: element,
+        });
       });
-      console.log(query)
+      console.log(query);
     }
 
-    if(q&&q!=''){
-      if(!query.$or) query.$or=[]
-      console.log(isNaN(q))
-      if(!isNaN(q)){
+    if (q && q != "") {
+      if (!query.$or) query.$or = [];
+      console.log(isNaN(q));
+      if (!isNaN(q)) {
         query.$or.push({
-          Anio:q
-        })
-      }
-      else{
+          Anio: q,
+        });
+      } else {
         query.$or.push({
-          Descripcion:{$regex: q,$options: 'i'},
-        })
+          Descripcion: { $regex: q, $options: "i" },
+        });
         query.$or.push({
-          Descripcion_de_la_serie:{$regex: q,$options: 'i'},
-        })
+          Descripcion_de_la_serie: { $regex: q, $options: "i" },
+        });
         query.$or.push({
-          Valor_Facial:{$regex: q,$options: 'i'},
-        })
+          Valor_Facial: { $regex: q, $options: "i" },
+        });
         query.$or.push({
-          Codigo:{$regex: q,$options: 'i'},
-        })
+          Codigo: { $regex: q, $options: "i" },
+        });
       }
     }
-    if(start!=0&&end!=0){
-      query.$and=[
+    if (start != 0 && end != 0) {
+      query.$and = [
         {
           Anio: {
             $gte: Number(start),
@@ -664,31 +659,30 @@ const estampillaPage=async(req,res)=>{
             $lte: Number(end),
           },
         },
-        
       ];
     }
 
-    if(pais&&pais!=''){
-      query.Pais=ObjectId(pais.trim())
+    if (pais && pais != "") {
+      query.Pais = ObjectId(pais.trim());
+    } else if (tema && tema != "") {
+      query.Tema = ObjectId(tema);
     }
-    else if(tema&&tema!=''){
-      query.Tema=ObjectId(tema)
-    }
-    var estampillas=await Estampillas.find(query,{Catalogo:0}).skip((perpage*page)-perpage).limit(perpage)
-    var count=await Estampillas.find(query).count()
+    var estampillas = await Estampillas.find(query, { Catalogo: 0 })
+      .skip(perpage * page - perpage)
+      .limit(perpage);
+    var count = await Estampillas.find(query).count();
     res.status(200).send({
-      data:estampillas,
-      current:page,
-      pages:Math.ceil(count/perpage)
-    })
-  }
-  catch($e){
+      data: estampillas,
+      current: page,
+      pages: Math.ceil(count / perpage),
+    });
+  } catch ($e) {
     res.status(400).send({
-      msg:$e,
-      ok:false
-    })
+      msg: $e,
+      ok: false,
+    });
   }
-}
+};
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -701,5 +695,5 @@ module.exports = {
   mostrarCatalogoId,
   estampillaPage,
   procesarExcel,
-  crearSolicitud
+  crearSolicitud,
 };
