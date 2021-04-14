@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
-const tipoEstadoSolicitudSchema = Schema(
+const tipoEstadoReporteSchema = Schema(
   {
-    name: {
+    nombre: {
       type: String,
       required: true,
     },
@@ -12,16 +12,17 @@ const tipoEstadoSolicitudSchema = Schema(
 
     descripcion: {
       type: String,
+      required: true,
     },
   },
-  { collection: "bdfc_tipoEstadoSolicitud" }
+  { collection: "bdfc_TipoEstadoReporte" }
 );
 
-tipoEstadoSolicitudSchema.method("toJSON", function () {
+tipoEstadoReporteSchema.method("toJSON", function () {
   const { __v, _id, ...object } = this.toObject();
   object.uid = _id;
   return object;
 });
-tipoEstadoSolicitudSchema.plugin(require("mongoose-autopopulate"));
+tipoEstadoReporteSchema.plugin(require("mongoose-autopopulate"));
 
-module.exports = model("tipoEstadoSolicitud", tipoEstadoSolicitudSchema);
+module.exports = model("TipoEstadoReporte", tipoEstadoReporteSchema);
