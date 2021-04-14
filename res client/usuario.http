@@ -3,9 +3,16 @@ content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAYWRtaW5pc3RyYWRvci5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjM2MjY4MSwiZXhwIjoxNjE2NDQ5MDgxfQ.dPfWcUFoE5X5dtxpvh7pfWTLGgqh4jgpWmbIX6gxwoc
 
 {
-"name" : "Gabriel Gracia Marquez",
-"email": "cliente@cliente.com",
-"password": "22102281"
+"name" : "Club",
+"apellidos": "Soluciones Empresariales",
+"email": "club@yopmail.com",
+"password": "22102281",
+"nickname": "club_soluciones",
+"tipo_catalogo": ["605fc7fef45d98d0fcfc7892", "605fc7fef45d98d0fcfc7893"],
+"temas": ["60594ca99533e1067838957b", "60594cf9bf97f22cd8da72ba"],
+"paises_coleccionados": ["6053ed00e8b8240da847bdfb", "6053ed03e8b8240da847be06", "6053ed03e8b8240da847be09"],
+"pais_usuario": "Peru"
+
 }
 
 ###

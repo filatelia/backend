@@ -68,7 +68,8 @@ app.use("/api/estampillas/", require("./routes/catalogo/estampillas.ruta"));
 app.use("/api/variantes-errores/", require("./routes/catalogo/variantes_errrores.ruta"));
 app.use("/api/reportes/", require("./routes/reportes/formato-excel.ruta"));
 
-app.use("/api/pruebas", require("./routes/pruebas/excel"));
+app.use("/api/pruebas/", require("./routes/pruebas/excel"));
+app.use("/api/moderacion/", require("./routes/moderacion/moderacion.ruta"));
 
 //app.use( '/api/catalogo/temas', require('./routes/catalogo/temas') );
 app.use("/api/login", require("./routes/auth/auth"));

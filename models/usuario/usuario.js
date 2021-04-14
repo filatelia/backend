@@ -13,18 +13,24 @@ const UsuarioSchema = Schema(
       type: String,
       required: true,
     },
+    
+    reputacion: {
+      type: Number,
+      required: true,
+      default: 100
+    },
 
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    tipo_catalogo: {
+    tipo_catalogo: [{
       type: Schema.Types.ObjectId,
       ref: "TipoCatalogo",
       required: true,
       autopopulate: true,
-    },
+    }],
     temas: [
       {
         type: Schema.Types.ObjectId,
