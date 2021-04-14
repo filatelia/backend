@@ -47,18 +47,22 @@ const getUsuarioId = async (req, res) => {
 
 //Función para crear un usuario.
 const buscarPaisNombre = async (names) => {
-  const para_buscar = names.toLowerCase().replace( /[^-A-Za-z0-9]+/g, '' );
-  console.log(para_buscar)
+  //const para_buscar = names.toLowerCase().replace( /[^-A-Za-z0-9]+/g, '' );
+  const para_buscar = names.toLowerCase().replace(/\s+/g, "");
+ 
+  console.log("PARA BUSCAR",para_buscar);
   
-  const paisEncontrado = await Pais.findOne({name: {$regex: para_buscar,$options: 'i'} }, { _id: 1 });
+  const paisEncontrado = await Pais.findOne( { para_buscar } );
   return paisEncontrado;
 };
 
 const createUsuario = async (req, res = response) => {
   const { email, password,pais_usuario } = req.body;
   try {
+
+
     
-    var pais=await buscarPaisNombre(pais_usuario);
+    var pais = await buscarPaisNombre(pais_usuario);
     console.log(pais)
     if(!pais)throw {msg:'pais no encontrado',ok:false}
     const usuario_ = new Usuario(req.body);
@@ -70,10 +74,11 @@ const createUsuario = async (req, res = response) => {
       "/imagenes/predeterminadas/" + usuario_.roleuser + ".png";
     console.log("antes de guardar: ", usuario_);
     // Guardar usuario
-    await usuario_.save();
+    var usuarioGuardado = await usuario_.save();
 
     res.json({
       ok: true,
+      msg: usuarioGuardado
     });
   } catch (error) {
     console.log(error);

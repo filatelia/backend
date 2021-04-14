@@ -3,6 +3,7 @@ const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
 const { consultarDatosConCorreo, consultarDatosConApodo } = require("../../middlewares/usuario");
 const { consultarTipoEstadoReporteConAbreviacion } = require("../../middlewares/reportes");
 const Reportes = require("../../models/moderacion/reportes.modelo");
+const { enviarCorreosReporte } = require("../../middlewares/enviar_correos");
 
 
 
@@ -84,6 +85,7 @@ const crearReporte = async (req, res = response ) =>{
         var reporteGuardado =await objReportes.save();
 
         if (reporteGuardado._id) {
+           await enviarCorreosReporte(reporteGuardado);
 
             return  res.json({
                 ok: true,
