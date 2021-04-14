@@ -33,9 +33,18 @@ const consultarDatosConApodo = async (nickname) => {
     return null;
   }
 };
-
+const consultarDatosConId = async (idUsuario) => {
+  try {
+    var usuarioBD = await Usuario.findById(idUsuario);
+    return usuarioBD;
+  } catch (e) {
+    console.log("Error en cath consultarDatosConId", e);
+    return null;
+  }
+};
 module.exports = {
   consultarUsuariosAdmin,
   consultarDatosConCorreo,
-  consultarDatosConApodo
+  consultarDatosConApodo,
+  consultarDatosConId
 };
