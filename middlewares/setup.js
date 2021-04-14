@@ -4,7 +4,8 @@ const { guardandoBanderas } = require("../middlewares/banderas");
 const { crearPaisesAutom } = require("../middlewares/paises");
 const Tipo_solicitud = require("../models/solicitudes/tipoEstadoSolicitud.model");
 const Tipo_Catalogo = require("../models/catalogo/tipo_catalogo");
-const Color = require('colors');
+const Color = require("colors");
+const TipoEstadoReporte = require("../models/moderacion/tipo-estado-reporte.model");
 
 const initial_setup = async () => {
   console.log(Color.blue("Ejecutando initial setup..."));
@@ -12,6 +13,7 @@ const initial_setup = async () => {
   await verificarBanderasPaises();
   await verificarTipoSolicitudYCrearla();
   await VerificarTipoCatalogoYCrarlo();
+  await verificarEstadoTipoReporte();
 };
 
 const verificarBanderasPaises = async () => {
@@ -58,7 +60,6 @@ const verificarBanderasPaises = async () => {
     console.log("*Paises OK");
   }
 };
-
 const verificarTipoSolicitudYCrearla = async () => {
   console.log("verificando tipo de solicitud y crearlos");
 
@@ -97,7 +98,6 @@ const verificarTipoSolicitudYCrearla = async () => {
   nuevoTSolicitud_3.descripcion = "El catalogo es público para todos";
   await nuevoTSolicitud_3.save();
 
-
   return;
 };
 const VerificarTipoCatalogoYCrarlo = async () => {
@@ -118,7 +118,102 @@ const VerificarTipoCatalogoYCrarlo = async () => {
     console.log("*Se crearon 2 Tipos de Catalogos.");
   }
 };
+const verificarEstadoTipoReporte = async () => {
+  console.log("- Tipo Estado Reporte...");
 
+  //Buscando en base de datos Tipo Estado Reporte
+  var tipoEstadoReporte = await TipoEstadoReporte.find();
+
+  console.log(" | Verificando en base de datos... ");
+  if (tipoEstadoReporte.length != 0) {
+    console.log("  | Tipo Estado Reporte Ok.");
+  } else {
+    console.log("  | No existe en base de datos.");
+    console.log("   | Creando items...");
+
+    //Contador para contar las veces que se guardó correctamente
+    var contador = 0;
+
+    //Creando items en BD
+
+    //----------------------------
+
+    //Creando primer item
+    //TER -> Tipo Estado Reporte
+    var objetoTER = new TipoEstadoReporte();
+    objetoTER.nombre = "Procesado | Dato de baja";
+    objetoTER.abreviacion = "P.DB";
+    objetoTER.descripcion =
+      "Reporte analizado, concluyendo que el Usuario incumple las normas de convivencia de la comunidad Filatelia.";
+
+    //Guardando en BD
+    var objetoGuardado = await objetoTER.save();
+
+    //evaluando si se guardó;
+    if (objetoGuardado._id) {
+      contador = contador + 1;
+    }
+
+    //----------------------------
+
+    //Creando segundo item
+    //TER -> Tipo Estado Reporte
+    objetoTER = {};
+    objetoTER = new TipoEstadoReporte();
+    objetoTER.nombre = "Procesado | Ignorado Acumulativo";
+    objetoTER.abreviacion = "P.IA";
+    objetoTER.descripcion =
+      "Reporte analizado, concluyendo que el Usuario cometió una falta media a las normas de convivencia de la comunidad Filatelia.No se le da de baja al usuario, pero disminuye su reputación";
+
+    //Guardando en BD
+    var objetoGuardado = await objetoTER.save();
+
+    //evaluando si se guardó;
+    if (objetoGuardado._id) {
+      contador = contador + 1;
+    }
+
+    //----------------------------
+
+    //Creando tercer item
+    //TER -> Tipo Estado Reporte
+    objetoTER = {};
+    objetoTER = new TipoEstadoReporte();
+    objetoTER.nombre = "Procesado | Ignorado No Acumulativo";
+    objetoTER.abreviacion = "P.INA";
+    objetoTER.descripcion =
+      "Reporte analizado, concluyendo que el Usuario no cometió una falta las normas de convivencia de la comunidad Filatelia.No se le da de baja al usuario, tampoco disminuye la reputación";
+
+    //Guardando en BD
+    var objetoGuardado = await objetoTER.save();
+
+    //evaluando si se guardó;
+    if (objetoGuardado._id) {
+      contador = contador + 1;
+    }
+
+    //----------------------------
+
+    //Creando cuarto item
+    //TER -> Tipo Estado Reporte
+    objetoTER = {};
+    objetoTER = new TipoEstadoReporte();
+    objetoTER.nombre = "No Procesado | Creado Espera Análisis";
+    objetoTER.abreviacion = "NP.CEA";
+    objetoTER.descripcion =
+      "Reporte creado correctamente, en espera del Análisis del Administrador, para evaluar si el Usuario cometió una falta a las normas de convivencia de la comunidad Filatelia.Por el momento, éste estado de reporte no disminuye la reputación, ni cancelará la cuenta del Usuario Reportado";
+
+    //Guardando en BD
+    var objetoGuardado = await objetoTER.save();
+
+    //evaluando si se guardó;
+    if (objetoGuardado._id) {
+      contador = contador + 1;
+    }
+
+    console.log("    | Se crearon "+ contador +" items en la base de datos.");
+  }
+};
 module.exports = {
   verificarBanderasPaises,
   verificarTipoSolicitudYCrearla,

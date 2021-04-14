@@ -13,6 +13,14 @@ const UsuarioSchema = Schema(
       type: String,
       required: true,
     },
+    
+    reputacion: {
+      type: Number,
+      required: true,
+      default: 100
+    },
+    
+
 
     email: {
       type: String,

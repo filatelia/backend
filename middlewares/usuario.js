@@ -20,12 +20,22 @@ const consultarDatosConCorreo = async (email) => {
     var usuarioBD = await Usuario.findOne({ email });
     return usuarioBD;
   } catch (e) {
-    console.log("Error en cath consultarDatosConCorreo");
+    console.log("Error en cath consultarDatosConCorreo", e);
+    return null;
+  }
+};
+const consultarDatosConApodo = async (nickname) => {
+  try {
+    var usuarioBD = await Usuario.findOne({ nickname });
+    return usuarioBD;
+  } catch (e) {
+    console.log("Error en cath consultarDatosConApodo", e);
     return null;
   }
 };
 
 module.exports = {
   consultarUsuariosAdmin,
-  consultarDatosConCorreo
+  consultarDatosConCorreo,
+  consultarDatosConApodo
 };

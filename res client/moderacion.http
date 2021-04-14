@@ -1,0 +1,10 @@
+
+post http://localhost:3000/api/moderacion/crear-reporte
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiX2lkIjoiNjA1YTY3Zjg2Yjk1NTExNTA2MTJmNGZjIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTg0MjI3NTYsImV4cCI6MTYxODUwOTE1Nn0.JHZ-4M8RrwSLghNRJ8YAEldYbPNslWwfEdCUk-BRHAg
+
+{
+   
+"apodo_us_reportado": "alexis_dorado",
+"razones_reporte": "Reporte de prueba"
+}

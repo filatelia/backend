@@ -1,22 +1,7 @@
 const { Schema, model } = require("mongoose");
 const reportesSchema = Schema(
   {
-    mensaje_administrador_a_reportante: [
-      {
-        type: String,
-      },
-      {
-        timestamps: true,
-      },
-    ],
-    mensaje_administrador_a_reportado: [
-      {
-        type: String,
-      },
-      {
-        timestamps: true,
-      },
-    ],
+
     usuario_reportado: {
       type: Schema.Types.ObjectId,
       ref: "Usuarios",
@@ -39,6 +24,22 @@ const reportesSchema = Schema(
       type: String,
       required: true
     },
+    mensaje_administrador_a_reportante: [
+      {
+        type: String,
+      },
+      {
+        timestamps: true,
+      },
+    ],
+    mensaje_administrador_a_reportado: [
+      {
+        type: String,
+      },
+      {
+        timestamps: true,
+      },
+    ],
 
   },
   { collection: "bdfc_Reportes", timestamps: true }
