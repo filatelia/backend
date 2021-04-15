@@ -27,12 +27,12 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 
 
 ###
-get http://localhost:3000/api/catalogo/uploads/excel/mis-estampillas
+get https://api.filateliaperu.com/api/catalogo/uploads/excel/mis-estampillas
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiUGFyYSBwcnVlYmFzIGVudmlvIGVtYWlsIiwiZW1haWwiOiJwcnVlYmFzLWZpbGF0ZWxpYUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2NTI3NjkwLCJleHAiOjE2MTY2MTQwOTB9.2TBGwCr-zPrbp3eE5l1nu8DejH91-D75uCe16O3k5jw
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDUyOTc2LCJleHAiOjE2MTg1MzkzNzZ9.Fnf1UvRW41Bh0BD6WH0EAkd7SvzvM8l3tufnBcdMecc
 
 {
-    "id_catalogo": "605a6a396b9551150612f502"
+    "id_catalogo": "id_catalogo"
 }
 
 ###
