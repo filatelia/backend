@@ -119,10 +119,11 @@ const crearSegundaSolicitud = async (id_solicitud) => {
       solicitudBD.tipoEstadoSolicitud_id = generarSegundaSolicitud._id;
       console.log("Antes de guardar", solicitudBD);
       var segSol = await solicitudBD.save();
+
       await enviarCorreos(
         solicitudBD.usuario_id.email,
         solicitudBD.usuario_id.name,
-        primeraSolicitud.descripcion
+        segSol.descripcion
       );
 
       return segSol;
