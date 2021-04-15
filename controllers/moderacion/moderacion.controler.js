@@ -1,5 +1,8 @@
 const { response } = require("express");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
+const { consultarReporteConIdReporte } = require("../../middlewares/reportes");
+
+
 const {
   consultarDatosConCorreo,
   consultarDatosConApodo,
@@ -10,7 +13,6 @@ const {
 } = require("../../middlewares/reportes");
 const Reportes = require("../../models/moderacion/reportes.modelo");
 const { enviarCorreosReporte } = require("../../middlewares/enviar_correos");
-
 
 const crearReporte = async (req, res = response) => {
   const { apodo_us_reportado, razones_reporte } = req.body;
@@ -119,33 +121,56 @@ const mostrarTodosReportes = async (req, res) => {
     });
   }
 };
-const darBaja = async (req, res) =>{
+const darBaja = async (req, res) => {
   try {
-    const { idUsuario } = req.params;
-    var usuarioBD = await consultarDatosConId(idUsuario);
-    usuarioBD.estado = false;
-    var usuarioactualizado = await usuarioBD.save();
-    if(usuarioactualizado == null){
+    const { idReporte } = req.params;
+
+    //---------------------------------/
+    //Actualizar Tipo Estado de Reporte//
+
+    //Buscar reporte con id reporte
+    console.log("aa");
+    var reporteBD = await consultarReporteConIdReporte(idReporte);
+    console.log("reporte -->", reporteBD);
+
+    if (reporteBD == false) {
       return res.json({
         ok: false,
-        msg: "Error al dar de baja."
-      });  
+        msg: "Error al buscar reporte"
+      });
+      
+    }
+    if (reporteBD == null) {
+      return res.json({
+        ok: false,
+        msg: "No se encontro reporte"
+      });
+      
     }
 
+
+
+    /** 
+      var usuarioBD = await consultarDatosConId(idReporte);
+      usuarioBD.estado = false;
+      var usuarioactualizado = await usuarioBD.save();
+      if(usuarioactualizado == null){
+        return res.json({
+          ok: false,
+          msg: "Error al dar de baja."
+        });  
+      }
+   */
     return res.json({
       ok: true,
-      msg: "Usuario dado de baja correctamente."
+      msg: "Usuario dado de baja correctamente.",
     });
-    
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 
   //buscar usuario en bd
-  
-}
+};
 module.exports = {
   crearReporte,
   mostrarTodosReportes,
-  darBaja
+  darBaja,
 };
