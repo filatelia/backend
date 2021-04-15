@@ -1,6 +1,6 @@
 const { response } = require("express");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
-const { consultarReporteConIdReporte } = require("../../middlewares/reportes");
+const { consultarReporteConIdReporte, consultarTodosTiposEstadoReporte } = require("../../middlewares/reportes");
 
 const {
   consultarDatosConCorreo,
@@ -233,9 +233,20 @@ const cambiarEstadoReporte = async (req, res) => {
 
 };
 
+const todosTipoEstadoReporte = async (req, res= response)=>{
+
+  const tiposEstadoReporte= await consultarTodosTiposEstadoReporte();
+  return res.json({
+    ok: true,
+    msg: tiposEstadoReporte
+  }); 
+
+}
+
 const ignorarReporte = (module.exports = {
   crearReporte,
   mostrarTodosReportes,
   cambiarEstadoReporte,
-  mostrarTodosReportesSinAnalizar
+  mostrarTodosReportesSinAnalizar,
+  todosTipoEstadoReporte
 });
