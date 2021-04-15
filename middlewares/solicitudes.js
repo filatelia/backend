@@ -123,7 +123,7 @@ const crearSegundaSolicitud = async (id_solicitud) => {
       await enviarCorreos(
         solicitudBD.usuario_id.email,
         solicitudBD.usuario_id.name,
-        segSol.descripcion
+        solicitudBD.tipoEstadoSolicitud_id.descripcion
       );
 
       return segSol;

@@ -2,7 +2,6 @@ const { response } = require("express");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
 const { consultarReporteConIdReporte } = require("../../middlewares/reportes");
 
-
 const {
   consultarDatosConCorreo,
   consultarDatosConApodo,
@@ -12,7 +11,10 @@ const {
   consultarTipoEstadoReporteConAbreviacion,
 } = require("../../middlewares/reportes");
 const Reportes = require("../../models/moderacion/reportes.modelo");
-const { enviarCorreosReporte } = require("../../middlewares/enviar_correos");
+const {
+  enviarCorreosReporte,
+  enviarCorreosReporteAnalisis,
+} = require("../../middlewares/enviar_correos");
 
 const crearReporte = async (req, res = response) => {
   const { apodo_us_reportado, razones_reporte } = req.body;
@@ -131,41 +133,88 @@ const darBaja = async (req, res) => {
     //Buscar reporte con id reporte
     console.log("aa");
     var reporteBD = await consultarReporteConIdReporte(idReporte);
-    console.log("reporte -->", reporteBD);
 
     if (reporteBD == false) {
       return res.json({
         ok: false,
-        msg: "Error al buscar reporte"
+        msg: "Error al buscar reporte",
       });
-      
     }
     if (reporteBD == null) {
       return res.json({
         ok: false,
-        msg: "No se encontro reporte"
+        msg: "No se encontro reporte",
       });
-      
     }
 
+    /**
+     * Consultar Tipo Estado Reporte
+     * Tipo estado solicitud -> P.DB
+     * Descripción ->
+     * Reporte analizado, concluyendo que el Usuario incumple las
+     * normas de convivencia de la comunidad Filatelia.
+     */
 
+    var tipoEstadoReporteBD = await consultarTipoEstadoReporteConAbreviacion(
+      "P.DB"
+    );
+    if (tipoEstadoReporteBD == false) {
+      return res.json({
+        ok: false,
+        msg:
+          "No se  puedo crear reporte, error en consultar el estado del reporte.",
+      });
+    }
+    if (tipoEstadoReporteBD == null) {
+      return res.json({
+        ok: false,
+        msg: "No se  puedo crear reporte, no se encontró estado del reporte.",
+      });
+    }
 
-    /** 
-      var usuarioBD = await consultarDatosConId(idReporte);
-      usuarioBD.estado = false;
-      var usuarioactualizado = await usuarioBD.save();
-      if(usuarioactualizado == null){
-        return res.json({
-          ok: false,
-          msg: "Error al dar de baja."
-        });  
-      }
-   */
-    return res.json({
+    var reporteBD = await consultarReporteConIdReporte(idReporte);
+    if (reporteBD == false) {
+      return res.json({
+        ok: false,
+        msg:
+          "No se  puedo crear reporte, error en consultar el estado del reporte.",
+      });
+    }
+    if (reporteBD == null) {
+      return res.json({
+        ok: false,
+        msg: "No se  puedo crear reporte, no se encontró estado del reporte.",
+      });
+    }
+
+    //Asociando nuevo estado de reporte
+    reporteBD.tipo_estado_reporte = tipoEstadoReporteBD._id;
+     var reporteAtualizado= await reporteBD.save();
+     console.log("reporteAtualizado -> ", reporteAtualizado);
+
+    //Dando de baja al usuario
+    var usuarioBD = await consultarDatosConId(reporteBD.usuario_reportado._id);
+    usuarioBD.estado = false;
+    var usuarioactualizado = await usuarioBD.save();
+    if (usuarioactualizado == null) {
+      return res.json({
+        ok: false,
+        msg: "Error al dar de baja.",
+      });
+    }
+    console.log("usuarioactualizado ->", usuarioactualizado);
+  await enviarCorreosReporteAnalisis(reporteBD);
+   return res.json({
       ok: true,
       msg: "Usuario dado de baja correctamente.",
     });
-  } catch (error) {}
+  } catch (error) {
+    return res.json({
+      ok: false,
+      msg: "Error al dar de baja al usuario",
+      error: error
+    });
+  }
 
   //buscar usuario en bd
 };
