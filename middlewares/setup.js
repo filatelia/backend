@@ -144,7 +144,7 @@ const verificarEstadoTipoReporte = async () => {
     objetoTER.nombre = "Procesado | Dato de baja";
     objetoTER.abreviacion = "P.DB";
     objetoTER.descripcion =
-      "Reporte analizado, concluyendo que el Usuario incumple las normas de convivencia de la comunidad Filatelia.";
+      "<p>Reporte analizado, concluyendo que el Usuario incumple rotundamente las normas de convivencia de la comunidad Filatelia, se toman las siguientes medidas: </p> <p>1.  Se da de baja del sistema. </p> <p>2. Se borra todo tipo de información en nuestras bases de datos (estampillas, catálogos, datos personales, etcétera). </p>";
 
     //Guardando en BD
     var objetoGuardado = await objetoTER.save();
@@ -163,7 +163,7 @@ const verificarEstadoTipoReporte = async () => {
     objetoTER.nombre = "Procesado | Ignorado Acumulativo";
     objetoTER.abreviacion = "P.IA";
     objetoTER.descripcion =
-      "Reporte analizado, concluyendo que el Usuario cometió una falta media a las normas de convivencia de la comunidad Filatelia.No se le da de baja al usuario, pero disminuye su reputación";
+      "<p>Reporte analizado, concluyendo que el Usuario cometió una falta, y la falta es media a las normas de convivencia de la comunidad Filatelia, se tomaron medidas.</p> <p>No se le da de baja al usuario, pero disminuye su reputación en 20 puntos de 100 iniciales.</p> <p>Si un usuario disminuye por debajo de 50 puntos, se le dará de baja pero también se debe tener en cuenta que, en cualquier momento, el  administrador puede darle de baja por su incumplimiento a las reglas de la comunidad Filatelia.</p>";
 
     //Guardando en BD
     var objetoGuardado = await objetoTER.save();
@@ -182,7 +182,7 @@ const verificarEstadoTipoReporte = async () => {
     objetoTER.nombre = "Procesado | Ignorado No Acumulativo";
     objetoTER.abreviacion = "P.INA";
     objetoTER.descripcion =
-      "Reporte analizado, concluyendo que el Usuario no cometió una falta las normas de convivencia de la comunidad Filatelia.No se le da de baja al usuario, tampoco disminuye la reputación";
+      "<p>Reporte analizado, llegando a la conclusión que el Usuario no cometió falta las normas de convivencia de la comunidad Filatelia, por lo tanto:  </p> <p>1.  No se le da de baja al usuario </p>  <p>2. No disminuye la reputación. </p>";
 
     //Guardando en BD
     var objetoGuardado = await objetoTER.save();
@@ -201,7 +201,7 @@ const verificarEstadoTipoReporte = async () => {
     objetoTER.nombre = "No Procesado | Creado Espera Análisis";
     objetoTER.abreviacion = "NP.CEA";
     objetoTER.descripcion =
-      "Reporte creado correctamente, en espera del Análisis del Administrador, para evaluar si el Usuario cometió una falta a las normas de convivencia de la comunidad Filatelia.Por el momento, éste estado de reporte no disminuye la reputación, ni cancelará la cuenta del Usuario Reportado";
+      "<p>Reporte creado correctamente, en espera del Análisis del Administrador, para evaluar si el Usuario cometió una falta a las normas de convivencia de la comunidad Filatelia. </p>  <p>Por el momento, éste estado de reporte no disminuye la reputación, ni cancelará la cuenta del Usuario Reportado. </p>";
 
     //Guardando en BD
     var objetoGuardado = await objetoTER.save();
