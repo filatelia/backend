@@ -13,6 +13,7 @@ const VariantesErrores_ = require("../../models/catalogo/variantes-errores.model
 const {
   agregarVariantesErroresEstampilla,
 } = require("../../controllers/catalogo/variantes-errores.controlador");
+const { crearSegundaSolicitud } = require("../../middlewares/solicitudes");
 const crearEstampillaIndividual = async (req, res = response) => {
   try {
     console.log(req.files);
@@ -130,6 +131,7 @@ var ids= [];
   //Asociando variables y errores a estampilla
   // await asociarVariablesYErrores(variantesErrores);
    await asociarVariablesYErrores(completos);
+   await crearSegundaSolicitud(catalogoBD.solicitud._id);
 
   return res.json({
     ok: true,
