@@ -113,7 +113,7 @@ const subirEstampillasExcel = async (req, res = response) => {
   });
 
   //Guardando estampillas
-  var estampillasGuardadas = await guardarEstampillas(completos, idCatalogo);
+ var esguarda= await guardarEstampillas(completos, idCatalogo);
 
   //Agrupar variantes y errores
   console.log("Agrupando variantes y errores...");
@@ -129,11 +129,11 @@ var ids= [];
 
   //Asociando variables y errores a estampilla
   // await asociarVariablesYErrores(variantesErrores);
-  var aaaa = await asociarVariablesYErrores(completos);
+   await asociarVariablesYErrores(completos);
 
   return res.json({
     ok: true,
-    msg: Estampillas.find( { CATALOGO:idCatalogo }  ),
+    msg: esguarda,
   });
 };
 

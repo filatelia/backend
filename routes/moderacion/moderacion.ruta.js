@@ -13,7 +13,7 @@ const router = Router();
 
 router.post('/crear-reporte/',[validarJWT], crearReporte);
 router.get('/mostrar-todos-reportes/',[validarJWT, validarDeJWTRoleAdmin], mostrarTodosReportes);
-router.get('/dar-baja/:idUsuario',[validarJWT, validarDeJWTRoleAdmin], darBaja);
+router.get('/dar-baja/:idReporte',[validarJWT, validarDeJWTRoleAdmin], darBaja);
 router.get('/ignorar-reporte/:idReporte',[validarJWT, validarDeJWTRoleAdmin], darBaja);
 
 
