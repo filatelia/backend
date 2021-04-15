@@ -135,6 +135,52 @@ const enviarCorreosReporte = async (
     );
   }
 };
+const enviarCorreosReporteAnalisis = async (
+  reporte
+) => {
+  var emailReportado =  reporte.usuario_reportado.email;
+  var emailReportante = reporte.usuario_reportante.email;
+  var nombreUsuario = "";
+  var subjectEmail = "";
+  var cuerpo = "";
+
+  //Enviando mensaje a usuario reportado
+
+  nombreUsuario = reporte.usuario_reportado.name;
+  if(reporte.usuario_reportado.apellidos){
+    nombreUsuario = reporte.usuario_reportado.name+" "+ reporte.usuario_reportado.apellidos;
+  }
+
+  subjectEmail = "Información del reporte ✌";
+  cuerpo ='<p>Uno de nuestros administradores ha analizado el reporte.</p>';
+  await mensajeReporte(
+    reporte,
+    cuerpo,
+    subjectEmail,
+    emailReportado,
+    nombreUsuario
+    
+  );
+
+  nombreUsuario= "";
+  //enviando mensaje a Cliente Reportante
+  nombreUsuario = reporte.usuario_reportante.name;
+  if(reporte.usuario_reportante.apellidos){
+    nombreUsuario = reporte.usuario_reportante.name+" "+ reporte.usuario_reportante.apellidos;
+  }
+  subjectEmail = "Reporte Analizado | Gracias por contribuir 😇";
+  cuerpo ='<p>Nuevamente agradecemos tu voluntad para un mejor ambiente en nuestros chats, esperamos que sigas contribuyendo a nuestra comunidad de Filatelia.</p>'+
+  '<p>El reporte se ha analizado por uno de nuestros administradores.<p>';
+  await mensajeReporte(
+    reporte,
+    cuerpo,
+    subjectEmail,
+    emailReportante,
+    nombreUsuario
+  );
+
+
+};
 const enviarCorreoAprobacion = async (solicitud, res = response) => {
   console.log("mensajeEstadoSolicitud", solicitud);
   var email = "";
@@ -295,5 +341,6 @@ async function mensajeReporteAdmin(
 module.exports = {
   enviarCorreos,
   enviarCorreoAprobacion,
-  enviarCorreosReporte
+  enviarCorreosReporte,
+  enviarCorreosReporteAnalisis
 };

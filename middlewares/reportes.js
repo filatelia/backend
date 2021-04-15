@@ -13,6 +13,19 @@ async function consultarTipoEstadoReporteConAbreviacion(abreviacion) {
   }
 }
 
+async function consultarTipoEstadoReporteConId(id) {
+  try {
+    const datosBD = await TipoEstadoReporte.findById(id);
+    return datosBD;
+  } catch (error) {
+    console.log(
+      "error en catch | consultarTipoEstadoReporteConId(id)",
+      error
+    );
+    return false;
+  }
+}
+
 async function consultarReporteConIdReporte(idReporte) {
   try {
     return await Reportes.findById(idReporte);
@@ -28,4 +41,5 @@ async function consultarReporteConIdReporte(idReporte) {
 module.exports = {
   consultarTipoEstadoReporteConAbreviacion,
   consultarReporteConIdReporte,
+  consultarTipoEstadoReporteConId
 };
