@@ -1,5 +1,8 @@
 const TipoEstadoReporte = require("../models/moderacion/tipo-estado-reporte.model");
 const Reportes = require("../models/moderacion/reportes.modelo");
+const Chats = require("../models/moderacion/chats.modelo");
+const { Mongoose, ObjectId } = require("mongoose");
+
 async function consultarTipoEstadoReporteConAbreviacion(abreviacion) {
   try {
     const datosBD = await TipoEstadoReporte.findOne({ abreviacion });
@@ -18,10 +21,7 @@ async function consultarTipoEstadoReporteConId(id) {
     const datosBD = await TipoEstadoReporte.findById(id);
     return datosBD;
   } catch (error) {
-    console.log(
-      "error en catch | consultarTipoEstadoReporteConId(id)",
-      error
-    );
+    console.log("error en catch | consultarTipoEstadoReporteConId(id)", error);
     return false;
   }
 }
@@ -48,10 +48,31 @@ async function consultarTodosTiposEstadoReporte() {
     return false;
   }
 }
+async function consultarTodosMensajesCliente(idCliente) {
+  const chatBD = await Chats.find({}, { conversation: 1 });
+
+  var chats=  [];
+chatBD.map((data) => {
+    console.log("data.id_usuario");
+
+  data.conversation.map((dar) => {
+      if (dar.id_usuario == idCliente) {
+        chats.push(dar);
+
+      }
+    });
+   
+  });
+
+  console.log("we", chats);
+
+  return chats;
+}
 
 module.exports = {
   consultarTipoEstadoReporteConAbreviacion,
   consultarReporteConIdReporte,
   consultarTipoEstadoReporteConId,
-  consultarTodosTiposEstadoReporte
+  consultarTodosTiposEstadoReporte,
+  consultarTodosMensajesCliente,
 };

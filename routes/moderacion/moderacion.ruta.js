@@ -3,7 +3,7 @@
  */
 
 const { Router } = require("express");
-const { crearReporte, mostrarTodosReportes,  cambiarEstadoReporte, todosTipoEstadoReporte, mostrarTodosReportesSinAnalizar } = require("../../controllers/moderacion/moderacion.controler");
+const { crearReporte, todosMensajesCliente, mostrarTodosReportes,  cambiarEstadoReporte, todosTipoEstadoReporte, mostrarTodosReportesSinAnalizar } = require("../../controllers/moderacion/moderacion.controler");
 const {validarJWT, retornarDatosJWT, validarDeJWTRoleAdmin} = require("../../middlewares/validar-jwt");
 const {validarDatoscambiarEstadoReporte} = require("../../middlewares/validar-campos");
 
@@ -18,6 +18,7 @@ router.get('/mostrar-todos-reportes/',[validarJWT, validarDeJWTRoleAdmin], mostr
 router.post('/cambiar-estado-reporte/',[validarJWT, validarDeJWTRoleAdmin, validarDatoscambiarEstadoReporte], cambiarEstadoReporte);
 router.get('/reportes-analizar/',[validarJWT, validarDeJWTRoleAdmin], mostrarTodosReportesSinAnalizar);
 router.get('/tipos-estados-reporte/',[validarJWT, validarDeJWTRoleAdmin], todosTipoEstadoReporte);
+router.get('/chats-reportado/:idCliente',[validarJWT, validarDeJWTRoleAdmin], todosMensajesCliente);
 
 
 
