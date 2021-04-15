@@ -7,13 +7,14 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3000/api/catalogo/paises/all
+GET https://api.filateliaperu.com/api/catalogo/paises
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlJvZHJpZ29PbGFndWUiLCJlbWFpbCI6ImRvcmFkb0Bkb3JhZG8uY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTU1NzQzNzIsImV4cCI6MTYxNTY2MDc3Mn0.WISxDXznCiPqbjLzAOL-lHVS8db-hfV9DC_AJQSO1ds
 
 
 
 ###
+
 get http://localhost:3000/api/catalogo/uploads
 content-type: application/json
 
@@ -27,12 +28,11 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 
 
 ###
-get http://localhost:3000/api/catalogo/uploads/excel/mis-estampillas/
+get http://localhost:3000/api/catalogo/uploads/excel/mis-estampillas/607861c8f8f3f570dc270da0
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDUyOTc2LCJleHAiOjE2MTg1MzkzNzZ9.Fnf1UvRW41Bh0BD6WH0EAkd7SvzvM8l3tufnBcdMecc
 
 {
-    "id_catalogo": "607861c8f8f3f570dc270da0"
 }
 
 ###

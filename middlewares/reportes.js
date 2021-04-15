@@ -37,9 +37,21 @@ async function consultarReporteConIdReporte(idReporte) {
     return false;
   }
 }
+async function consultarTodosTiposEstadoReporte() {
+  try {
+    return await TipoEstadoReporte.find();
+  } catch (error) {
+    console.log(
+      "Error al buscar reporte | catch consultarTodosTiposEstadoReporte",
+      error
+    );
+    return false;
+  }
+}
 
 module.exports = {
   consultarTipoEstadoReporteConAbreviacion,
   consultarReporteConIdReporte,
-  consultarTipoEstadoReporteConId
+  consultarTipoEstadoReporteConId,
+  consultarTodosTiposEstadoReporte
 };
