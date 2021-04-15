@@ -9,13 +9,13 @@ const {
 } = require("../../middlewares/usuario");
 const {
   consultarTipoEstadoReporteConAbreviacion,
+  consultarTipoEstadoReporteConId,
 } = require("../../middlewares/reportes");
 const Reportes = require("../../models/moderacion/reportes.modelo");
 const {
   enviarCorreosReporte,
   enviarCorreosReporteAnalisis,
 } = require("../../middlewares/enviar_correos");
-
 
 const crearReporte = async (req, res = response) => {
   const { apodo_us_reportado, razones_reporte } = req.body;
@@ -111,7 +111,49 @@ const crearReporte = async (req, res = response) => {
 };
 const mostrarTodosReportes = async (req, res) => {
   try {
-    const todosReportes = await Reportes.find();
+    var todosReportes = await Reportes.find();
+    todosReportes.map(data =>{
+      data.usuario_reportado.password = null;
+      data.usuario_reportado.pais_usuario = null;
+      data.usuario_reportado.tipo_catalogo = null;
+      data.usuario_reportado.paises_coleccionados = null;
+
+      data.usuario_reportante.password = null;
+      data.usuario_reportante.pais_usuario = null;
+      data.usuario_reportante.tipo_catalogo = null;
+      data.usuario_reportante.paises_coleccionados = null;
+      
+    });
+    return res.json({
+      ok: true,
+      msg: todosReportes,
+    });
+  } catch (error) {
+    return res.json({
+      ok: false,
+      msg: "Error fatal al consultar los reportes | mostrarTodosReportes .",
+      error: error,
+    });
+  }
+};
+
+const mostrarTodosReportesSinAnalizar = async (req, res) => {
+  try {
+    
+    const tipoEstadoReporteSinAnalizar = await consultarTipoEstadoReporteConAbreviacion("NP.CEA"); 
+    var todosReportes = await Reportes.find({ tipo_estado_reporte: tipoEstadoReporteSinAnalizar._id});
+    todosReportes.map(data =>{
+      data.usuario_reportado.password = null;
+      data.usuario_reportado.pais_usuario = null;
+      data.usuario_reportado.tipo_catalogo = null;
+      data.usuario_reportado.paises_coleccionados = null;
+
+      data.usuario_reportante.password = null;
+      data.usuario_reportante.pais_usuario = null;
+      data.usuario_reportante.tipo_catalogo = null;
+      data.usuario_reportante.paises_coleccionados = null;
+      
+    });
     return res.json({
       ok: true,
       msg: todosReportes,
@@ -128,16 +170,15 @@ const cambiarEstadoReporte = async (req, res) => {
   try {
     const { idReporte, id_tipo_estado_reporte } = req.body;
 
-
-
-
+    const tipoEstadoReporteRecibido = await consultarTipoEstadoReporteConId(
+      id_tipo_estado_reporte
+    );
 
     //---------------------------------/
     //Actualizar Tipo Estado de Reporte//
 
     //Buscar reporte con id reporte
     var reporteBD = await consultarReporteConIdReporte(idReporte);
-    
 
     if (reporteBD == false) {
       return res.json({
@@ -152,82 +193,49 @@ const cambiarEstadoReporte = async (req, res) => {
       });
     }
 
-    /**
-     * Consultar Tipo Estado Reporte
-     * Tipo estado solicitud -> P.DB
-     * Descripción ->
-     * Reporte analizado, concluyendo que el Usuario incumple las
-     * normas de convivencia de la comunidad Filatelia.
-     */
-
-    var tipoEstadoReporteBD = await consultarTipoEstadoReporteConAbreviacion(
-      "P.DB"
-    );
-    if (tipoEstadoReporteBD == false) {
-      return res.json({
-        ok: false,
-        msg:
-          "No se  puedo crear reporte, error en consultar el estado del reporte.",
-      });
-    }
-    if (tipoEstadoReporteBD == null) {
-      return res.json({
-        ok: false,
-        msg: "No se  puedo crear reporte, no se encontró estado del reporte.",
-      });
-    }
-
-    var reporteBD = await consultarReporteConIdReporte(idReporte);
-    if (reporteBD == false) {
-      return res.json({
-        ok: false,
-        msg:
-          "No se  puedo crear reporte, error en consultar el estado del reporte.",
-      });
-    }
-    if (reporteBD == null) {
-      return res.json({
-        ok: false,
-        msg: "No se  puedo crear reporte, no se encontró estado del reporte.",
-      });
-    }
-
     //Asociando nuevo estado de reporte
-    reporteBD.tipo_estado_reporte = tipoEstadoReporteBD._id;
-     var reporteAtualizado= await reporteBD.save();
-     console.log("reporteAtualizado -> ", reporteAtualizado);
+    reporteBD.tipo_estado_reporte = tipoEstadoReporteRecibido._id;
+    var reporteAtualizado = await reporteBD.save();
+    console.log("reporteAtualizado -> ", reporteAtualizado);
 
+    //-------------------------------------//
+    //tomando medidas de acuerdo a lo seleciconado por el admin
     //Dando de baja al usuario
     var usuarioBD = await consultarDatosConId(reporteBD.usuario_reportado._id);
-    usuarioBD.estado = false;
-    var usuarioactualizado = await usuarioBD.save();
-    if (usuarioactualizado == null) {
-      return res.json({
-        ok: false,
-        msg: "Error al dar de baja.",
-      });
+    if (tipoEstadoReporteRecibido.abreviacion === "P.DB") {
+      usuarioBD.estado = false;
+      var usuarioactualizado = await usuarioBD.save();
+      if (usuarioactualizado == null) {
+        return res.json({
+          ok: false,
+          msg: "Error al dar de baja.",
+        });
+      }
     }
-    console.log("usuarioactualizado ->", usuarioactualizado);
-  await enviarCorreosReporteAnalisis(reporteBD);
-   return res.json({
+    if (tipoEstadoReporteRecibido.abreviacion === "P.IA") {
+      var reputacion = usuarioBD.reputacion;
+      usuarioBD.reputacion = reputacion - 20;
+      var usuarioactualizado = await usuarioBD.save();
+    }
+
+    await enviarCorreosReporteAnalisis(reporteAtualizado);
+    return res.json({
       ok: true,
-      msg: "Usuario dado de baja correctamente.",
+      msg: "Reporte actualizado correctamente",
     });
   } catch (error) {
     return res.json({
       ok: false,
-      msg: "Error al dar de baja al usuario",
-      error: error
+      msg: "Error al actualizar reporte",
+      error: error,
     });
   }
 
-  //buscar usuario en bd
 };
 
-const ignorarReporte = 
-module.exports = {
+const ignorarReporte = (module.exports = {
   crearReporte,
   mostrarTodosReportes,
   cambiarEstadoReporte,
-  
-};
+  mostrarTodosReportesSinAnalizar
+});

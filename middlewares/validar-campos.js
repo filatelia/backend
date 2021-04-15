@@ -85,6 +85,7 @@ const validarDatoscambiarEstadoReporte = async (req, res = response, next) => {
       msg: "No existe el tipo estado reporte",
     });
   }
+  next();
 };
 module.exports = {
   validarCampos,
