@@ -16,6 +16,7 @@ const {
   enviarCorreosReporteAnalisis,
 } = require("../../middlewares/enviar_correos");
 
+
 const crearReporte = async (req, res = response) => {
   const { apodo_us_reportado, razones_reporte } = req.body;
 
@@ -123,16 +124,20 @@ const mostrarTodosReportes = async (req, res) => {
     });
   }
 };
-const darBaja = async (req, res) => {
+const cambiarEstadoReporte = async (req, res) => {
   try {
-    const { idReporte } = req.params;
+    const { idReporte, id_tipo_estado_reporte } = req.body;
+
+
+
+
 
     //---------------------------------/
     //Actualizar Tipo Estado de Reporte//
 
     //Buscar reporte con id reporte
-    console.log("aa");
     var reporteBD = await consultarReporteConIdReporte(idReporte);
+    
 
     if (reporteBD == false) {
       return res.json({
@@ -218,8 +223,11 @@ const darBaja = async (req, res) => {
 
   //buscar usuario en bd
 };
+
+const ignorarReporte = 
 module.exports = {
   crearReporte,
   mostrarTodosReportes,
-  darBaja,
+  cambiarEstadoReporte,
+  
 };
