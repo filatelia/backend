@@ -276,9 +276,11 @@ if(!isValidObjectId(id_pais))
 
 async function buscarDatosUsuarioPorIdPais(id_pais) {
   var datosBD = await Solicitudes.findOne( { pais:id_pais } ); 
-  datosBD= datosBD.usuario_id;
+  
 
   if(datosBD != null){
+    datosBD= datosBD.usuario_id;
+
     var datosDuenio = new Object();
        datosDuenio.nombre_completo = datosBD.name+ " "+datosBD.apellidos ||"aa" ;
        datosDuenio.correo = datosBD.email;
