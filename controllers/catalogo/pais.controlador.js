@@ -3,6 +3,7 @@ const Pais = require("../../models/catalogo/paises");
 const fs = require("fs");
 const Path = require("path");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
+const Catalogo = require("../../models/catalogo/catalogo");
 
 const getPaisById = async (req, res = response) => {
   const _id = req.params.pid;
@@ -53,13 +54,13 @@ const getTodosPaises = async (req, res = response) => {
   return paisEncontrado;
 };
 const getPaisCatalogo = async (req, res = response) => {
-  const pais = await Estampillas.aggregate([
+  const pais = await Catalogo.aggregate([
     {
       $match:{}
     },
     {
       $group:{
-        _id:"$Pais",
+        _id:"$pais",
       }
     },
     {

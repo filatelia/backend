@@ -300,50 +300,76 @@ const mostrarCatalogoAnio = async (req, res) => {
   const { anioI, anioF } = req.params;
   const { pais, tema } = req.query;
   try {
-    var query = {};
+    var query_cat = {};
     if (pais && pais != "") {
-      query = { Pais: ObjectId(pais) };
+      query_cat.pais = ObjectId(pais.trim());
     } else if (tema && tema != "") {
-      query = { Tema: ObjectId(tema) };
+      query_cat.tema_catalogo = ObjectId(tema);
     }
+    var catalogo=await Catalogo.find(query_cat,{tema_catalogo:0,solicitud:0,tipo_catalogo:0,pais:0})
+    var id_catalogo='';
+    if(!catalogo||catalogo.length==0) throw "error list";
+    id_catalogo=ObjectId(catalogo[0]._id)
+
+
     if (Number(anioI) && Number(anioF)) {
       const estampillas = await Estampillas.find({
         $and: [
           {
-            Anio: {
+            ANIO: {
               $gte: Number(anioI),
             },
           },
           {
-            Anio: {
+            ANIO: {
               $lte: Number(anioF),
             },
           },
-          query,
+          {CATALOGO: id_catalogo},
         ],
       }).count();
-
+      console.log(id_catalogo)
       const catalogoCompleto = await Estampillas.aggregate([
+        {
+          $addFields: {
+            regex: {
+              $regexFind: {
+                input: "$ANIO",
+                regex: "^\\d+"
+              }
+            }
+          }
+        },
+        {
+          $set: {
+            anio: {
+              $convert: {
+                input: "$regex.match",
+                to: "int"
+              }
+            }
+          }
+        },
         {
           $match: {
             $and: [
               {
-                Anio: {
+                anio: {
                   $gte: Number(anioI),
                 },
               },
               {
-                Anio: {
+                anio: {
                   $lte: Number(anioF),
                 },
               },
-              query,
+              {CATALOGO: id_catalogo},
             ],
           },
         },
         {
           $group: {
-            _id: "$Anio",
+            _id: "$anio",
           },
         },
         {
@@ -351,6 +377,7 @@ const mostrarCatalogoAnio = async (req, res) => {
             anio: "$_id",
           },
         },
+        
       ]);
 
       res.json({
@@ -435,7 +462,7 @@ const mostrarMisCatalogos = async (req, res) => {
 const mostrarMisEstampillas = async (req, res) => {
   var id_catalogo = req.query.id_catalogo;
 
-  var estampillasCat = await Estampillas.find({ Catalogo: id_catalogo });
+  var estampillasCat = await Estampillas.find({ CATALOGO: id_catalogo });
 
   return res.json({
     ok: true,
@@ -613,16 +640,26 @@ const estampillaPage = async (req, res) => {
     page = parseInt(page) || 1;
     perpage = parseInt(perpage) || 10;
     var query = {};
+    var query_cat = {};
+    if (pais && pais != "") {
+      query_cat.pais = ObjectId(pais.trim());
+    } else if (tema && tema != "") {
+      query_cat.tema_catalogo = ObjectId(tema);
+    }
+    
+    var catalogo=await Catalogo.find(query_cat,{tema_catalogo:0,solicitud:0,tipo_catalogo:0,pais:0})
+    var id_catalogo='';
+    if(!catalogo||catalogo.length==0) throw "error list";
 
+    
     if (anios && anios != "") {
       anios = JSON.parse(anios);
       query = { $or: [] };
       anios.forEach((element) => {
         query.$or.push({
-          Anio: element,
+          ANIO: element,
         });
       });
-      console.log(query);
     }
 
     if (q && q != "") {
@@ -630,7 +667,7 @@ const estampillaPage = async (req, res) => {
       console.log(isNaN(q));
       if (!isNaN(q)) {
         query.$or.push({
-          Anio: q,
+          ANIO: q,
         });
       } else {
         query.$or.push({
@@ -650,24 +687,21 @@ const estampillaPage = async (req, res) => {
     if (start != 0 && end != 0) {
       query.$and = [
         {
-          Anio: {
+          ANIO: {
             $gte: Number(start),
           },
         },
         {
-          Anio: {
+          ANIO: {
             $lte: Number(end),
           },
         },
       ];
     }
 
-    if (pais && pais != "") {
-      query.Pais = ObjectId(pais.trim());
-    } else if (tema && tema != "") {
-      query.Tema = ObjectId(tema);
-    }
-    var estampillas = await Estampillas.find(query, { Catalogo: 0 })
+    id_catalogo=catalogo[0]._id
+    query.CATALOGO=ObjectId(id_catalogo)
+    var estampillas = await Estampillas.find(query, { CATALOGO: 0 })
       .skip(perpage * page - perpage)
       .limit(perpage);
     var count = await Estampillas.find(query).count();

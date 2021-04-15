@@ -306,28 +306,28 @@ const verMancolistCatId = async (req, res = response) => {
         {
           $unwind:"$estampillas"
         },
-        {
-          $unwind:"$estampillas.Pais"
-        },
-        {
-          $unwind:"$estampillas.Tema"
-        },
-        {
-          $lookup: {
-            from: "bdfc_pais",
-            localField: "estampillas.Pais",
-            foreignField: "_id",
-            as: "pais",
-          },
-        },
+        // {
+        //   $unwind:"$estampillas.Pais"
+        // },
+        // {
+        //   $unwind:"$estampillas.Tema"
+        // },
         {
           $lookup: {
-            from: "bdfc_temas",
-            localField: "estampillas.Tema",
+            from: "bdfc_uploads_imagenes",
+            localField: "estampillas.FOTO_ESTAMPILLAS",
             foreignField: "_id",
-            as: "tema",
+            as: "photo",
           },
         },
+        // {
+        //   $lookup: {
+        //     from: "bdfc_temas",
+        //     localField: "estampillas.Tema",
+        //     foreignField: "_id",
+        //     as: "tema",
+        //   },
+        // },
         {
           $project:{
             _id:1,
@@ -335,8 +335,7 @@ const verMancolistCatId = async (req, res = response) => {
             id_estampilla:1,
             id_mancolist_cat:1,
             estampillas:1,
-            pais:{ $arrayElemAt: ["$pais", 0] },
-            temas:{ $arrayElemAt: ["$tema", 0] },
+            "FOTO_ESTAMPILLAS":{$arrayElemAt: ["$photo", 0]}
           }
         },
       ]);
