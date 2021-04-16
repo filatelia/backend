@@ -6,7 +6,6 @@ const { buscarSolicitudIdTema } = require("../../middlewares/solicitudes");
 
 const getTemas = async (req, res) => {
   var temas = [];
-  var objTema = new Object();
   var respuesta = await Catalogo.find({},{solicitudes:1});
    
   respuesta.map((data) => {
