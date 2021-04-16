@@ -54,7 +54,8 @@ const getTodosPaises = async (req, res = response) => {
   return paisEncontrado;
 };
 const getPaisCatalogo = async (req, res = response) => {
-  const pais = await Catalogo.aggregate([
+ /** 
+  const paisBD = await Catalogo.aggregate([
     {
       $match:{}
     },
@@ -84,6 +85,16 @@ const getPaisCatalogo = async (req, res = response) => {
     },
     
   ]);
+*/
+var respuesta = await Catalogo.find({},{solicitudes:1});
+var pais = [];
+ 
+respuesta.map((data) => {
+    if (data.solicitud.tipoEstadoSolicitud_id.abreviacion === "ACE2") {
+      pais.push(data.pais);
+    }
+  });
+
  
   res.status(200).send({
     data:pais,
