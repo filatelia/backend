@@ -11,7 +11,7 @@ router.post( '/',[validarJWT], actualizarMancolist);
 router.post( '/create-cat',[validarJWT], catMancolist);
 router.put( '/update-cat',[validarJWT], catMancolist);
 router.get( '/manco-list-cat',[validarJWT], getMancoListCat);
-router.get( '/validar/',[validarJWT], validarMancolist);
+router.post( '/validar/',[validarJWT], validarMancolist);
 
 router.post( '/listar/',[validarJWT], verMancolistPropia);
 router.get( '/listar-id-cat',[], verMancolistCatId);
