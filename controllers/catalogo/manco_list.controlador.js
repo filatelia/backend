@@ -4,6 +4,8 @@ const MancolistCat = require("../../models/catalogo/mancolista_categorizada.mode
 const Usuario = require("../../models/usuario/usuario");
 var mongo = require("mongoose");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
+const { consultarDatosConCorreo } = require("../../middlewares/usuario");
+
 const { ObjectId } = require("mongoose").Types;
 
 const actualizarMancolist = async (req, res = response) => {
@@ -194,25 +196,11 @@ const compartirManco_list = async (req, res = response) => {
       $unwind:"$estampillas"
     },
     {
-      $unwind:"$estampillas.Pais"
-    },
-    {
-      $unwind:"$estampillas.Tema"
-    },
-    {
       $lookup: {
-        from: "bdfc_pais",
-        localField: "estampillas.Pais",
+        from: "bdfc_uploads_imagenes",
+        localField: "estampillas.FOTO_ESTAMPILLAS",
         foreignField: "_id",
-        as: "pais",
-      },
-    },
-    {
-      $lookup: {
-        from: "bdfc_temas",
-        localField: "estampillas.Tema",
-        foreignField: "_id",
-        as: "tema",
+        as: "photo",
       },
     },
     {
@@ -222,8 +210,8 @@ const compartirManco_list = async (req, res = response) => {
         id_estampilla:1,
         id_mancolist_cat:1,
         estampillas:1,
-        pais:{ $arrayElemAt: ["$pais", 0] },
-        temas:{ $arrayElemAt: ["$tema", 0] },
+        "FOTO_ESTAMPILLAS":{$arrayElemAt: ["$photo", 0]}
+
       }
     },
   ]);
@@ -354,6 +342,77 @@ const verMancolistCatId = async (req, res = response) => {
       });
     }
 };
+const validarMancolist = async(req, res) =>{
+  
+  var {id_categoria_estampilla, id_estampilla} = req.body;
+
+  if (!id_categoria_estampilla || id_categoria_estampilla ==="" || id_categoria_estampilla === null ||
+  !id_estampilla || id_estampilla ==="" || id_estampilla === null ) {
+    return res.json({
+      ok:false,
+      msg: "No estas enviando los datos obligatorios"
+    });
+    
+  }
+
+  if (!mongo.isValidObjectId(id_estampilla) || !mongo.isValidObjectId(id_categoria_estampilla)) {
+    return res.json({
+      ok:false,
+      msg: "No estas enviando ids válidos"
+    });
+  }
+
+
+    // Leer el Token
+    const token = req.header('x-access-token');
+    const email = retornarDatosJWT(token);
+
+    var usuarioBD = await consultarDatosConCorreo(email)
+    var id_usuario = usuarioBD._id;
+  var mancolistaEnBD= await Mancolist.aggregate(
+    [
+
+      {
+        $lookup:
+        {
+          from: 'bdfc_manco_list_cat',
+          localField:'id_mancolist_cat',
+          foreignField: '_id',
+          as: 'categoria_mancolista'
+        }
+
+      },
+      {
+        $unwind: '$categoria_mancolista'
+      },
+      {
+        $project: {
+          id_usuario: '$categoria_mancolista.id_usuario',
+          id_categoria_estampilla: '$categoria_mancolista._id',
+          id_estampilla: 1
+        }
+      },
+      {
+        $match: {
+          id_usuario: ObjectId(id_usuario),
+          id_categoria_estampilla:  ObjectId(id_categoria_estampilla),
+          id_estampilla:  ObjectId(id_estampilla),
+        }
+      },
+    ]); 
+    console.log(mancolistaEnBD);
+   if (mancolistaEnBD.length > 0) {
+     return res.json({
+       ok:true,
+       existe:true
+     });
+   } else {
+    return res.json({
+      ok:false,
+      existe: false
+    });
+   } 
+}
 
 module.exports = {
   actualizarMancolist,
@@ -362,4 +421,5 @@ module.exports = {
   catMancolist,
   getMancoListCat,
   verMancolistCatId,
+  validarMancolist
 };
