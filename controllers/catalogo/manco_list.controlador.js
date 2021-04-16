@@ -403,12 +403,12 @@ const validarMancolist = async(req, res) =>{
     console.log(mancolistaEnBD);
    if (mancolistaEnBD.length > 0) {
      return res.json({
-       ok:true,
+       ok:false,
        existe:true
      });
    } else {
     return res.json({
-      ok:false,
+      ok:true,
       existe: false
     });
    } 
