@@ -54,7 +54,7 @@ const getTodosPaises = async (req, res = response) => {
   return paisEncontrado;
 };
 const getPaisCatalogo = async (req, res = response) => {
- /** 
+ /**
   const paisBD = await Catalogo.aggregate([
     {
       $match:{}
@@ -85,19 +85,27 @@ const getPaisCatalogo = async (req, res = response) => {
     },
     
   ]);
-*/
+
+ */
+
 var respuesta = await Catalogo.find({},{solicitudes:1});
 var pais = [];
+var objPais = new Object();
  
 respuesta.map((data) => {
     if (data.pais && data.solicitud.tipoEstadoSolicitud_id.abreviacion === "ACE2") {
       console.log("entramos", data.solicitud.tipoEstadoSolicitud_id.abreviacion);
-      pais.push(data.pais);
+      objPais._id = data.pais._id; 
+      objPais.pais = data.pais; 
+      pais.push(objPais);
     }
   });
 
+  
  console.log("pais ->", pais);
-  res.status(200).send({
+
+
+ res.status(200).send({
     data:pais,
     ok:true
   })
