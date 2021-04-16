@@ -9,10 +9,11 @@ const getTemas = async (req, res) => {
   var respuesta = await Catalogo.find({},{solicitudes:1});
    
   respuesta.map((data) => {
-      if (data.solicitud.tipoEstadoSolicitud_id.abreviacion === "ACE2") {
+      if (data.tema_catalogo && data.solicitud.tipoEstadoSolicitud_id.abreviacion === "ACE2") {
         temas.push(data.tema_catalogo);
       }
     });
+    
 
  return res.json({
     ok: true,

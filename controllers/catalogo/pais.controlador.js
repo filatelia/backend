@@ -90,12 +90,13 @@ var respuesta = await Catalogo.find({},{solicitudes:1});
 var pais = [];
  
 respuesta.map((data) => {
-    if (data.solicitud.tipoEstadoSolicitud_id.abreviacion === "ACE2") {
+    if (data.pais && data.solicitud.tipoEstadoSolicitud_id.abreviacion === "ACE2") {
+      console.log("entramos", data.solicitud.tipoEstadoSolicitud_id.abreviacion);
       pais.push(data.pais);
     }
   });
 
- 
+ console.log("pais ->", pais);
   res.status(200).send({
     data:pais,
     ok:true
