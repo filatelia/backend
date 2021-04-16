@@ -1,7 +1,6 @@
 //Nueva solicitud cliente
 get http://localhost:3000/api/catalogo/temas
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODExNTQ0LCJleHAiOjE2MTY4OTc5NDR9.AAZzMwrHo3R4T01CgqnYKW8fX5dW6Pf0p0T4em1QcaU
 
 {
 

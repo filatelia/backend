@@ -1,13 +1,23 @@
 const { response } = require("express");
 const { buscarTema } = require("../../middlewares/temas");
 const Tema = require("../../models/catalogo/temas");
+const Catalogo = require("../../models/catalogo/catalogo");
 const { buscarSolicitudIdTema } = require("../../middlewares/solicitudes");
 
 const getTemas = async (req, res) => {
-  const temas = await Tema.find();
-  res.json({
+  var temas = [];
+  var objTema = new Object();
+  var respuesta = await Catalogo.find({},{solicitudes:1});
+   
+  respuesta.map((data) => {
+      if (data.solicitud.tipoEstadoSolicitud_id.abreviacion === "ACE2") {
+        temas.push(data.tema_catalogo);
+      }
+    });
+
+ return res.json({
     ok: true,
-    temas,
+    temas: temas,
   });
 };
 const getTema = async (req, res) => {
@@ -116,15 +126,18 @@ const updateTema = async (req, res = response) => {
     });
   }
 };
-const validarDatosRecibidosMostrarDatosDuenio = async (req, res = response, next) => {
+const validarDatosRecibidosMostrarDatosDuenio = async (
+  req,
+  res = response,
+  next
+) => {
   const { nombre_tema } = req.params;
 
-  if (!nombre_tema || nombre_tema == null || nombre_tema == "" ){
+  if (!nombre_tema || nombre_tema == null || nombre_tema == "") {
     return res.json({
       ok: false,
-      msg: "Debes enviar un nombre de tema"
+      msg: "Debes enviar un nombre de tema",
     });
-
   }
   //buscando existencia de tema
   const existeTema = await buscarTema(nombre_tema);
@@ -136,58 +149,48 @@ const validarDatosRecibidosMostrarDatosDuenio = async (req, res = response, next
         ok: true,
         msg: true,
       });
-    }
-    else{
+    } else {
       next();
     }
-
-
-
   } catch (e) {
     return res.json({
       ok: false,
-      msg: "ha ocurrido un error fatal, validarDatosRecibidosMostrarDatosDuenio",
-      error: e
+      msg:
+        "ha ocurrido un error fatal, validarDatosRecibidosMostrarDatosDuenio",
+      error: e,
     });
-
   }
 };
 
 const mostrarDatosDuenio = async (req, res) => {
-
   try {
-
     const { nombre_tema } = req.params;
     const existeTema = await buscarTema(nombre_tema);
-    
-    var datosBD = await buscarSolicitudIdTema(existeTema._id);
-     datosBD = datosBD.usuario_id;
-     if(!datosBD.apellidos){
-      datosBD.apellidos="";
-     }
 
-     var datosDuenio = new Object();
-     datosDuenio.nombre_completo = datosBD.name+ " "+datosBD.apellidos ||"aa" ;
-     datosDuenio.correo = datosBD.email;
-     datosDuenio.telefono = datosBD.telefono;
-     datosDuenio.apodo = datosBD.nickname;
+    var datosBD = await buscarSolicitudIdTema(existeTema._id);
+    datosBD = datosBD.usuario_id;
+    if (!datosBD.apellidos) {
+      datosBD.apellidos = "";
+    }
+
+    var datosDuenio = new Object();
+    datosDuenio.nombre_completo =
+      datosBD.name + " " + datosBD.apellidos || "aa";
+    datosDuenio.correo = datosBD.email;
+    datosDuenio.telefono = datosBD.telefono;
+    datosDuenio.apodo = datosBD.nickname;
 
     return res.json({
       ok: true,
-      msg: datosDuenio
+      msg: datosDuenio,
     });
-    
   } catch (error) {
     return res.json({
       ok: false,
       msg: "Ha ocurrido un error faltal | mostrarDatosDuenio ",
-      error: error
+      error: error,
     });
   }
-
-  
-
-
 };
 
 module.exports = {
