@@ -354,13 +354,12 @@ const validarMancolist = async(req, res) =>{
     });
     
   }
-
-  if (!mongo.isValidObjectId(id_estampilla) || !mongo.isValidObjectId(id_categoria_estampilla)) {
-    return res.json({
-      ok:false,
-      msg: "No estas enviando ids válidos"
-    });
-  }
+if (!mongo.isValidObjectId(id_categoria_estampilla)) {
+  return res.json({
+    ok:false,
+    msg: "No estas enviando ids válidos"
+  });
+}
 
 
     // Leer el Token
@@ -369,49 +368,134 @@ const validarMancolist = async(req, res) =>{
 
     var usuarioBD = await consultarDatosConCorreo(email)
     var id_usuario = usuarioBD._id;
-  var mancolistaEnBD= await Mancolist.aggregate(
-    [
 
-      {
-        $lookup:
-        {
-          from: 'bdfc_manco_list_cat',
-          localField:'id_mancolist_cat',
-          foreignField: '_id',
-          as: 'categoria_mancolista'
+    
+    //Validando si es toda una serie que se desea evaluar
+    if (Array.isArray(id_estampilla)) {
+
+     
+    
+      console.log("Toda la serie");
+
+      var contador = 0;
+      for (let index = 0; index < id_estampilla.length; index++) {
+        const element = id_estampilla[index];
+        if (!mongo.isValidObjectId(element)) {
+          return res.json({
+            ok:false,
+            msg: "No estas enviando ids válidos"
+          });
         }
 
-      },
-      {
-        $unwind: '$categoria_mancolista'
-      },
-      {
-        $project: {
-          id_usuario: '$categoria_mancolista.id_usuario',
-          id_categoria_estampilla: '$categoria_mancolista._id',
-          id_estampilla: 1
-        }
-      },
-      {
-        $match: {
-          id_usuario: ObjectId(id_usuario),
-          id_categoria_estampilla:  ObjectId(id_categoria_estampilla),
-          id_estampilla:  ObjectId(id_estampilla),
-        }
-      },
-    ]); 
-    console.log(mancolistaEnBD);
-   if (mancolistaEnBD.length > 0) {
-     return res.json({
-       ok:false,
-       existe:true
-     });
-   } else {
-    return res.json({
-      ok:true,
-      existe: false
-    });
-   } 
+        var mancolistaEnBD= await Mancolist.aggregate(
+          [
+      
+            {
+              $lookup:
+              {
+                from: 'bdfc_manco_list_cat',
+                localField:'id_mancolist_cat',
+                foreignField: '_id',
+                as: 'categoria_mancolista'
+              }
+      
+            },
+            {
+              $unwind: '$categoria_mancolista'
+            },
+            {
+              $project: {
+                id_usuario: '$categoria_mancolista.id_usuario',
+                id_categoria_estampilla: '$categoria_mancolista._id',
+                id_estampilla: 1
+              }
+            },
+            {
+              $match: {
+                id_usuario: ObjectId(id_usuario),
+                id_categoria_estampilla:  ObjectId(id_categoria_estampilla),
+                id_estampilla:  ObjectId(element),
+              }
+            },
+          ]); 
+
+          if (mancolistaEnBD.length > 0) {
+           contador = contador + 1;
+          }
+        
+      }
+
+      if(contador === id_estampilla.length){
+        return res.json({
+          ok:false,
+          existe: true
+        });
+
+      }else{
+        return res.json({
+          ok:true,
+          existe: false
+        });
+
+      }
+
+
+    } else {
+      console.log(id_estampilla);
+      if (!mongo.isValidObjectId(id_estampilla)) {
+        return res.json({
+          ok:false,
+          msg: "No estas enviando ids válidos"
+        });
+      }
+    
+      var mancolistaEnBD= await Mancolist.aggregate(
+        [
+    
+          {
+            $lookup:
+            {
+              from: 'bdfc_manco_list_cat',
+              localField:'id_mancolist_cat',
+              foreignField: '_id',
+              as: 'categoria_mancolista'
+            }
+    
+          },
+          {
+            $unwind: '$categoria_mancolista'
+          },
+          {
+            $project: {
+              id_usuario: '$categoria_mancolista.id_usuario',
+              id_categoria_estampilla: '$categoria_mancolista._id',
+              id_estampilla: 1
+            }
+          },
+          {
+            $match: {
+              id_usuario: ObjectId(id_usuario),
+              id_categoria_estampilla:  ObjectId(id_categoria_estampilla),
+              id_estampilla:  ObjectId(id_estampilla),
+            }
+          },
+        ]); 
+        console.log(mancolistaEnBD);
+       if (mancolistaEnBD.length > 0) {
+         return res.json({
+           ok:false,
+           existe:true
+         });
+       } else {
+        return res.json({
+          ok:true,
+          existe: false
+        });
+       } 
+      
+    }
+
+
 }
 
 module.exports = {
