@@ -1,6 +1,6 @@
 const { response } = require("express");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
-const { consultarReporteConIdReporte, consultarTodosMensajesCliente, consultarTodosTiposEstadoReporte } = require("../../middlewares/reportes");
+const { consultarReporteConIdReporte, consultarTodosMensajesCliente, consultarTodosTiposEstadoReporte, consultarMensajesConIdRoom, consultarMensajeConIdClienteIdMensaje } = require("../../middlewares/reportes");
 
 const {
   consultarDatosConCorreo,
@@ -168,11 +168,21 @@ const mostrarTodosReportesSinAnalizar = async (req, res) => {
 };
 const cambiarEstadoReporte = async (req, res) => {
   try {
-    const { idReporte, id_tipo_estado_reporte } = req.body;
+    const { idReporte, id_tipo_estado_reporte, mensajes } = req.body;
 
     const tipoEstadoReporteRecibido = await consultarTipoEstadoReporteConId(
       id_tipo_estado_reporte
     );
+    if(tipoEstadoReporteRecibido.abreviacion != "P.INA" && mensajes.length == 0 
+    || tipoEstadoReporteRecibido.abreviacion != "P.INA" && !mensajes  
+    || tipoEstadoReporteRecibido.abreviacion != "P.INA" && mensajes == null  ){
+      return res.json({
+        ok: false,
+        msg: "No enviaste ids de mensajes a reportar."
+      })
+    }
+
+   
 
     //---------------------------------/
     //Actualizar Tipo Estado de Reporte//
@@ -201,7 +211,8 @@ const cambiarEstadoReporte = async (req, res) => {
     //-------------------------------------//
     //tomando medidas de acuerdo a lo seleciconado por el admin
     //Dando de baja al usuario
-    var usuarioBD = await consultarDatosConId(reporteBD.usuario_reportado._id);
+    var usuarioBD = await consultarDatosConId(reporteBD.usuario_reportado);
+
     if (tipoEstadoReporteRecibido.abreviacion === "P.DB") {
       usuarioBD.estado = false;
       var usuarioactualizado = await usuarioBD.save();
@@ -217,6 +228,15 @@ const cambiarEstadoReporte = async (req, res) => {
       usuarioBD.reputacion = reputacion - 20;
       var usuarioactualizado = await usuarioBD.save();
     }
+    if (tipoEstadoReporteRecibido.abreviacion != "P.INA") {
+      
+      const arrayMensajes = await consultarMensajeConIdClienteIdMensaje(mensajes, usuarioBD._id)
+      console.log("arrayMensajes[0] ->", arrayMensajes);
+     
+
+      
+    }
+
 
     await enviarCorreosReporteAnalisis(reporteAtualizado);
     return res.json({
