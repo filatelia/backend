@@ -10,16 +10,7 @@ const Estampillas = require("../../models/catalogo/estampillas.modelo");
 
 
 const generarExcel = async (req, res = response) => {
-  fs.unlink(
-    path.join(__dirname, "../../uploads/documentos/formato_filatelia.xlsx"),
-    function (err) {
-      if (err) {
-        console.log("No hay archivo para borrrar");
-      } else {
-        console.log("eliminado correctametne");
-      }
-    }
-  );
+
   const { id_catalogo } = req.params;
 
   //se evalua que el id recibido sea valido
@@ -175,20 +166,34 @@ const generarExcel = async (req, res = response) => {
     ws.getRow(index + 1).height = 105;
   }
 
+  var nombreDocumento = uuidv4();
   wb.xlsx
     .writeFile(
-      path.join(__dirname, "../../uploads/documentos/formato_filatelia.xlsx")
+      path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
     )
     .then(() => {
       console.log("Done.");
     var descargar =  res.download(
-        path.join(__dirname, "../../uploads/documentos/formato_filatelia.xlsx")
+        path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
       );
       console.log("Descarga", descargar);
     })
     .catch((error) => {
       console.log(error.message);
     });
+
+    fs.unlink(
+      path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx"),
+      function (err) {
+        if (err) {
+          console.log("No hay archivo para borrrar");
+        } else {
+          console.log("eliminado correctametne");
+        }
+      }
+    );
+
+
 };
 
 module.exports = {
