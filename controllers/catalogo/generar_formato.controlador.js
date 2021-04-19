@@ -20,20 +20,28 @@ const generarExcel = async (req, res = response) => {
       msg: "El catalogo enviado no es válido",
     });
   }
-  fs.readdir(
-    path.join(__dirname, "../../uploads/documentos"),
-    function (err) {
-      if (err) {
-        console.log("No hay archivo para borrrar");
-        return false;
 
-      } else {
-        console.log("eliminado correctametne");
-        return true;
-      }
-    }
+  const FOLDER_TO_REMOVE = 'images'
 
-  )
+fs.readdir()
+  .then(files => {
+    const unlinkPromises = files.map(file => {
+      const filePath = path.join("../../uploads/documentos/", file)
+      return fs.unlink(filePath,function (err) {
+          if (err) {
+            console.log("No hay archivo para borrrar");
+    
+          } else {
+            console.log("eliminado correctametne");
+          }
+        }
+    
+      )
+    
+    })
+
+    return Promise.all(unlinkPromises)
+
 
 
   var arrCodigosImagenesNoAsociadas = [];
