@@ -20,6 +20,20 @@ const generarExcel = async (req, res = response) => {
       msg: "El catalogo enviado no es válido",
     });
   }
+  fs.unlink(
+    path.join(__dirname, "../../uploads/documentos"),
+    function (err) {
+      if (err) {
+        console.log("No hay archivo para borrrar");
+        return false;
+
+      } else {
+        console.log("eliminado correctametne");
+        return true;
+      }
+    }
+
+  )
 
 
   var arrCodigosImagenesNoAsociadas = [];
@@ -177,25 +191,7 @@ const generarExcel = async (req, res = response) => {
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
 
       );
-      function eliminarDoc(nombreDocumento) {
-        fs.unlink(
-          path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx"),
-          function (err) {
-            if (err) {
-              console.log("No hay archivo para borrrar");
-              return false;
 
-            } else {
-              console.log("eliminado correctametne");
-              return true;
-            }
-          }
-  
-        )
-      }
-      setTimeout(eliminarDoc(nombreDocumento), 20000);
-
-      console.log("Descarga", descargar);
     })
     .catch((error) => {
       console.log(error.message);
