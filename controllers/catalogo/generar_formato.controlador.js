@@ -21,7 +21,7 @@ const generarExcel = async (req, res = response) => {
     });
   }
   fs.readdir(
-    path.join(__dirname, "../../uploads/documentos/"),
+    path.join(__dirname, "../../uploads/documentos"),
     function (err) {
       if (err) {
         console.log("No hay archivo para borrrar");
