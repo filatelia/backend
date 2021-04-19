@@ -23,7 +23,7 @@ const generarExcel = async (req, res = response) => {
 
   const FOLDER_TO_REMOVE = 'images'
 
-fs.readdir(path.join(__dirname, "../../uploads/documentos/"))
+await fs.readdir(path.join(__dirname, "../../uploads/documentos/"))
   .then(files => {
   await files.map(file => {
     console.log("Archivo a borrar -> ", file);
