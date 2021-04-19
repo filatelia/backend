@@ -183,8 +183,11 @@ const generarExcel = async (req, res = response) => {
           function (err) {
             if (err) {
               console.log("No hay archivo para borrrar");
+              return false;
+
             } else {
               console.log("eliminado correctametne");
+              return true;
             }
           }
   
