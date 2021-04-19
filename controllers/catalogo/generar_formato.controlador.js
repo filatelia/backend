@@ -3,13 +3,15 @@ const { response } = require("express");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
+const fsP = require("fs").promises;
+
 var mongoose = require("mongoose");
 var { ObjectId } = require("mongoose").Types;
 const ImagenesEstampillas = require("../../models/catalogo/uploads");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 
-
 const generarExcel = async (req, res = response) => {
+
 
   const { id_catalogo } = req.params;
 
@@ -21,7 +23,8 @@ const generarExcel = async (req, res = response) => {
     });
   }
 
-  const FOLDER_TO_REMOVE = 'images'
+
+
 
  fs.readdir(path.join(__dirname, "../../uploads/documentos/"))
   .then(files => {
@@ -46,13 +49,14 @@ const generarExcel = async (req, res = response) => {
 
 
 
+
   var arrCodigosImagenesNoAsociadas = [];
   var arrImagenesNoAsociadas = [];
-  //Buscar imagenes de estampillas del catálogo
+ // Buscar imagenes de estampillas del catálogo
   const imagenesEstampillasBD = await ImagenesEstampillas.aggregate(
     [
 
-      { 
+      {
         $lookup: {
           from: "bdfc_estampillas",
           localField: "codigo_estampilla",
@@ -73,22 +77,18 @@ const generarExcel = async (req, res = response) => {
         catalogo: ObjectId(id_catalogo)
        }
      },
-     
 
     ]
     );
 
     imagenesEstampillasBD.map((data) => {
       if (!data.estampillaAsociada){
-        
-        
-        arrCodigosImagenesNoAsociadas.push(data.codigo_estampilla);
+
         arrImagenesNoAsociadas.push(data);
       }
     });
     console.log("imagenesEstampillasBD -> ",imagenesEstampillasBD.length);
-    console.log("imagenesNoAsociadas -> ", arrCodigosImagenesNoAsociadas);
-
+    console.log("arrImagenesNoAsociadas -> ", arrImagenesNoAsociadas);
 
   const [, , filename] = process.argv;
 
@@ -116,7 +116,7 @@ const generarExcel = async (req, res = response) => {
     "R",
   ];
 
-  //agregando titulos de las columnas
+ // agregando titulos de las columnas
   ws.columns = [
     { header: "NUMERO", key: "id", width: 10 },
     { header: "CODIGO", key: "id", width: 40 },
@@ -138,10 +138,10 @@ const generarExcel = async (req, res = response) => {
     { header: "FOTO_VARIANTES_ERRORES", key: "id", width: 40 },
   ];
 
-  //Asignando total de imagenes a mostrar
-  var totalEstampillas = arrCodigosImagenesNoAsociadas.length;
+//  Asignando total de imagenes a mostrar
+  var totalEstampillas = arrImagenesNoAsociadas.length;
 
-  //Centrando contenido de las columnas
+ // Centrando contenido de las columnas
   letrasColumnas.map((datos, i) => {
     ws.getCell(datos + "1").alignment = {
       vertical: "center",
@@ -155,7 +155,7 @@ const generarExcel = async (req, res = response) => {
     contador = contador + 1;
     ws.getRow(index).values = [
       contador,
-      arrCodigosImagenesNoAsociadas[index - 2].codigo_estampilla,
+      arrImagenesNoAsociadas[index - 2].codigo_estampilla,
 
     ];
   }
@@ -182,7 +182,7 @@ const generarExcel = async (req, res = response) => {
       }),
 
       {
-        // tl: { col: 1, row: 1 },
+        tl: { col: 1, row: 1 },
         tl: "B" + index,
         ext: { width: 140, height: 140 },
       }
@@ -191,13 +191,16 @@ const generarExcel = async (req, res = response) => {
   }
 
   var nombreDocumento = uuidv4();
+
+
   wb.xlsx
     .writeFile(
       path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
     )
     .then(() => {
       console.log("Done.");
-         res.download(
+
+      res.download(
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
 
       );
