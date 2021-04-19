@@ -175,23 +175,28 @@ const generarExcel = async (req, res = response) => {
       console.log("Done.");
     var descargar =  res.download(
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
+
       );
+      fs.unlink(
+        path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx"),
+        function (err) {
+          if (err) {
+            console.log("No hay archivo para borrrar");
+          } else {
+            console.log("eliminado correctametne");
+          }
+        }
+
+      );
+
       console.log("Descarga", descargar);
     })
     .catch((error) => {
       console.log(error.message);
     });
 
-    fs.unlink(
-      path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx"),
-      function (err) {
-        if (err) {
-          console.log("No hay archivo para borrrar");
-        } else {
-          console.log("eliminado correctametne");
-        }
-      }
-    );
+
+
 
 
 };
