@@ -60,6 +60,7 @@ const subirEstampillasExcel = async (req, res = response) => {
   }
 
   console.log("documento recibido", req.files);
+  console.log("Datos recibido", req.body);
 
   const nombreSeparado = req.files.sampleFile.name.split(".");
   const formatoArchivo = nombreSeparado[nombreSeparado.length - 1];
@@ -114,7 +115,7 @@ const subirEstampillasExcel = async (req, res = response) => {
   });
 
   //Guardando estampillas
-  var esguarda = await guardarEstampillas(completos);
+  var esguarda = await guardarEstampillas(completos, idCatalogo);
 
   //Agrupar variantes y errores
   console.log("Agrupando variantes y errores...");
@@ -310,7 +311,7 @@ function agruparVariantes(datos) {
     return null;
   }
 }
-async function guardarEstampillas(datos) {
+async function guardarEstampillas(datos, id_catalogo) {
   var datosGuardar = [];
   estampillasGuardadas = [];
   var temporal = [];

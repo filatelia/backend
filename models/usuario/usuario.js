@@ -28,7 +28,6 @@ const UsuarioSchema = Schema(
     tipo_catalogo: [{
       type: Schema.Types.ObjectId,
       ref: "TipoCatalogo",
-      required: true,
       autopopulate: true,
     }],
     temas: [

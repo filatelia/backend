@@ -3,14 +3,14 @@
 //Nueva solicitud Cliente
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiX2lkIjoiNjA1YTY3Zjg2Yjk1NTExNTA2MTJmNGZjIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTgzNDU4NDEsImV4cCI6MTYxODQzMjI0MX0.5qCJG97igBH4PYHwWM_HZ4Fid3T4jT_9aNGG3Gx-6gM
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwN2RiZjY4Nzg1ZWY1MThjMGEzYWVkOSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4ODUzNzY4LCJleHAiOjE2MTg5NDAxNjh9.tg5fEnobIBAEnrB7npPJ-cvY4mf7C0yRX7pmRdBfWZk
 
 {
 
-"nombre_catalogo_solicitud": "Prueba para video", 
-"tipo_catalogo_solicitud" :"605fc7fef45d98d0fcfc7892", 
-"pais_catalogo_solicitud" : "Peru",
-"tema_catalogo_solicitud": "Tema Prueba"
+"nombre_catalogo_solicitud": "Catalogo Reina Victoria", 
+"tipo_catalogo_solicitud" :"607da0b37bd2c72eb025ae6a", 
+//"pais_catalogo_solicitud" : "Peru",
+"tema_catalogo_solicitud": "Reina Victoria"
 
 }
 
@@ -47,14 +47,14 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 
 post http://localhost:3000/api/solicitudes/aprobacion
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4ODU0MzQ5LCJleHAiOjE2MTg5NDA3NDl9.G99gk59tsvzEcqgZvI6BeNWIKto0QtIGTSssj8LYKHo
 
 {
-   "id_solicitud": "605ebc0f84b18e192c4c1260",
-   "mensaje_rechazo": "Se rechaza porque incumple con las políticas internas"
+   "id_solicitud": "607dbf9e785ef518c0a3aedb"
+
 }
 
-
+###
 //Consultar todas las solicitudes del usuario logado
 
 get https://api.filateliaperu.com/api/solicitudes/mis-solicitudes/

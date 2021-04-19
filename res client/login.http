@@ -31,7 +31,7 @@ content-type: application/json
 }
 
 ###
-post https://api.filateliaperu.com/api/login
+post http://localhost:3000/api/login
 content-type: application/json
 
 {
@@ -49,6 +49,17 @@ content-type: application/json
 {
    
 "email": "alexis11dimen@gmail.com",
+"password": "22102281"
+
+}
+
+###
+post http://localhost:3000/api/login
+content-type: application/json
+
+{
+   
+"email": "filatelia.backend@gmail.com",
 "password": "22102281"
 
 }
