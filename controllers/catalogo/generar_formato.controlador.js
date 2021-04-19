@@ -177,7 +177,7 @@ const generarExcel = async (req, res = response) => {
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
 
       );
-      fs.unlink(
+      setTimeout (fs.unlink(
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx"),
         function (err) {
           if (err) {
@@ -187,7 +187,7 @@ const generarExcel = async (req, res = response) => {
           }
         }
 
-      );
+      ), 2000)
 
       console.log("Descarga", descargar);
     })
