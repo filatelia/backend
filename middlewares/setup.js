@@ -6,15 +6,57 @@ const Tipo_solicitud = require("../models/solicitudes/tipoEstadoSolicitud.model"
 const Tipo_Catalogo = require("../models/catalogo/tipo_catalogo");
 const Color = require("colors");
 const TipoEstadoReporte = require("../models/moderacion/tipo-estado-reporte.model");
+const Usuarios = require("../models/usuario/usuario");
+const bcrypt = require("bcryptjs");
+const {buscarPaisPorNombre} = require("../middlewares/paises")
 
 const initial_setup = async () => {
   console.log(Color.blue("Ejecutando initial setup..."));
-
+  await verificarYCrearAdmin(); 
   await verificarBanderasPaises();
   await verificarTipoSolicitudYCrearla();
   await VerificarTipoCatalogoYCrarlo();
   await verificarEstadoTipoReporte();
 };
+const verificarYCrearAdmin = async () => {
+  console.log("Verificando existencia de usuarios");
+  var usuarioEnBD = await Usuarios.find();
+  if (usuarioEnBD.length == 0) {
+    console.log("No existen usurios.");
+    console.log("Creando usurio Super Admin...");
+  
+  
+      
+      var pais = await buscarPaisPorNombre("Peru");
+      if(!pais)throw {msg:'pais no encontrado',ok:false}
+      const usuario_ = new Usuarios();
+  
+      usuario_.roleuser = "admin";
+      usuario_.name = "Administrador";
+      usuario_.apellidos = "Filatelia Peruana";
+      usuario_.email = "filatelia.backend@gmail.com";
+      usuario_.nickname = "SuperAdmin_filatelia";
+      
+      const salt = bcrypt.genSaltSync();
+      usuario_.password = bcrypt.hashSync("22102281", salt);
+      usuario_.pais_usuario=pais._id
+      usuario_.imagenP =
+        "/imagenes/predeterminadas/" + usuario_.roleuser + ".png";
+      // Guardar usuario
+      var usuarioGuardado = await usuario_.save();
+      
+      if (usuarioGuardado._id) {
+        console.log("Se ha creado el usuario correctamente");
+        
+      }
+    
+  }
+  else{
+    console.log("Usuarios en BD OK.");
+
+  }
+
+}
 
 const verificarBanderasPaises = async () => {
   console.log("Verificando las banderas de los paises");
