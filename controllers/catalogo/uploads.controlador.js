@@ -71,56 +71,18 @@ const createImageEstampilla = async (req, res = response) => {
   const { sampleFile } = req.files;
 
   var imagen_arr = [];
-  if (sampleFile.length > 0) {
-    for (let index = 0; index < sampleFile.length; index++) {
-      const nombreSeparado = sampleFile[index].name.split(".");
-      const formatoArchivo = nombreSeparado[nombreSeparado.length - 1];
-      console.log("imagen: ", req.files);
-      var nombreImagen = uuidv4() + "." + formatoArchivo;
 
-      const uploadPath = path.join(
-        __dirname,
-        "../../uploads/imagenes/catalogo/estampillas/" + nombreImagen
-      );
-      sampleFile[index].mv(uploadPath, (err) => {
-        if (err) {
-          console.log("error:", err);
-          return res.status(500).json({
-            msg: err,
-          });
-        }
-      });
-
-      const imagen_url = "/imagenes/catalogo/estampillas/" + nombreImagen;
-
-      //Guardando informacion de la imagen en la bd.
-      req.body.name = nombreImagen;
-      req.body.imagen_url = imagen_url;
-      req.body.catalogo = req.body.catalogo;
-      req.body.codigo_estampilla = uuidv4();
-      req.body.tipo_imagen = "estampilla";
-      const imagen_ = new Imagenes(req.body);
-      // Guardar usuario
-      const imagen_subida = await imagen_.save();
-      imagen_arr.push(imagen_subida);
-    }
-    res.json({
-      ok: true,
-      imagen_arr,
-    });
-  } else {
-    console.log("imagen: ", req.files);
-
-    const nombreSeparado = sampleFile.name.split(".");
+  for (let index = 0; index < sampleFile.length; index++) {
+    const nombreSeparado = sampleFile[index].name.split(".");
     const formatoArchivo = nombreSeparado[nombreSeparado.length - 1];
+    console.log("imagen: ", req.files);
     var nombreImagen = uuidv4() + "." + formatoArchivo;
 
     const uploadPath = path.join(
       __dirname,
       "../../uploads/imagenes/catalogo/estampillas/" + nombreImagen
     );
-
-    sampleFile.mv(uploadPath, (err) => {
+    sampleFile[index].mv(uploadPath, (err) => {
       if (err) {
         console.log("error:", err);
         return res.status(500).json({
@@ -135,16 +97,17 @@ const createImageEstampilla = async (req, res = response) => {
     req.body.name = nombreImagen;
     req.body.imagen_url = imagen_url;
     req.body.catalogo = req.body.catalogo;
+    req.body.codigo_estampilla = uuidv4();
     req.body.tipo_imagen = "estampilla";
-
     const imagen_ = new Imagenes(req.body);
     // Guardar usuario
     const imagen_subida = await imagen_.save();
-    res.json({
-      ok: true,
-      imagen_subida,
-    });
+    imagen_arr.push(imagen_subida);
   }
+  res.json({
+    ok: true,
+    imagen_arr,
+  });
 };
 
 const createImageTema = async (req, res = response) => {

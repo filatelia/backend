@@ -114,24 +114,23 @@ const subirEstampillasExcel = async (req, res = response) => {
   });
 
   //Guardando estampillas
- var esguarda= await guardarEstampillas(completos, idCatalogo);
+  var esguarda = await guardarEstampillas(completos);
 
   //Agrupar variantes y errores
   console.log("Agrupando variantes y errores...");
 
   var variantesErrores = agruparVariantes(completos);
-var ids= [];
+  var ids = [];
   for (let index = 0; index < variantesErrores.length; index++) {
     const element = variantesErrores[index];
 
     ids = Object.keys(element);
-    
   }
 
   //Asociando variables y errores a estampilla
   // await asociarVariablesYErrores(variantesErrores);
-   await asociarVariablesYErrores(completos);
-   await crearSegundaSolicitud(catalogoBD.solicitud._id);
+  await asociarVariablesYErrores(completos);
+  await crearSegundaSolicitud(catalogoBD.solicitud._id);
 
   return res.json({
     ok: true,
@@ -149,7 +148,7 @@ function validarCamposExcel(datos) {
     //Validando datos requeridos y asignandoles un boleano para separarlos
     datosAValidar.map((data) => {
       //Validando datos requiridos y asignando en Completa el true o false para separarles
-      //Reellenando valores no reqieridos con NO ASIGNADO
+      //Reellenando valores no reqieridos con N/A
       if (
         !data.CODIGO ||
         data.CODIGO == null ||
@@ -187,12 +186,12 @@ function validarCamposExcel(datos) {
         data.DESCRIPCION_ESTAMPILLA == null ||
         data.DESCRIPCION_ESTAMPILLA == ""
       ) {
-        data.DESCRIPCION_ESTAMPILLA = "NO ASIGNADO";
+        data.DESCRIPCION_ESTAMPILLA = "N/A";
       }
 
       //Como GRUPO no es obligatorio, le asignamos un valor para que exista, o tenga información
       if (!data.GRUPO || data.GRUPO == null || data.GRUPO == "") {
-        data.GRUPO = "NO ASIGNADO";
+        data.GRUPO = "N/A";
       }
 
       //Como NRO_ESTAMPILLAS no es obligatorio, le asignamos un valor para que exista, o tenga información
@@ -201,7 +200,7 @@ function validarCamposExcel(datos) {
         data.NRO_ESTAMPILLAS == null ||
         data.NRO_ESTAMPILLAS == ""
       ) {
-        data.NRO_ESTAMPILLAS = "NO ASIGNADO";
+        data.NRO_ESTAMPILLAS = "N/A";
       }
 
       //Como NUMERO_DE_CATALOGO no es obligatorio, le asignamos un valor para que exista, o tenga información
@@ -210,7 +209,7 @@ function validarCamposExcel(datos) {
         data.NUMERO_DE_CATALOGO == null ||
         data.NUMERO_DE_CATALOGO == ""
       ) {
-        data.NUMERO_DE_CATALOGO = "NO ASIGNADO";
+        data.NUMERO_DE_CATALOGO = "N/A";
       }
 
       //Como VALOR_CATALOGO_NUEVO no es obligatorio, le asignamos un valor para que exista, o tenga información
@@ -219,7 +218,7 @@ function validarCamposExcel(datos) {
         data.VALOR_CATALOGO_NUEVO == null ||
         data.VALOR_CATALOGO_NUEVO == ""
       ) {
-        data.VALOR_CATALOGO_NUEVO = "NO ASIGNADO";
+        data.VALOR_CATALOGO_NUEVO = "N/A";
       }
 
       //Como VALOR_DEL_CATALOGO_USADO no es obligatorio, le asignamos un valor para que exista, o tenga información
@@ -228,7 +227,7 @@ function validarCamposExcel(datos) {
         data.VALOR_DEL_CATALOGO_USADO == null ||
         data.VALOR_DEL_CATALOGO_USADO == ""
       ) {
-        data.VALOR_DEL_CATALOGO_USADO = "NO ASIGNADO";
+        data.VALOR_DEL_CATALOGO_USADO = "N/A";
       }
 
       //Como MONEDA_VALOR_CATALOGO_NUEVO_USADO no es obligatorio, le asignamos un valor para que exista, o tenga información
@@ -237,7 +236,7 @@ function validarCamposExcel(datos) {
         data.MONEDA_VALOR_CATALOGO_NUEVO_USADO == null ||
         data.MONEDA_VALOR_CATALOGO_NUEVO_USADO == ""
       ) {
-        data.MONEDA_VALOR_CATALOGO_NUEVO_USADO = "NO ASIGNADO";
+        data.MONEDA_VALOR_CATALOGO_NUEVO_USADO = "N/A";
       }
 
       //Como VARIANTES_ERRORES no es obligatorio, le asignamos un valor para que exista, o tenga información
@@ -264,7 +263,7 @@ function validarCamposExcel(datos) {
           data.FOTO_VARIANTES_ERRORES == null ||
           data.FOTO_VARIANTES_ERRORES == ""
         ) {
-          data.FOTO_VARIANTES_ERRORES = "NO ASIGNADO";
+          data.FOTO_VARIANTES_ERRORES = "N/A";
         }
       }
     });
@@ -311,7 +310,7 @@ function agruparVariantes(datos) {
     return null;
   }
 }
-async function guardarEstampillas(datos, id_catalogo) {
+async function guardarEstampillas(datos) {
   var datosGuardar = [];
   estampillasGuardadas = [];
   var temporal = [];
@@ -365,42 +364,40 @@ async function guardarEstampillas(datos, id_catalogo) {
 }
 
 async function asociarVariablesYErrores(data) {
-var asociados = new Array();
+  var asociados = new Array();
   for (let index = 0; index < data.length; index++) {
     const element = data[index];
-    var objeto= new Object();
+    var objeto = new Object();
 
-    objeto.nombre_imagen_excel =  element.FOTO_VARIANTES_ERRORES;
-        objeto.Descripcion = element.VARIANTES_ERRORES;
-        objeto.codigo_excel = element.CODIGO;
+    objeto.nombre_imagen_excel = element.FOTO_VARIANTES_ERRORES;
+    objeto.Descripcion = element.VARIANTES_ERRORES;
+    objeto.codigo_excel = element.CODIGO;
 
-        console.log("Objeto", objeto);
-  
-        var objVariantes = new VariantesErrores_(objeto);
-        const varianteGuardada = await objVariantes.save();
-        if (varianteGuardada._id) {
-          //Buscando estampilla con codigo
-          var estampillaBD = await Estampillas.findOne({ CODIGO: element.CODIGO });
-          if (estampillaBD == null) {
-            console.log("Null en buscar estampilla");
-          } else {
-            const modificarEstampilla = await agregarVariantesErroresEstampilla(
-              estampillaBD._id,
-              varianteGuardada._id
-            );
-            if (modificarEstampilla._id) {
-              console.log("variante y error asociada en BD");
-              asociados.push(modificarEstampilla);
-            } else {
-              console.log("Null en modificar estampilla");
-            }
-          }
+    console.log("Objeto", objeto);
+
+    var objVariantes = new VariantesErrores_(objeto);
+    const varianteGuardada = await objVariantes.save();
+    if (varianteGuardada._id) {
+      //Buscando estampilla con codigo
+      var estampillaBD = await Estampillas.findOne({ CODIGO: element.CODIGO });
+      if (estampillaBD == null) {
+        console.log("Null en buscar estampilla");
+      } else {
+        const modificarEstampilla = await agregarVariantesErroresEstampilla(
+          estampillaBD._id,
+          varianteGuardada._id
+        );
+        if (modificarEstampilla._id) {
+          console.log("variante y error asociada en BD");
+          asociados.push(modificarEstampilla);
         } else {
-          console.log("Null en guardar variante");
+          console.log("Null en modificar estampilla");
         }
-    
+      }
+    } else {
+      console.log("Null en guardar variante");
+    }
   }
-
 }
 module.exports = {
   crearEstampillaIndividual,
