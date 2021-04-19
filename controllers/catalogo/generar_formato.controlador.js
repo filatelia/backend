@@ -177,17 +177,20 @@ const generarExcel = async (req, res = response) => {
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
 
       );
-      setTimeout (fs.unlink(
-        path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx"),
-        function (err) {
-          if (err) {
-            console.log("No hay archivo para borrrar");
-          } else {
-            console.log("eliminado correctametne");
+      function eliminarDoc(nombreDocumento) {
+        fs.unlink(
+          path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx"),
+          function (err) {
+            if (err) {
+              console.log("No hay archivo para borrrar");
+            } else {
+              console.log("eliminado correctametne");
+            }
           }
-        }
-
-      ), 2000)
+  
+        )
+      }
+      setTimeout(eliminarDoc(nombreDocumento), 2000);
 
       console.log("Descarga", descargar);
     })
