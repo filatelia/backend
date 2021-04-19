@@ -11,28 +11,7 @@ const ImagenesEstampillas = require("../../models/catalogo/uploads");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 
 const generarExcel = async (req, res = response) => {
-  var dor = await fsP.readdir(
-    path.join(__dirname, "../../uploads/documentos"),
-    (files) => {
-      console.log("url ->", path.join(__dirname, "../../uploads/documentos/"));
-      console.log("files", files);
-    }
-  );
 
-  console.log("Dort", dor);
-
-  dor.map((data) => {
-    fs.unlink(
-      path.join(__dirname, "../../uploads/documentos/", data),
-      function (err) {
-        if (err) {
-          console.log("No hay archivo para borrrar");
-        } else {
-          console.log("eliminado correctamente");
-        }
-      }
-    );
-  });
 
   const { id_catalogo } = req.params;
 
@@ -43,6 +22,33 @@ const generarExcel = async (req, res = response) => {
       msg: "El catalogo enviado no es válido",
     });
   }
+
+
+
+
+ fs.readdir(path.join(__dirname, "../../uploads/documentos/"))
+  .then(files => {
+   files.map(file => {
+    console.log("Archivo a borrar -> ", file);
+      const filePath = path.join(__dirname, "../../uploads/documentos/", file);
+       fs.unlink(filePath, function (err) {
+          if (err) {
+            console.log("No hay archivo para borrrar");
+    
+          } else {
+            console.log("eliminado correctamente");
+        }
+      }
+    
+      );
+    
+    })
+  }
+  );
+
+
+
+
 
   var arrCodigosImagenesNoAsociadas = [];
   var arrImagenesNoAsociadas = [];
@@ -186,19 +192,28 @@ const generarExcel = async (req, res = response) => {
 
   var nombreDocumento = uuidv4();
 
+
   wb.xlsx
     .writeFile(
       path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
     )
     .then(() => {
       console.log("Done.");
+
       res.download(
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
+
       );
+
     })
     .catch((error) => {
       console.log(error.message);
     });
+
+
+
+
+
 };
 
 module.exports = {
