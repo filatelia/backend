@@ -9,7 +9,6 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 "ids_estampillas": ["6079569b2b31e0bbd49351c0", "6079569c2b31e0bbd49351c1"]
 }
 
-//{"_id":"607956992b31e0bbd49351bd"}
 
 ###
 
@@ -23,3 +22,15 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
    
 "id_mancolist_cat": "607c4d33b3475e18bab23c94"
 }
+
+###
+
+//Generar formato excel con id catalogo
+
+get http://localhost:3000/api/pruebas/60790e04ca4f448aca44f90a
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
+
+{
+}
+

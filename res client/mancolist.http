@@ -1,3 +1,15 @@
+//Actualizar el estado en el que se busca la estampill
+
+post http://localhost:3000/api/catalogo/manco_list/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
+
+{
+"estado_estampilla": "Nuevo",
+"id_estampilla": "607956972b31e0bbd49351b9",
+"id_manco_list": "607c4d33b3475e18bab23c94"
+}
+###
 post https://api.filateliaperu.com/api/catalogo/manco_list/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
