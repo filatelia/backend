@@ -193,7 +193,7 @@ const generarExcel = async (req, res = response) => {
   
         )
       }
-      setTimeout(eliminarDoc(nombreDocumento), 2000);
+      setTimeout(eliminarDoc(nombreDocumento), 20000);
 
       console.log("Descarga", descargar);
     })
