@@ -20,7 +20,7 @@ const generarExcel = async (req, res = response) => {
       msg: "El catalogo enviado no es válido",
     });
   }
-  fs.unlink(
+  fs.readdir(
     path.join(__dirname, "../../uploads/documentos/"),
     function (err) {
       if (err) {
