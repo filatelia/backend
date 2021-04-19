@@ -26,25 +26,23 @@ const generarExcel = async (req, res = response) => {
 
 
 
- fs.readdir(path.join(__dirname, "../../uploads/documentos/"))
-  .then(files => {
-   files.map(file => {
-    console.log("Archivo a borrar -> ", file);
-      const filePath = path.join(__dirname, "../../uploads/documentos/", file);
-       fs.unlink(filePath, function (err) {
-          if (err) {
-            console.log("No hay archivo para borrrar");
-    
-          } else {
-            console.log("eliminado correctamente");
-        }
-      }
-    
-      );
-    
-    })
+ var archivos= await fsP.readdir(path.join(__dirname, "../../uploads/documentos/"));
+
+ archivos.map(files =>{
+
+  fs.unlink(path.join(__dirname, "../../uploads/documentos/", files), function (err) {
+    if (err) {
+      console.log("No hay archivo para borrrar");
+
+    } else {
+      console.log("eliminado correctamente");
   }
-  );
+}
+
+);
+
+
+ });
 
 
 
