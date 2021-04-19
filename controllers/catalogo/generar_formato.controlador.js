@@ -25,7 +25,7 @@ const generarExcel = async (req, res = response) => {
 
 fs.readdir()
   .then(files => {
-    const unlinkPromises = files.map(file => {
+  await files.map(file => {
       const filePath = path.join("../../uploads/documentos/", file)
       return fs.unlink(filePath,function (err) {
           if (err) {
@@ -33,14 +33,15 @@ fs.readdir()
     
           } else {
             console.log("eliminado correctametne");
-          }
         }
+      }
     
       )
     
     })
+  }
+  );
 
-    return Promise.all(unlinkPromises)
 
 
 
