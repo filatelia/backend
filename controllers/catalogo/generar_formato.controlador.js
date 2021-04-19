@@ -181,9 +181,10 @@ const generarExcel = async (req, res = response) => {
     )
     .then(() => {
       console.log("Done.");
-      res.download(
+    var descargar =  res.download(
         path.join(__dirname, "../../uploads/documentos/formato_filatelia.xlsx")
       );
+      console.log("Descarga", descargar);
     })
     .catch((error) => {
       console.log(error.message);
