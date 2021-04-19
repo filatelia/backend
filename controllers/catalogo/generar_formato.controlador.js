@@ -21,7 +21,7 @@ const generarExcel = async (req, res = response) => {
     });
   }
   fs.unlink(
-    path.join(__dirname, "../../uploads/documentos"),
+    path.join(__dirname, "../../uploads/documentos/"),
     function (err) {
       if (err) {
         console.log("No hay archivo para borrrar");
@@ -187,7 +187,7 @@ const generarExcel = async (req, res = response) => {
     )
     .then(() => {
       console.log("Done.");
-    var descargar =  res.download(
+         res.download(
         path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
 
       );
