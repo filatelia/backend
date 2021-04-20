@@ -1,0 +1,11 @@
+//cambiando estado de reporte, restando reputacion
+post http://localhost:3000/api/pruebas
+content-type: application/json
+
+{
+  "mensajes": ["6078ca37599f900015fc00a5",
+"6078ca91599f900015fc00a9"]
+
+}
+
+###

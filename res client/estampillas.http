@@ -1,0 +1,6 @@
+get http://localhost:3000/api/reportes/tipos-estados-reporte/
+content-type: application/json
+
+{
+
+}

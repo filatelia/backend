@@ -8,6 +8,16 @@ content-type: application/json
 "roleuser": "admin"
 }
 
+###
+get http://localhost:3000/api/login/token-mes
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiX2lkIjoiNjA1YTY3Zjg2Yjk1NTExNTA2MTJmNGZjIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTgyNjUyNzksImV4cCI6MTYxODM1MTY3OX0.gXTF7DpiBtq_ePzd8cWi1uHtVDTfADB6cAM1u3WMTWs
+
+{
+   
+
+
+}
 
 ###
 post http://localhost:3000/api/login
@@ -15,7 +25,7 @@ content-type: application/json
 
 {
    
-"email": "dorado@dorado.com",
+"email": "cliente@yopmail.com",
 "password": "22102281"
 
 }
@@ -26,7 +36,30 @@ content-type: application/json
 
 {
    
-"email": "cliente@cliente.com",
+"email": "club@yopmail.com",
+"password": "22102281"
+
+}
+
+###
+//Para enviar emails
+post http://localhost:3000/api/login
+content-type: application/json
+
+{
+   
+"email": "alexis11dimen@gmail.com",
+"password": "22102281"
+
+}
+
+###
+post http://localhost:3000/api/login
+content-type: application/json
+
+{
+   
+"email": "filatelia.backend@gmail.com",
 "password": "22102281"
 
 }

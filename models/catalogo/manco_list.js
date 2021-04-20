@@ -2,9 +2,16 @@ const { Schema, model } = require("mongoose");
 
 const manco_listSchema = Schema(
   {
-    id_usuario: {
+
+    // id_usuario: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Usuarios",
+    //   required: true,
+    //   autopopulate: true,
+    // },
+    id_mancolist_cat: {
       type: Schema.Types.ObjectId,
-      ref: "Usuarios",
+      ref: "Manco_list_cat",
       required: true,
       autopopulate: true,
     },

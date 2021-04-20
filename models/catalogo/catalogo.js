@@ -3,24 +3,31 @@ const CatalogoSchema = Schema(
   {
     name: {
       type: String,
-      default: "No asignado",
+      required: true,
     },
     solicitud: {
       type: Schema.Types.ObjectId,
       ref: "Solicitudes",
       required: true,
-      autopopulate: true
+      autopopulate: true,
     },
     pais: {
       type: Schema.Types.ObjectId,
       ref: "Pais",
+      autopopulate: true,
+    },
+    tipo_catalogo: {
+      type: Schema.Types.ObjectId,
+      ref: "TipoCatalogo",
       required: true,
       autopopulate: true,
     },
-    valor_catalogo: {
-      type: String,
-      default: "No asignado",
+    tema_catalogo: {
+      type: Schema.Types.ObjectId,
+      ref: "Tema",
+      autopopulate: true,
     },
+
     estado: {
       type: Boolean,
       default: false,

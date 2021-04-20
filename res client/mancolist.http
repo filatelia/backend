@@ -1,3 +1,15 @@
+//Actualizar el estado en el que se busca la estampill
+
+post http://localhost:3000/api/catalogo/manco_list/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
+
+{
+"estado_estampilla": "Nuevo",
+"id_estampilla": "607956972b31e0bbd49351b9",
+"id_manco_list": "607c4d33b3475e18bab23c94"
+}
+###
 post https://api.filateliaperu.com/api/catalogo/manco_list/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
@@ -5,6 +17,15 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 {
 "id_estampilla": "60563642f18135feed5084e0",
 "estado_estampilla": "Usada" 
+}
+###
+post http://localhost:3000/api/catalogo/manco_list/validar/
+content-type: application/json
+x-access-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyIsImVtYWlsIjoiYWxleGlzMTFkaW1lbkBnbWFpbC5jb20iLCJfaWQiOiI2MDc3NGIyNTFlODc3MzFmZWNlZGFiYmEiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxODYwNzk2NywiZXhwIjoxNjE4Njk0MzY3fQ.LqxmkXbG_-Vc3RmdX6LzTGSS6WUHNt8rhdx5vHwhjE0
+
+{
+"id_categoria_estampilla":"6079fe845d2dd0c10653862c", 
+"id_estampilla":["607920f1ca4f448aca44f923", "607920f1ca4f448aca44f921"]
 }
 
 ###
@@ -35,6 +56,17 @@ content-type: application/json
 ###
 
 get https://api.filateliaperu.com/api/catalogo/uploads/excel/cat-anio/:anioI&:anioF
+
+content-type: application/json
+
+{
+    
+
+}
+
+###
+
+get http://localhost:3000/api/catalogo/manco_list/tipos-estado-estampilla/listar
 
 content-type: application/json
 

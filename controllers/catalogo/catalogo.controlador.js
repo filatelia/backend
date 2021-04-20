@@ -6,14 +6,63 @@ const Tema = require("../../models/catalogo/temas");
 const Img = require("../../models/catalogo/uploads");
 const fs = require("fs");
 const Path = require("path");
-const Estampillas = require('../../models/catalogo/estampillas.modelo');
+const Estampillas = require("../../models/catalogo/estampillas.modelo");
 const { getPaisByName } = require("../catalogo/pais.controlador");
 const Pais = require("../../models/catalogo/paises");
-const { crearTema } = require("../../middlewares/index.middle");
+const { crearTema, enviarCorreos } = require("../../middlewares/index.middle");
+const { isValidObjectId } = require("mongoose");
+const { retornarDatosJWT } = require("../../middlewares/index.middle");
+const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
+const Solicitud = require("../../models/solicitudes/solicitudes.model");
+const { ObjectId } = require("mongoose").Types;
 
 const crearCatalogo = async (req, res = response) => {
   try {
+    //Validando que sí se esté enviando información
+    if (!req.files || req.files == null) {
+      return res.json({
+        ok: false,
+        mensaje: "Debes enviar un archivo",
+      });
+    }
+
+    console.log("documento recibido", req.files);
+    const nombreSeparado = req.files.sampleFile.name.split(".");
+    const formatoArchivo = nombreSeparado[nombreSeparado.length - 1];
+    if (formatoArchivo.toLowerCase() != "xlsx") {
+      return res.json({
+        ok: false,
+        mensaje: "Solo se permiten archivos de formato .xlsx",
+        formato_enviado: formatoArchivo,
+      });
+    }
+
     const datos = procesarExcel(req.files);
+    const idCatalogo = req.body.id_catalogo;
+    console.log("ID catalogo: ", idCatalogo);
+
+    //Validando que exista un catalogo para asociar a las estampillas
+    if (!idCatalogo || idCatalogo == null) {
+      return res.json({
+        ok: false,
+        mensaje: "Debes asociar las estampillas a un catalogo",
+      });
+    }
+    //Validando que el id que se recibe sea un id valido
+    if (!isValidObjectId(idCatalogo)) {
+      return res.json({
+        ok: false,
+        mensaje: "Debes enviar un catalogo válido",
+      });
+    }
+    var catalogoBD = await Catalogo.findById(idCatalogo);
+    //validando que el id enviado si es de un catalogo en a bd
+    if (!catalogoBD || catalogoBD == null) {
+      return res.json({
+        ok: false,
+        mensaje: "No existe el catalogo que deseas asociar.",
+      });
+    }
     var completos = [];
     var inCompletos = [];
 
@@ -25,7 +74,7 @@ const crearCatalogo = async (req, res = response) => {
         inCompletos.push(element);
       }
     }
-    const datosFinal = await validarEstampillasRepetidas(completos);
+    const datosFinal = await validarEstampillasRepetidas(completos, idCatalogo);
     var contador = 0;
     var repetidos = [];
     var noRepetidos = [];
@@ -46,8 +95,8 @@ const crearCatalogo = async (req, res = response) => {
 
         //Buscando id pais con el nombre
         var pais = await buscarPaisNombre(datosFinal[index].Pais);
-        if(pais){
-          var _id=pais
+        if (pais) {
+          var _id = pais;
           datosFinal[index].Pais = _id;
 
           //Buscar o crear tema por nombre
@@ -58,22 +107,23 @@ const crearCatalogo = async (req, res = response) => {
 
           console.log("tema creadossssss->", temaCreado);
           datosFinal[index].Tema = temaCreado;
+          datosFinal[index].Catalogo = idCatalogo;
 
-
-        var nuevoCatalogo = new Estampillas(datosFinal[index]);
-        console.log("Nuevo catalogo", nuevoCatalogo);
+          var nuevoCatalogo = new Estampillas(datosFinal[index]);
+          console.log("Nuevo catalogo", nuevoCatalogo);
 
           const guardar = await nuevoCatalogo.save();
           console.log("Guardar::::", guardar);
-        }
-        else{
-          inCompletos.push(element)
+        } else {
+          inCompletos.push(element);
         }
       } else {
         contador = contador + 1;
         repetidos.push(datosFinal[index]);
       }
     }
+
+    await crearSolicitud(idCatalogo);
     console.log("Contador: ", contador);
     if (inCompletos.length == 0 && contador == 0) {
       return res.json({
@@ -127,6 +177,40 @@ const crearCatalogo = async (req, res = response) => {
     });
   }
 };
+async function crearSolicitud(id_catalogo) {
+  console.log("Id catalogo", id_catalogo);
+  var id_solicitud = await Catalogo.findOne({ _id: id_catalogo });
+
+  console.log("Id solicitud desde excel", id_solicitud);
+  if (id_solicitud._id && id_solicitud.solicitud != null) {
+    var id_estadoSolicitud = id_solicitud.solicitud;
+    const abreviacionSolicitud = await Solicitud.findById(id_estadoSolicitud);
+    console.log("abreviacionSolicitud --->", abreviacionSolicitud);
+    const abreviacionConIdRecibido = await Tipo_solicitud.findOne({
+      _id: abreviacionSolicitud.tipoEstadoSolicitud_id,
+    });
+
+    if (abreviacionConIdRecibido.abreviacion == "ACE1") {
+      console.log("ACE1 ---> pasa a EACE2");
+      var { _id } = await Tipo_solicitud.findOne(
+        { abreviacion: "EACE2" },
+        { _id: 1 }
+      );
+
+      abreviacionSolicitud.tipoEstadoSolicitud_id = _id;
+      console.log("Abreviacion: ", abreviacionSolicitud);
+      var solicitudActuaizada = await abreviacionSolicitud.save();
+      await enviarCorreos(
+        null,
+        solicitudActuaizada.usuario_id.email,
+        solicitudActuaizada.usuario_id.name,
+        solicitudActuaizada.tipoEstadoSolicitud_id.descripcion
+      );
+
+      return solicitudActuaizada;
+    }
+  }
+}
 //Actualizar estapillas repetidas desde el excel.
 const editarCatExcel = async (req, res = response) => {
   try {
@@ -214,53 +298,123 @@ const mostrarCatalogoPais = async (req, res) => {
 //Mostrar catalogo por rango de años
 const mostrarCatalogoAnio = async (req, res) => {
   const { anioI, anioF } = req.params;
-try {
-  if ( Number(anioI) && Number(anioF)) {
-    console.log("anio f", Number(anioF));
-    const catalogoCompleto = await Estampillas.find({
-      $and: [
+  const { pais, tema } = req.query;
+  try {
+    var query_cat = {};
+    if (pais && pais != "") {
+      query_cat.pais = ObjectId(pais.trim());
+    } else if (tema && tema != "") {
+      query_cat.tema_catalogo = ObjectId(tema);
+    }
+    var catalogo=await Catalogo.find(query_cat,{tema_catalogo:0,solicitud:0,tipo_catalogo:0,pais:0})
+    var id_catalogo='';
+    if(!catalogo||catalogo.length==0) throw "error list";
+    id_catalogo=ObjectId(catalogo[0]._id)
+
+
+    if (Number(anioI) && Number(anioF)) {
+      const estampillas = await Estampillas.find({
+        $and: [
+          {
+            ANIO: {
+              $gte: Number(anioI),
+            },
+          },
+          {
+            ANIO: {
+              $lte: Number(anioF),
+            },
+          },
+          {CATALOGO: id_catalogo},
+        ],
+      }).count();
+      console.log(id_catalogo)
+      const catalogoCompleto = await Estampillas.aggregate([
         {
-          Anio: {
-            $gte: Number(anioI),
+          $addFields: {
+            regex: {
+              $regexFind: {
+                input: "$ANIO",
+                regex: "^\\d+"
+              }
+            }
+          }
+        },
+        {
+          $set: {
+            anio: {
+              $convert: {
+                input: "$regex.match",
+                to: "int"
+              }
+            }
+          }
+        },
+        {
+          $match: {
+            $and: [
+              {
+                anio: {
+                  $gte: Number(anioI),
+                },
+              },
+              {
+                anio: {
+                  $lte: Number(anioF),
+                },
+              },
+              {CATALOGO: id_catalogo},
+            ],
           },
         },
-
         {
-          Anio: {
-            $lte: Number(anioF),
+          $group: {
+            _id: "$anio",
           },
         },
-      ],
-    });
+        {
+          $project: {
+            anio: "$_id",
+          },
+        },
+        
+      ]);
 
-    res.json({
-      ok: true,
-      catalogoPorPais: catalogoCompleto,
-    });
-  }else{
-    res.json({
+      res.json({
+        ok: true,
+        data: catalogoCompleto,
+        total: estampillas,
+        start: Number(anioI),
+        end: Number(anioF),
+      });
+    } else {
+      res.json({
+        ok: false,
+        catalogoPorPais: "Recierda que debes enviar valores numéricos",
+        datos_recibidos: "Año inicial: " + anioI + " | Año final: " + anioF,
+      });
+    }
+  } catch (e) {
+    return res.json({
       ok: false,
-      catalogoPorPais: "Recierda que debes enviar valores numéricos",
-      datos_recibidos: "Año inicial: "+anioI+" | Año final: "+anioF
+      mensaje:
+        "Error crítico, comunicate con el administrador | catalogoControlador-> mostrarCatalogoAnio()",
     });
-
   }
-
-} catch (e) {
-  return res.json({
-    ok:false,
-    mensaje: "Error crítico, comunicate con el administrador | catalogoControlador-> mostrarCatalogoAnio()"
-  });
-
-}
 };
 
 const mostrarCatalogo = async (req, res) => {
-  const catalogoCompleto = await Estampillas.find();
+  const catalogoCompleto = await Catalogo.find({ estado: true });
+  var cat = [];
+  for (let index = 0; index < catalogoCompleto.length; index++) {
+    const element = catalogoCompleto[index]._id;
+    var nuevoCat = await Estampillas.find({ Catalogo: element });
+    if (nuevoCat.length > 0) cat.push(nuevoCat);
+  }
 
-  res.json({
+  return res.json({
     ok: true,
-    catalogoCompleto: catalogoCompleto,
+    catalogoCompleto: cat,
   });
 };
 const eliminarCatalogo = async (req, res) => {
@@ -268,7 +422,7 @@ const eliminarCatalogo = async (req, res) => {
   try {
     console.log("entramos a eliminar", id);
 
-    const eliminarElementoCatalogo = await Estampillas.findOneAndDelete(id);
+    const eliminarElementoCatalogo = await Estampillas.remove( { _id:id } );
     console.log("elemento eliminado:", eliminarElementoCatalogo);
 
     return res.json({
@@ -284,6 +438,63 @@ const eliminarCatalogo = async (req, res) => {
   }
 };
 
+const mostrarMisCatalogos = async (req, res) => {
+  //{"sort" : ['datefield', 'asc']}
+  const token = req.header("x-access-token");
+
+  var email = retornarDatosJWT(token);
+
+  const catalogoBD = await Catalogo.find();
+
+  var catalosgos = [];
+  for (let index = 0; index < catalogoBD.length; index++) {
+    const element = catalogoBD[index].solicitud;
+
+    if (element.usuario_id.email == email) {
+      catalosgos.push(catalogoBD[index]);
+    }
+  }
+  return res.json({
+    ok: true,
+    catalogo: catalosgos,
+  });
+};
+const mostrarMisEstampillas = async (req, res) => {
+  var id_catalogo = req.query.id_catalogo;
+
+  var estampillasCat = await Estampillas.find({ CATALOGO: id_catalogo });
+
+  return res.json({
+    ok: true,
+    estampillas: estampillasCat,
+  });
+};
+
+const mostrarCatalogoId = async (req, res) => {
+  var id_solicitud = req.params.id;
+  console.log("id_solicitud", id_solicitud);
+
+  if (!id_solicitud || id_solicitud == null || !isValidObjectId(id_solicitud)) {
+    return res.json({
+      ok: false,
+      msg: "Debes enviar una solicitud valido",
+    });
+  }
+
+  var catalogo = await Catalogo.findOne({ solicitud: id_solicitud });
+  if (catalogo == null) {
+    return res.json({
+      ok: false,
+      msg: "No existe el catalogo que deseas buscar",
+    });
+  }
+
+  return res.json({
+    ok: true,
+    catalogo: catalogo,
+  });
+};
+
 //funciones
 function procesarExcel(exc) {
   try {
@@ -293,9 +504,9 @@ function procesarExcel(exc) {
     const nombreHoja = ex.SheetNames;
     let datos = excel.utils.sheet_to_json(ex.Sheets[nombreHoja[0]]);
     var datosValidos = new Array();
-    var datosValidados = validarCamposExcel(datos);
+    //var datosValidados = validarCamposExcel(datos);
 
-    return datosValidados;
+    return datos;
   } catch (e) {
     console.log("error: ", e);
   }
@@ -368,16 +579,23 @@ function validarCamposExcel(datos) {
   return datos;
 }
 //Se verifica si las espampillas subidas ya existen en la base de datos
-async function validarEstampillasRepetidas(datosValidados) {
+async function validarEstampillasRepetidas(datosValidados, id_catalogo) {
   var estampillasRepetidas = [];
   for (let index = 0; index < datosValidados.length; index++) {
     const element = datosValidados[index];
     if (element.completo == true) {
       const buscarRepetido = await Estampillas.findOne({
-        ParaBuscar: element.Foto_JPG_800x800_px.toLowerCase().replace(
-          /\s+/g,
-          ""
-        ),
+        $and: [
+          {
+            ParaBuscar: element.Foto_JPG_800x800_px.toLowerCase().replace(
+              /\s+/g,
+              ""
+            ),
+          },
+          {
+            Catalogo: id_catalogo,
+          },
+        ],
       });
       if (buscarRepetido != null) {
         element.repetido = true;
@@ -416,6 +634,89 @@ async function buscandoUrlImgCat(name) {
   }
 }
 
+const estampillaPage = async (req, res) => {
+  try {
+    let { perpage, page, tipo, pais, tema, anios, q, start, end } = req.query;
+    page = parseInt(page) || 1;
+    perpage = parseInt(perpage) || 10;
+    var query = {};
+    var query_cat = {};
+    if (pais && pais != "") {
+      query_cat.pais = ObjectId(pais.trim());
+    } else if (tema && tema != "") {
+      query_cat.tema_catalogo = ObjectId(tema);
+    }
+    
+    var catalogo=await Catalogo.find(query_cat,{tema_catalogo:0,solicitud:0,tipo_catalogo:0,pais:0})
+    var id_catalogo='';
+    if(!catalogo||catalogo.length==0) throw "error list";
+
+    
+    if (anios && anios != "") {
+      anios = JSON.parse(anios);
+      query = { $or: [] };
+      anios.forEach((element) => {
+        query.$or.push({
+          ANIO: element,
+        });
+      });
+    }
+
+    if (q && q != "") {
+      if (!query.$or) query.$or = [];
+      console.log(isNaN(q));
+      if (!isNaN(q)) {
+        query.$or.push({
+          ANIO: q,
+        });
+      } else {
+        query.$or.push({
+          Descripcion: { $regex: q, $options: "i" },
+        });
+        query.$or.push({
+          Descripcion_de_la_serie: { $regex: q, $options: "i" },
+        });
+        query.$or.push({
+          Valor_Facial: { $regex: q, $options: "i" },
+        });
+        query.$or.push({
+          Codigo: { $regex: q, $options: "i" },
+        });
+      }
+    }
+    if (start != 0 && end != 0) {
+      query.$and = [
+        {
+          ANIO: {
+            $gte: Number(start),
+          },
+        },
+        {
+          ANIO: {
+            $lte: Number(end),
+          },
+        },
+      ];
+    }
+
+    id_catalogo=catalogo[0]._id
+    query.CATALOGO=ObjectId(id_catalogo)
+    var estampillas = await Estampillas.find(query, { CATALOGO: 0 })
+      .skip(perpage * page - perpage)
+      .limit(perpage);
+    var count = await Estampillas.find(query).count();
+    res.status(200).send({
+      data: estampillas,
+      current: page,
+      pages: Math.ceil(count / perpage),
+    });
+  } catch ($e) {
+    res.status(400).send({
+      msg: $e,
+      ok: false,
+    });
+  }
+};
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -423,4 +724,10 @@ module.exports = {
   editarCatExcel,
   mostrarCatalogoPais,
   mostrarCatalogoAnio,
+  mostrarMisCatalogos,
+  mostrarMisEstampillas,
+  mostrarCatalogoId,
+  estampillaPage,
+  procesarExcel,
+  crearSolicitud,
 };

@@ -1,6 +1,8 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../../models/usuario/usuario");
+const Pais = require("../../models/catalogo/paises");
+
 const {
   eliminarImagenServidor,
   crearImagen,
@@ -18,25 +20,65 @@ const getUsuario = async (req, res) => {
     usuarios,
   });
 };
+const getUsuarioId = async (req, res) => {
+  const token = req.header("x-access-token");
+  const email = retornarDatosJWT(token);
+
+  try{
+    if (email != null) {
+      const user = await Usuario.findOne({ email },{_id:1,name:1,name:email,apellidos:1,nickname:1,tipo_catalogo:0,pais_usuario:0,temas:0,paises_coleccionados:0});
+      res.status(200).send({
+        ok: true,
+        data:user,
+      });
+    }
+    throw "not token";
+  }
+  catch($e){
+    res.status(500).send({
+      ok: false,
+      msg:$e
+    });
+  }
+  
+  
+  
+};
 
 //Función para crear un usuario.
+const buscarPaisNombre = async (names) => {
+  //const para_buscar = names.toLowerCase().replace( /[^-A-Za-z0-9]+/g, '' );
+  const para_buscar = names.toLowerCase().replace(/\s+/g, "");
+ 
+  console.log("PARA BUSCAR",para_buscar);
+  
+  const paisEncontrado = await Pais.findOne( { para_buscar } );
+  return paisEncontrado;
+};
 
 const createUsuario = async (req, res = response) => {
-  const { email, password } = req.body;
+  const { email, password,pais_usuario } = req.body;
   try {
+
+
+    
+    var pais = await buscarPaisNombre(pais_usuario);
+    console.log(pais)
+    if(!pais)throw {msg:'pais no encontrado',ok:false}
     const usuario_ = new Usuario(req.body);
 
     const salt = bcrypt.genSaltSync();
     usuario_.password = bcrypt.hashSync(password, salt);
+    usuario_.pais_usuario=pais._id
     usuario_.imagenP =
       "/imagenes/predeterminadas/" + usuario_.roleuser + ".png";
     console.log("antes de guardar: ", usuario_);
     // Guardar usuario
-    await usuario_.save();
+    var usuarioGuardado = await usuario_.save();
 
     res.json({
       ok: true,
-      usuario_,
+      msg: usuarioGuardado
     });
   } catch (error) {
     console.log(error);
@@ -193,4 +235,5 @@ module.exports = {
   createUsuario,
   deleteUsuario,
   updateUusuario,
+  getUsuarioId
 };
