@@ -8,6 +8,7 @@ const Color = require("colors");
 const TipoEstadoReporte = require("../models/moderacion/tipo-estado-reporte.model");
 const Usuarios = require("../models/usuario/usuario");
 const bcrypt = require("bcryptjs");
+const TipoEsperadoEstampilla = require("../models/catalogo/tipoEsperadoEstampilla.model")
 const {buscarPaisPorNombre} = require("../middlewares/paises")
 
 const initial_setup = async () => {
@@ -17,6 +18,7 @@ const initial_setup = async () => {
   await verificarTipoSolicitudYCrearla();
   await VerificarTipoCatalogoYCrarlo();
   await verificarEstadoTipoReporte();
+  await verificarEstadoEsperadoEstampillaYCrearlo();
 };
 const verificarYCrearAdmin = async () => {
   console.log("Verificando existencia de usuarios");
@@ -254,6 +256,43 @@ const verificarEstadoTipoReporte = async () => {
     }
 
     console.log("    | Se crearon "+ contador +" items en la base de datos.");
+  }
+};
+const verificarEstadoEsperadoEstampillaYCrearlo = async () => {
+  console.log("- Tipo Estado Esperado Estampilla...");
+
+  //Buscando en base de datos Tipo Estado Reporte
+  var tipoEsperadoEstampillaBD = await TipoEsperadoEstampilla.find();
+
+  console.log(" | Verificando en base de datos... ");
+  if (tipoEsperadoEstampillaBD.length != 0) {
+    console.log("  | Tipo estado esperado estampilla Ok.");
+  } else {
+    console.log("  | No existe en base de datos.");
+    console.log("   | Creando items...");
+
+    //Contador para contar las veces que se guardó correctamente
+    var contador = 0;
+
+    //Creando items en BD
+
+    //----------------------------
+
+
+    
+    var objetoTER = await TipoEsperadoEstampilla.insertMany(
+      [
+        { name: "NUEVA" },
+        { name: "USADA" },
+        { name: "MNH" },
+        { name: "SPD" },
+        { name: "SOBRE" },
+        { name: "CUADRO" },
+        { name: "ES INDIFERENTE" }
+      ]
+    );
+
+    console.log("    | Se crearon "+ objetoTER.length +" items en la base de datos.");
   }
 };
 module.exports = {

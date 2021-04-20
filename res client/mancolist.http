@@ -63,3 +63,14 @@ content-type: application/json
     
 
 }
+
+###
+
+get http://localhost:3000/api/catalogo/manco_list/tipos-estado-estampilla/listar
+
+content-type: application/json
+
+{
+    
+
+}
