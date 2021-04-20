@@ -422,7 +422,7 @@ const eliminarCatalogo = async (req, res) => {
   try {
     console.log("entramos a eliminar", id);
 
-    const eliminarElementoCatalogo = await Estampillas.findOneAndDelete(id);
+    const eliminarElementoCatalogo = await Estampillas.remove( { _id:id } );
     console.log("elemento eliminado:", eliminarElementoCatalogo);
 
     return res.json({
