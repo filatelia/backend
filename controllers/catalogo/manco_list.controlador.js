@@ -2,6 +2,7 @@ const { response } = require("express");
 const Mancolist = require("../../models/catalogo/manco_list");
 const MancolistCat = require("../../models/catalogo/mancolista_categorizada.model");
 const Usuario = require("../../models/usuario/usuario");
+const TipoEstadoEsperadoEstampilla = require("../../models/catalogo/tipoEsperadoEstampilla.model");
 var mongo = require("mongoose");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
 const { consultarDatosConCorreo } = require("../../middlewares/usuario");
@@ -329,7 +330,6 @@ const verMancolistCatId = async (req, res = response) => {
       },
     ]);
     console.log("obj ->", obj);
-   
 
     return res.json({
       ok: true,
@@ -493,7 +493,10 @@ const agregarSerieMancolista = async (req, res) => {
 
     objMancolista.id_mancolist_cat = id_mancolist_cat;
 
-    var mancolistaEnBD = await Mancolist.findOne({ id_estampilla:element, id_mancolist_cat });
+    var mancolistaEnBD = await Mancolist.findOne({
+      id_estampilla: element,
+      id_mancolist_cat,
+    });
     console.log("Resultado bd", mancolistaEnBD);
     if (mancolistaEnBD == null) {
       objMancolista.id_estampilla = element;
@@ -505,14 +508,35 @@ const agregarSerieMancolista = async (req, res) => {
   console.log("aAgregar", aAgregar);
   if (aAgregar.length > 0) {
     await Mancolist.insertMany(aAgregar);
-    
   }
 
   return res.json({
     ok: true,
     msg: aAgregar,
-
   });
+};
+
+const listarTiposEspearadosEstampillas = async (req, res = response) => {
+  try {
+    var tiposEspearadosEstampillasBD = await TipoEstadoEsperadoEstampilla.find(
+      {},
+      { __v: 0 }
+    );
+
+    return res.json({
+      ok: true,
+      msg: tiposEspearadosEstampillasBD,
+    });
+  } catch (error) {
+    console.log(
+      "Error en catch de listarTiposEspearadosEstampillas controlador ->",
+      error
+    );
+    return res.json({
+      ok: false,
+      msg: "Error al consultar en la base de datos.",
+    });
+  }
 };
 
 module.exports = {
@@ -524,4 +548,5 @@ module.exports = {
   verMancolistCatId,
   validarMancolist,
   agregarSerieMancolista,
+  listarTiposEspearadosEstampillas,
 };
