@@ -108,9 +108,31 @@ const validarCamposGeneral = (cantidadElementos, array) =>{
 
 
 }
+const isValidObjectIdGeneral = (cantidadElementos, array) =>{
+
+  var respuesta = true;
+  for (let index = 0; index < cantidadElementos; index++) {
+
+    if (!isValidObjectId(array[index]) ) {
+      console.log("Validación array["+index+"] ->", array[index]);
+      respuesta= false;
+      break;
+      
+    }
+    
+  }
+
+  return respuesta;
+  
+
+
+
+}
 module.exports = {
   validarCampos,
   validarDatosRecibidosCrearEstampilla,
   validarDatoscambiarEstadoReporte,
-  validarCamposGeneral
+  validarCamposGeneral,
+  isValidObjectIdGeneral
+
 };

@@ -3,7 +3,7 @@
 */
 const { Router } = require('express');
 const router = Router();
-const { eliminadoMuchasEstampillasMancolista, actualizarMancolist, listarTiposEspearadosEstampillas, validarMancolist, compartirManco_list,verMancolistCatId, agregarSerieMancolista, verMancolistPropia,catMancolist,getMancoListCat } = require('../../controllers/catalogo/manco_list.controlador');
+const { paginacionMancolistas, eliminadoMuchasEstampillasMancolista, actualizarMancolist, listarTiposEspearadosEstampillas, validarMancolist, compartirManco_list,verMancolistCatId, agregarSerieMancolista, verMancolistPropia,catMancolist,getMancoListCat } = require('../../controllers/catalogo/manco_list.controlador');
 const { validarJWT } = require("../../middlewares/validar-jwt");
 
 router.get( '/listar/:id', compartirManco_list);
@@ -20,6 +20,9 @@ router.post( '/eliminar-muchas/',[validarJWT], eliminadoMuchasEstampillasMancoli
 
 router.post( '/listar/',[validarJWT], verMancolistPropia);
 router.get( '/listar-id-cat',[], verMancolistCatId);
+
+router.get('/paginacion', [validarJWT], paginacionMancolistas );
+
 
 module.exports = router;
 //Adasdasdasgit

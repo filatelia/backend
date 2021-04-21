@@ -6,6 +6,7 @@ const TipoEstadoEsperadoEstampilla = require("../../models/catalogo/tipoEsperado
 var mongo = require("mongoose");
 const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
 const { consultarDatosConCorreo } = require("../../middlewares/usuario");
+const funcionesValidaciones = require("../../middlewares/validar-campos"); 
 
 const { ObjectId } = require("mongoose").Types;
 
@@ -562,6 +563,153 @@ const eliminadoMuchasEstampillasMancolista = async (req, res) => {
 
 }
 
+const paginacionMancolistas = async (req, res = response, next) => {
+  var {idCategoriaMancolista} = req.query;
+  var array = [];
+  var pagina = req.query.pagina || 1;
+  var porPagina = req.query.porPagina || 5;
+  porPagina= parseInt(porPagina);
+  pagina = pagina -1;
+  array.push(idCategoriaMancolista);
+
+  var valida = funcionesValidaciones.validarCamposGeneral(1, array);
+  if(valida != true){
+    return res.json({
+      ok: false,
+      msg: "Debes enviar un id categoria."
+    })
+  }
+  var calidaObjetId = funcionesValidaciones.isValidObjectIdGeneral(1, array);
+  if(calidaObjetId != true){
+    return res.json({
+      ok: false,
+      msg: "Debes enviar un id categoria válido."
+    })
+  }
+  var totalRegistros = await Mancolist.aggregate(
+    [
+      {
+        $lookup: 
+        {
+          from: "bdfc_estampillas",
+          localField: "id_estampilla",
+          foreignField: "_id",
+          as: "EstampillasBD"
+
+        }
+      },
+      {
+        $lookup: 
+        {
+          from: "bdfc_manco_list_cat",
+          localField: "id_mancolist_cat",
+          foreignField: "_id",
+          as: "CategoriasMancolista"
+
+        }
+      },
+      {
+        $project: {
+          IdCategoriaMancolistas: "$id_mancolist_cat",
+          NombreCategoriaMancolista: 
+          {
+            $arrayElemAt: ["$CategoriasMancolista.name", 0]
+          },
+          Estampillas: 
+          {
+            $arrayElemAt: ["$EstampillasBD", 0]
+          }
+
+        }
+      },
+      {
+        $unwind: "$Estampillas"
+      },
+      {
+        $match: 
+        {
+          IdCategoriaMancolistas: ObjectId(idCategoriaMancolista)
+        }
+      }
+
+    ]
+    );
+    var total = totalRegistros.length;
+  var estampillasCategoriaMancolista = await Mancolist.aggregate(
+    [
+      {
+        $lookup: 
+        {
+          from: "bdfc_estampillas",
+          localField: "id_estampilla",
+          foreignField: "_id",
+          as: "EstampillasBD"
+
+        }
+      },
+      {
+        $lookup: 
+        {
+          from: "bdfc_manco_list_cat",
+          localField: "id_mancolist_cat",
+          foreignField: "_id",
+          as: "CategoriasMancolista"
+
+        }
+      },
+      {
+        $project: {
+          IdCategoriaMancolistas: "$id_mancolist_cat",
+          NombreCategoriaMancolista: 
+          {
+            $arrayElemAt: ["$CategoriasMancolista.name", 0]
+          },
+          Estampillas: 
+          {
+            $arrayElemAt: ["$EstampillasBD", 0]
+          }
+
+        }
+      },
+      {
+        $unwind: "$Estampillas"
+      },
+      {
+        $match: 
+        {
+          IdCategoriaMancolistas: ObjectId(idCategoriaMancolista)
+        }
+      }
+
+    ]
+    ).skip((porPagina*pagina))
+    .limit(porPagina);
+
+
+    var totalListados = estampillasCategoriaMancolista.length;
+    console.log("total", total);
+    console.log("total listados", totalListados);
+
+    return res.json({
+      ok: true,
+      totalPaginasDisponibles: Math.ceil(total/porPagina),
+      totalEstampillasDisponibles: total,
+      paginaListada: (pagina + 1 ),
+      estampillasPorPaginaSolicitado: porPagina,
+      totalEstampillasEnviados: totalListados,
+      estampillas: estampillasCategoriaMancolista
+
+
+
+    })
+
+
+        
+
+
+
+}
+
 module.exports = {
   actualizarMancolist,
   compartirManco_list,
@@ -572,5 +720,6 @@ module.exports = {
   validarMancolist,
   agregarSerieMancolista,
   listarTiposEspearadosEstampillas,
-  eliminadoMuchasEstampillasMancolista
+  eliminadoMuchasEstampillasMancolista,
+  paginacionMancolistas
 };
