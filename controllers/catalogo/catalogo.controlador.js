@@ -15,6 +15,8 @@ const { retornarDatosJWT } = require("../../middlewares/index.middle");
 const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
 const Solicitud = require("../../models/solicitudes/solicitudes.model");
 const { ObjectId } = require("mongoose").Types;
+const { validarCamposGeneral } = require("../../middlewares/validar-campos");
+const { consultarCatalogosIdUsuario } = require("../../middlewares/catalogo");
 
 const crearCatalogo = async (req, res = response) => {
   try {
@@ -306,11 +308,15 @@ const mostrarCatalogoAnio = async (req, res) => {
     } else if (tema && tema != "") {
       query_cat.tema_catalogo = ObjectId(tema);
     }
-    var catalogo=await Catalogo.find(query_cat,{tema_catalogo:0,solicitud:0,tipo_catalogo:0,pais:0})
-    var id_catalogo='';
-    if(!catalogo||catalogo.length==0) throw "error list";
-    id_catalogo=ObjectId(catalogo[0]._id)
-
+    var catalogo = await Catalogo.find(query_cat, {
+      tema_catalogo: 0,
+      solicitud: 0,
+      tipo_catalogo: 0,
+      pais: 0,
+    });
+    var id_catalogo = "";
+    if (!catalogo || catalogo.length == 0) throw "error list";
+    id_catalogo = ObjectId(catalogo[0]._id);
 
     if (Number(anioI) && Number(anioF)) {
       const estampillas = await Estampillas.find({
@@ -325,30 +331,30 @@ const mostrarCatalogoAnio = async (req, res) => {
               $lte: Number(anioF),
             },
           },
-          {CATALOGO: id_catalogo},
+          { CATALOGO: id_catalogo },
         ],
       }).count();
-      console.log(id_catalogo)
+      console.log(id_catalogo);
       const catalogoCompleto = await Estampillas.aggregate([
         {
           $addFields: {
             regex: {
               $regexFind: {
                 input: "$ANIO",
-                regex: "^\\d+"
-              }
-            }
-          }
+                regex: "^\\d+",
+              },
+            },
+          },
         },
         {
           $set: {
             anio: {
               $convert: {
                 input: "$regex.match",
-                to: "int"
-              }
-            }
-          }
+                to: "int",
+              },
+            },
+          },
         },
         {
           $match: {
@@ -363,7 +369,7 @@ const mostrarCatalogoAnio = async (req, res) => {
                   $lte: Number(anioF),
                 },
               },
-              {CATALOGO: id_catalogo},
+              { CATALOGO: id_catalogo },
             ],
           },
         },
@@ -377,7 +383,6 @@ const mostrarCatalogoAnio = async (req, res) => {
             anio: "$_id",
           },
         },
-        
       ]);
 
       res.json({
@@ -422,7 +427,7 @@ const eliminarCatalogo = async (req, res) => {
   try {
     console.log("entramos a eliminar", id);
 
-    const eliminarElementoCatalogo = await Estampillas.remove( { _id:id } );
+    const eliminarElementoCatalogo = await Estampillas.remove({ _id: id });
     console.log("elemento eliminado:", eliminarElementoCatalogo);
 
     return res.json({
@@ -510,6 +515,21 @@ function procesarExcel(exc) {
   } catch (e) {
     console.log("error: ", e);
   }
+}
+
+//funciones
+function procesarExcelPruebas(tmp) {
+  // try {
+  //   const ex = excel.readFile(tmp);
+  //   const ex = excel.readFile(tmp);
+  //   const nombreHoja = ex.SheetNames;
+  //   let datos = excel.utils.sheet_to_json(ex.Sheets[nombreHoja[0]]);
+  //   var datosValidos = new Array();
+  //   //var datosValidados = validarCamposExcel(datos);
+  //   return datos;
+  // } catch (e) {
+  //   console.log("error: ", e);
+  // }
 }
 
 //Se validan los campos del excel que vienen vacios o defectuosos
@@ -646,12 +666,16 @@ const estampillaPage = async (req, res) => {
     } else if (tema && tema != "") {
       query_cat.tema_catalogo = ObjectId(tema);
     }
-    
-    var catalogo=await Catalogo.find(query_cat,{tema_catalogo:0,solicitud:0,tipo_catalogo:0,pais:0})
-    var id_catalogo='';
-    if(!catalogo||catalogo.length==0) throw "error list";
 
-    
+    var catalogo = await Catalogo.find(query_cat, {
+      tema_catalogo: 0,
+      solicitud: 0,
+      tipo_catalogo: 0,
+      pais: 0,
+    });
+    var id_catalogo = "";
+    if (!catalogo || catalogo.length == 0) throw "error list";
+
     if (anios && anios != "") {
       anios = JSON.parse(anios);
       query = { $or: [] };
@@ -699,8 +723,8 @@ const estampillaPage = async (req, res) => {
       ];
     }
 
-    id_catalogo=catalogo[0]._id
-    query.CATALOGO=ObjectId(id_catalogo)
+    id_catalogo = catalogo[0]._id;
+    query.CATALOGO = ObjectId(id_catalogo);
     var estampillas = await Estampillas.find(query, { CATALOGO: 0 })
       .skip(perpage * page - perpage)
       .limit(perpage);
@@ -717,6 +741,41 @@ const estampillaPage = async (req, res) => {
     });
   }
 };
+const listarCatalogosIdUsuario = async (req, res) => {
+  const { idUsuario, asd } = req.params;
+
+  var ArrayElementos = new Array();
+
+  ArrayElementos.push(idUsuario);
+  var validación = validarCamposGeneral(1, ArrayElementos);
+
+  if (validación != true) {
+    return res.json({
+      ok: false,
+      msg: "Debes enviar los datos obligatorios.",
+    });
+  }
+  var catalogoIDUsuario = await consultarCatalogosIdUsuario(idUsuario);
+
+  if (catalogoIDUsuario.length == 0) {
+    return res.json({
+      ok: false,
+      msg: "El usuario reportado no tiene catalogos",
+    });
+  } else {
+    if (catalogoIDUsuario == false) {
+      return res.json({
+        ok: false,
+        msg: "Error en consulta de catalogos.",
+      });
+    } else {
+      return res.json({
+        ok: true,
+        msg: catalogoIDUsuario,
+      });
+    }
+  }
+};
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -730,4 +789,6 @@ module.exports = {
   estampillaPage,
   procesarExcel,
   crearSolicitud,
+  procesarExcelPruebas,
+  listarCatalogosIdUsuario,
 };

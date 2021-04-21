@@ -1,6 +1,7 @@
 const { response } = require("express");
 const Catalogo = require("../models/catalogo/catalogo");
-
+const Solicitudes = require("../models/solicitudes/solicitudes.model");
+const { ObjectId } = require("mongoose").Types;
 const crearCatalogo = async (
   nombreCatalogo,
   id_solicitud,
@@ -11,33 +12,128 @@ const crearCatalogo = async (
 ) => {
   try {
     console.log("Entramos a catalogo");
-   
+
     var nuevoCat = new Catalogo();
     nuevoCat.name = nombreCatalogo;
     nuevoCat.solicitud = id_solicitud;
     nuevoCat.tipo_catalogo = id_tipo_catalogo;
     nuevoCat.pais = id_pais;
-    if(estadoCat){
-      nuevoCat.estado= estadoCat;
-
+    if (estadoCat) {
+      nuevoCat.estado = estadoCat;
     }
     nuevoCat.tema_catalogo = id_tema;
 
-   var nuevoC= await nuevoCat.save();
-   console.log("Nuevo c caralogo middel", nuevoC);
+    var nuevoC = await nuevoCat.save();
+    console.log("Nuevo c caralogo middel", nuevoC);
     return nuevoC;
   } catch (e) {
     console.log("Error al crear catálogo catch catalogo middlewears");
     return false;
   }
 };
-const eliminarCatalogo = async(id_catalogo) => {
+const eliminarCatalogo = async (id_catalogo) => {
   var eliminarCatalgo = await Catalogo.findByIdAndDelete(id_catalogo);
   return eliminarCatalgo;
+};
 
+async function consultarCatalogosIdUsuario(idUsuario) {
+  try {
+    var catalogosUsuarioBD = await Solicitudes.aggregate([
+      {
+        $lookup: {
+          from: "bdfu_usuarios",
+          localField: "usuario_id",
+          foreignField: "_id",
+          as: "UsuarioReportado",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "bdfc_tipoEstadoSolicitud",
+          localField: "tipoEstadoSolicitud_id",
+          foreignField: "_id",
+          as: "TipoEstadoSolicitud",
+        },
+      },
+      {
+        $lookup: {
+          from: "bdfc_catalogo",
+          localField: "_id",
+          foreignField: "solicitud",
+          as: "Catalogo",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "bdfu_TipoCatalogo",
+          localField: "Catalogo.tipo_catalogo",
+          foreignField: "_id",
+          as: "TipoCatalogo",
+        },
+      },
+      {
+        $lookup: {
+          from: "bdfc_temas",
+          localField: "Catalogo.tema_catalogo",
+          foreignField: "_id",
+          as: "TemaCatalogo",
+        },
+      },
+      {
+        $lookup: {
+          from: "bdfc_pais",
+          localField: "Catalogo.pais",
+          foreignField: "_id",
+          as: "PaisCatalogo",
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          IdUsuario: {
+            $arrayElemAt: ["$UsuarioReportado._id", 0],
+          },
+          IdCatalogo: {
+            $arrayElemAt: ["$Catalogo._id", 0],
+          },
+          NombreInternoCatalogo: "$catalogo_nombre_interno",
+          EstadoCatalogo: {
+            $arrayElemAt: ["$TipoEstadoSolicitud.name", 0],
+          },
+
+          TipoCatalogo: {
+            $arrayElemAt: ["$TipoCatalogo.name", 0],
+          },
+          PaisCatalogo: {
+            $arrayElemAt: ["$PaisCatalogo.name", 0],
+          },
+          Tema: {
+            $arrayElemAt: ["$TemaCatalogo.name", 0],
+          },
+        },
+      },
+      {
+        $match: {
+          IdUsuario: ObjectId(idUsuario),
+        },
+      },
+
+      // {
+      //   $unwind: "$idUsuario"
+      // }
+    ]);
+
+    return catalogosUsuarioBD;
+  } catch (error) {
+    console.log("Error en catch consultarCatalogosIdUsuario", error);
+    return false;
+  }
 }
-
 module.exports = {
   crearCatalogo,
-  eliminarCatalogo
+  eliminarCatalogo,
+  consultarCatalogosIdUsuario,
 };

@@ -538,6 +538,29 @@ const listarTiposEspearadosEstampillas = async (req, res = response) => {
     });
   }
 };
+const eliminadoMuchasEstampillasMancolista = async (req, res) => {
+  console.log("Eliminando array de estampillas de manclista...");
+
+  const { arrayIdEstampillas, idCategoriaEstampilla } = req.body;
+  var estampillasEliminadasDeMancolista = await Mancolist.deleteMany(
+    {
+      $and: 
+      [
+        {
+          _id:arrayIdEstampillas
+        },
+        {
+          id_mancolist_cat:idCategoriaEstampilla
+        }
+
+      ]
+    
+      
+     }); 
+
+     console.log("estampillasEliminadasDeMancolista", estampillasEliminadasDeMancolista);
+
+}
 
 module.exports = {
   actualizarMancolist,
@@ -549,4 +572,5 @@ module.exports = {
   validarMancolist,
   agregarSerieMancolista,
   listarTiposEspearadosEstampillas,
+  eliminadoMuchasEstampillasMancolista
 };

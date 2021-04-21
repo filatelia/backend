@@ -71,6 +71,16 @@ get http://localhost:3000/api/catalogo/manco_list/tipos-estado-estampilla/listar
 content-type: application/json
 
 {
-    
 
+}
+
+###
+
+post http://localhost:3000/api/catalogo/manco_list/eliminar-muchas
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
+
+{
+    "arrayIdEstampillas": ["607e86b3a270d2123c9e63c1", "607f9868120bc1188060165b", "607f9871120bc1188060165d"], 
+    "idCategoriaEstampilla": "607e86aea270d2123c9e63bf"  
 }

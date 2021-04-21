@@ -2,6 +2,8 @@ const Excel = require('exceljs');
 const { response } = require('express');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { procesarExcelPruebas } = require('../../controllers/catalogo/catalogo.controlador')
+const axios = require("axios");
 
 const fs = require('fs');
 var mongoose = require('mongoose');
@@ -123,8 +125,35 @@ for (let index = 1; index < totalEstampillas+1; index++) {
       console.log(error.message);
     });
 };
+const recibirExcelFormularios = async (req, res = response) => {
 
+      //servicio para consultar informacion de los mpaises y liego guardarla
+      var url = "https://docs.google.com/spreadsheets/d/1yIZIz9Ehy3VL2RxY4jCaCWBWst4pHp6XIdF2I8Ae_Rw/edit?usp=sharing"; 
+  
+      const getUrlFile =  (url) => 
+      {
+        const config = {
+          url,
+          method: "GET",
+          responseType: "blob"
+        };
+        
+
+        return axios
+          .request(config)
+          .then(({ data }) => console.log("Hola",URL.createObjectURL(new Blob([data]))))
+          .catch(console.log);
+      }
+      console.log("getUrlFile ->", await getUrlFile(url));
+
+
+
+  //var excelProcesado = procesarExcelPruebas();
+
+ // console.log("excelProcesado", excelProcesado);
+}
 
 module.exports = {
-  generarExcel
+  generarExcel,
+  recibirExcelFormularios
 }
