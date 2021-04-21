@@ -95,3 +95,19 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 
 {
 }
+
+
+###
+
+
+post http://localhost:3000/api/catalogo/manco_list/agregar-serie
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
+
+{
+    "id_mancolist_cat": "6080963d5ba984f3e2647141",
+    "id_catalogo": "60794bdc1e9ed4b8fb638957"
+
+
+
+}

@@ -9,6 +9,8 @@ const { consultarDatosConCorreo } = require("../../middlewares/usuario");
 const funcionesValidaciones = require("../../middlewares/validar-campos"); 
 
 const { ObjectId } = require("mongoose").Types;
+const { isValidObjectId } = require("mongoose");
+const estampillasModelo = require("../../models/catalogo/estampillas.modelo");
 
 const actualizarMancolist = async (req, res = response) => {
   const { id_estampilla, estado_estampilla, id_manco_list } = req.body;
@@ -484,8 +486,60 @@ const validarMancolist = async (req, res) => {
   }
 };
 const agregarSerieMancolista = async (req, res) => {
-  const { ids_estampillas, id_mancolist_cat } = req.body;
+  const { ids_estampillas, id_mancolist_cat, id_catalogo } = req.body;
   var aAgregar = [];
+
+  //Validando si envia el id catálogo
+  if(id_catalogo && isValidObjectId(id_catalogo)){
+
+    var estampillasIDCatalogo = await estampillasModelo.find( {CATALOGO:id_catalogo } );
+    for (let index = 0; index < estampillasIDCatalogo.length; index++) {
+      const element = estampillasIDCatalogo[index];
+      
+  
+       var estampillaEnMancolista = await Mancolist.aggregate([
+            { 
+              $lookup:
+              {
+                from: "bdfc_manco_list_cat",
+                localField: "id_mancolist_cat",
+                foreignField: "_id",
+                as: "MancolistaCategorizada"
+              }
+            },
+            {
+              $project: 
+              {
+                IdEstampilla: "$id_estampilla",
+                IdCategoriaMancolista: "$id_mancolist_cat",
+                NombreCategoriaMancolista: 
+                {
+                  $arrayElemAt: ["$MancolistaCategorizada.name", 0]
+
+                }
+
+              }
+            },
+            {
+              $match: 
+              {
+                IdCategoriaMancolista: ObjectId(id_mancolist_cat),
+                IdEstampilla: ObjectId(element._id)
+
+              }
+            }
+          ]);
+                 
+          if(estampillaEnMancolista.length == 0){
+            var objMancolista = new Object();
+            objMancolista.id_mancolist_cat = id_mancolist_cat;
+            objMancolista.id_estampilla = element._id;
+            aAgregar.push(objMancolista);
+
+          }
+      }
+  }else{
+    
   console.log("aAgregar inicial", aAgregar);
   for (let index = 0; index < ids_estampillas.length; index++) {
     const element = ids_estampillas[index];
@@ -505,6 +559,11 @@ const agregarSerieMancolista = async (req, res) => {
       aAgregar.push(objMancolista);
     }
   }
+
+  }
+
+
+
 
   console.log("aAgregar", aAgregar);
   if (aAgregar.length > 0) {
