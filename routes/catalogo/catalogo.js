@@ -1,9 +1,9 @@
 /*
-    Ruta: /api/catalogo/
+    Ruta: api/catalogo/uploads/excel/
 */
 const { Router } = require('express');
 const router = Router();
-const {  mostrarCatalogoPais,mostrarCatalogoId,estampillaPage, mostrarCatalogoAnio, mostrarMisEstampillas, mostrarMisCatalogos, crearCatalogo, mostrarCatalogo, eliminarCatalogo, editarCatExcel } = require('../../controllers/catalogo/catalogo.controlador');
+const {listarCatalogosIdUsuario,  mostrarCatalogoPais,mostrarCatalogoId,estampillaPage, mostrarCatalogoAnio, mostrarMisEstampillas, mostrarMisCatalogos, crearCatalogo, mostrarCatalogo, eliminarCatalogo, editarCatExcel } = require('../../controllers/catalogo/catalogo.controlador');
 const { subirEstampillasExcel } = require('../../controllers/catalogo/estampillas.controlador');
 const { verificarTemaYCrearlo } = require('../../middlewares/excel');
 const { validarJWT,validarDeJWTRoleAdmin } = require('../../middlewares/index.middle');
@@ -23,5 +23,7 @@ router.get( '/mis-estampillas', [validarJWT], mostrarMisEstampillas);
 router.get( '/paises/:pais', [], mostrarCatalogoPais);
 router.get( '/cat-anio/:anioI&:anioF', [], mostrarCatalogoAnio);
 router.get('/estampillas',[],estampillaPage);
+router.get('/catalogos-id-usuario/:idUsuario',[validarDeJWTRoleAdmin], listarCatalogosIdUsuario);
+
 
 module.exports = router;

@@ -50,6 +50,7 @@ const crearEstampillaIndividual = async (req, res = response) => {
   }
 };
 
+
 const subirEstampillasExcel = async (req, res = response) => {
   //Validando que sí se esté enviando información
   if (!req.files || req.files == null) {
