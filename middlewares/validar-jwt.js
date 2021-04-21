@@ -59,6 +59,12 @@ const validarDeJWTRoleAdmin = (req, res, next) => {
 
     // Leer el Token
     const token = req.header('x-access-token');
+    if(!token || token == null || token == ""){
+        return res.json({
+            ok:false,
+            msg: "No hay token en la petición"
+        })
+    }
 
         const {roleuser} = jwt.verify( token, process.env.JWT_SECRET );
         console.log(roleuser);
