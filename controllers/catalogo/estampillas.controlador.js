@@ -1,4 +1,4 @@
-const { response } = require("express");
+const { response, request } = require("express");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 const Imagenes = require("../../models/catalogo/uploads");
 const { v4: idUnico } = require("uuid");
@@ -14,6 +14,10 @@ const {
   agregarVariantesErroresEstampilla,
 } = require("../../controllers/catalogo/variantes-errores.controlador");
 const { crearSegundaSolicitud } = require("../../middlewares/solicitudes");
+const {
+  validarCamposGeneral,
+  isValidObjectIdGeneral,
+} = require("../../middlewares/validar-campos");
 const crearEstampillaIndividual = async (req, res = response) => {
   try {
     console.log(req.files);
@@ -49,7 +53,6 @@ const crearEstampillaIndividual = async (req, res = response) => {
     });
   }
 };
-
 
 const subirEstampillasExcel = async (req, res = response) => {
   //Validando que sí se esté enviando información
@@ -401,7 +404,49 @@ async function asociarVariablesYErrores(data) {
     }
   }
 }
+const editarEstampillaIndividual = async (req = request, res = response) => {
+  try {
+    const { idEstampilla } = req.body;
+    var array = [];
+
+    array.push(idEstampilla);
+
+    if (validarCamposGeneral(1, array) != true) {
+      return res.json({
+        ok: false,
+        msg: "Debes enviar el Id de estampilla",
+      });
+    }
+    if (isValidObjectIdGeneral(1, array) != true) {
+      return res.json({
+        ok: false,
+        msg: "Debes enviar el Id válido",
+      });
+    }
+
+    var filtro = { _id: idEstampilla };
+    var actualziar = req.body;
+    var estampillaEditadaBD = await Estampillas.findOneAndUpdate(
+      filtro,
+      actualziar,
+      { new: true }
+    );
+
+    if (estampillaEditadaBD != null) {
+      return res.json({
+        ok: true,
+        msg: estampillaEditadaBD,
+      });
+    } else {
+      return res.json({
+        ok: false,
+        msg: "No existe una estampilla con el Id Proporcionado",
+      });
+    }
+  } catch (error) {}
+};
 module.exports = {
   crearEstampillaIndividual,
   subirEstampillasExcel,
+  editarEstampillaIndividual,
 };
