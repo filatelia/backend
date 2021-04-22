@@ -9,11 +9,11 @@ const { createImageEstampilla } = require('../../controllers/catalogo/uploads.co
 const { consultarMensajeConIdClienteIdMensaje, paPruebas  } = require('../../middlewares/reportes')
 const { agregarSerieMancolista, verMancolistCatId } = require('../../controllers/catalogo/manco_list.controlador');
 const { recibirExcelFormularios } = require('../../controllers/pruebas/excel')
+const { googlePruebas } = require('../../controllers/google/google.controlador')
 
 const router = Router();
 
-router.post( '/', generarExcelFormularios );
-router.post( '/recibir-excel/', recibirExcelFormularios  );
+router.post( '/google/', googlePruebas  );
 //router.post( '/agregar/', agregarSerieMancolista );
 //router.post( '/', verMancolistCatId );
 

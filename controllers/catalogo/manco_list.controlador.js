@@ -717,12 +717,28 @@ const paginacionMancolistas = async (req, res = response, next) => {
         }
       },
       {
+        $lookup: 
+        {
+          from: "bdfc_uploads_imagenes",
+          localField: "EstampillasBD.FOTO_ESTAMPILLAS",
+          foreignField: "_id",
+          as: "ImagenEstampilla"
+
+        }
+      },
+    
+      {
         $project: {
+          UrlImagenEstampilla: 
+          {
+            $arrayElemAt: ["$ImagenEstampilla.imagen_url", 0]
+          },
           IdCategoriaMancolistas: "$id_mancolist_cat",
           NombreCategoriaMancolista: 
           {
             $arrayElemAt: ["$CategoriasMancolista.name", 0]
           },
+          EstadoESperadoEstampilla: "$estado_estampilla",
           Estampillas: 
           {
             $arrayElemAt: ["$EstampillasBD", 0]
@@ -743,6 +759,8 @@ const paginacionMancolistas = async (req, res = response, next) => {
     ]
     ).skip((porPagina*pagina))
     .limit(porPagina);
+
+    console.log("estampillasCategoriaMancolista", estampillasCategoriaMancolista);
 
 
     var totalListados = estampillasCategoriaMancolista.length;

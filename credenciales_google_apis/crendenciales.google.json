@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "noted-victory-311523",
+  "private_key_id": "7cf65a37bdeda82dcf7ead0bbfe4084f2b6eb820",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDhAfiZ0vAVRPRM\nmnuhparzyHNrsgSM8ursGB7aeOI5ZuciejC0+2rTfU4geeDqtKc+od+xn3dtWs9z\n2M0EnAQtJ97WmxKlYzywS9tnaMcUvt5I6yuGa+Ha6W4UUskTyW2IYMP6wzGhjnG7\nulCxKqsKORpS9yx4M5aVwkZ+aDDFINkCs5p72X4TbNMseSfKxTW0/p4XcZZ96wjW\nr8FEbXIBDwYEubZquOQTt/MTnFvHm0AIMl2DhJilofaoyeoWJB+rNBhmiiolqAiA\nDKGIrzan5LEcOR2QwBcxtG0aFtlpshvqVqkVUG+NPJDs3d9YKh8CH+NKengXLyO8\njuSdak29AgMBAAECggEADwTZKbddRCYuomBbaT5MK2qRXbpruFbMnIa9pHqWKxu1\nyOTcFHCFwGkoSl2oSDJXyYP3kP0idR+vIj3x7WFWnAcBxlRiibyWg/QESKJDS5yz\n7K0Z4iaYVErpiJzABDyZPZWr7zSRPwXpjIzSrwi4kv2dxrTt+HYFEqj9mJluy/GV\nyJsVQiz0wiNm4FQbWLVj4j8AQ7FYNrrcrIOLH6j1uzd1fjFQau5vmquqdmU72H3Q\nFuHtc3tKg0ieRaFI+bq/6h2eI8J2INtRrVbxY+D7rAAvcYh+f7J8W0hjeLvPRmmW\n0xBXOutjrqUfyFJ04PJiSQkKA49P8Di7fQz4gWrvUQKBgQD6p7h36QEXv2kBWHxz\noAYbJugaGV1zCF4/sIt4HMmy0VQKFE2/syEXgQZiPq78gZZp13m8fMtrs/4zcNBF\n3zbNgA1xGDa+n2q0EHlcC96MSamLM+KpFI54q4DbgZECuMVM3XXtqAWly/GXJ2WI\nyYsKZo/DVEmJJtjLLIk6LPr6NQKBgQDlzj7wheZNZImoAFjVtdZFy0dDUMMuIoiT\n7nJBxPBqaJKIrFgH6G/xukRqla8P/mFEDVCloB81C3CVLWimSowybcZ1mX15UROL\nO0AhApn5hMaE39OZqfzFisBxbm4FJM30UbfWiUIXf4bRTqiTsBv63Phvg+FuxqGP\n9yNzHTi2aQKBgQDfolTLZ3A6J+Uf9jrTTqsj/oqG/qqJv6WXXYSSHd03VdyNQaA8\nsS2NMujnLtYhI913gXBz40P7TBQ5ASZRsN3Ma7uSc/AkE0e4cBpXLZ/Zur8yG5DX\nGigjMaE+N1OSAhjGg7B74bVoP5XFLrlAWdFb7jXGKKWTYL18SLgG16r1IQKBgBuJ\nXDdcBB2v92K/L+Xj1Rol4pMpYUns72qyftRssdY+U5i29hF0g712cW5II2MKO0N5\nSPmftz2W8lWdzFVox2Xfi5FZ5BQeZ/YeEnAiLKsegt83JtbZ7KULHEY7UkmhgGBP\nTnURm27PZCs+fqq7xo6H3ekW53Nrr75dgczwanRJAoGAVKl9bpbdrzhuf7qPGCSR\nvl/mZ6OzIfAp9mHpKS/3GAjPVonJ/G3UV6hgp8w+fdmEfM3dInGVNXBerL0BvZyT\njzdH9oqfwq6JHviRqx5+Zb+aFrTWr/jHlFtNsvIsj8pudv97rFJ8YDkTvAhbtj74\ni5CRtLyb1WN5zqBtB1m2Vf8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "filatelia@noted-victory-311523.iam.gserviceaccount.com",
+  "client_id": "103531043479717633361",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/filatelia%40noted-victory-311523.iam.gserviceaccount.com"
+}
+
