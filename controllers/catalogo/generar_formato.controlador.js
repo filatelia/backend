@@ -218,8 +218,9 @@ const generarExcel = async (req, res = response) => {
 const generarExcelFormularios = async (req, res = response) => {
 
 
-  const { idCatalogo } = req.body;
-  var cantidadCampos = 20;
+  const { idCatalogo, cantidad } = req.body;
+  //  Asignando total de imagenes a mostrar
+  var totalEstampillas = parseInt(cantidad);
 
 
   //se evalua que el id recibido sea valido
@@ -257,7 +258,7 @@ const generarExcelFormularios = async (req, res = response) => {
   const [, , filename] = process.argv;
 
   const wb = new Excel.Workbook();
-  const ws = wb.addWorksheet("Formato catalogo");
+  const ws = wb.addWorksheet("Imagenes Estampillas");
 
   const letrasColumnas = [
     "A",
@@ -303,8 +304,7 @@ const generarExcelFormularios = async (req, res = response) => {
 
   ];
 
-//  Asignando total de imagenes a mostrar
-  var totalEstampillas = 20;
+
 
  // Centrando contenido de las columnas
   letrasColumnas.map((datos, i) => {
