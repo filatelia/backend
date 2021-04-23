@@ -197,7 +197,7 @@ const generarExcel = async (req, res = response) => {
 };
 
 const generarExcelFormularios = async (req, res = response) => {
-  const { idCatalogo, cantidad } = req.body;
+  const { idCatalogo, cantidad } = req.query;
   //  Asignando total de imagenes a mostrar
   var totalEstampillas = parseInt(cantidad);
 
