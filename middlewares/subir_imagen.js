@@ -79,6 +79,7 @@ const guardarImagenGoogleSeet = async (
   });
 
   try {
+    console.log("Entramos guardarImagenGoogleSeet");
     //////////////////////GUARDANDO IMAGEN EN SERVIDOR///////////////////////////
     //Guardando imagen en el directorio del servidor
     var crearImagenDirectorioDir = await crearImagenDirectorio(
@@ -91,6 +92,7 @@ const guardarImagenGoogleSeet = async (
       objetoRespuesta.origenError = crearImagenDirectorioDir;
       return objetoRespuesta;
     }
+    console.log("95 ->", crearImagenDirectorioDir);
 
     /////////////////////////// ASOCIANDO IMAGEN A ESTAMPILLA ////////////////////
 
