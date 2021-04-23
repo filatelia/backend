@@ -6,6 +6,6 @@ const { generarExcel, generarExcelFormularios } = require('../../controllers/cat
 
 const router = Router();
 
-router.post('/generar-excel/', generarExcelFormularios);
+router.get('/generar-excel/', generarExcelFormularios);
 
 module.exports = router;
