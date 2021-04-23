@@ -18,6 +18,7 @@ const {
   validarCamposGeneral,
   isValidObjectIdGeneral,
 } = require("../../middlewares/validar-campos");
+const { googleSeetFotoEstampilla } = require("../google/google.controlador");
 const crearEstampillaIndividual = async (req, res = response) => {
   try {
     console.log(req.files);
@@ -66,7 +67,10 @@ const subirEstampillasExcel = async (req, res = response) => {
   console.log("documento recibido", req.files);
   console.log("Datos recibido", req.body);
 
-  const nombreSeparado = req.files.sampleFile.name.split(".");
+  const nombreSeparado = req.files.sampleFile.name
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .split(".");
   const formatoArchivo = nombreSeparado[nombreSeparado.length - 1];
   if (formatoArchivo.toLowerCase() != "xlsx") {
     return res.json({
@@ -118,24 +122,25 @@ const subirEstampillasExcel = async (req, res = response) => {
     }
   });
 
+  console.log("Completos -> ", completos);
+
   //Guardando estampillas
   var esguarda = await guardarEstampillas(completos, idCatalogo);
 
-  //Agrupar variantes y errores
-  console.log("Agrupando variantes y errores...");
+  if (esguarda.length > 0) {
+    //Asociar Imagenes desde google meet
+    await googleSeetFotoEstampilla(idCatalogo, esguarda);
 
-  var variantesErrores = agruparVariantes(completos);
-  var ids = [];
-  for (let index = 0; index < variantesErrores.length; index++) {
-    const element = variantesErrores[index];
 
-    ids = Object.keys(element);
+    //Creando solicitud
+    await crearSegundaSolicitud(catalogoBD.solicitud._id);
+    
+  }else{
+    return res.json({
+      ok: false,
+      msg: "No se han guardado las estampillas."
+    })
   }
-
-  //Asociando variables y errores a estampilla
-  // await asociarVariablesYErrores(variantesErrores);
-  await asociarVariablesYErrores(completos);
-  await crearSegundaSolicitud(catalogoBD.solicitud._id);
 
   return res.json({
     ok: true,
@@ -155,9 +160,9 @@ function validarCamposExcel(datos) {
       //Validando datos requiridos y asignando en Completa el true o false para separarles
       //Reellenando valores no reqieridos con N/A
       if (
-        !data.CODIGO ||
-        data.CODIGO == null ||
-        data.CODIGO == "" ||
+        !data.CODIGO_NO_TOCAR ||
+        data.CODIGO_NO_TOCAR == null ||
+        data.CODIGO_NO_TOCAR == "" ||
         !data.ANIO ||
         data.ANIO == null ||
         data.ANIO == "" ||
@@ -243,34 +248,6 @@ function validarCamposExcel(datos) {
       ) {
         data.MONEDA_VALOR_CATALOGO_NUEVO_USADO = "N/A";
       }
-
-      //Como VARIANTES_ERRORES no es obligatorio, le asignamos un valor para que exista, o tenga información
-      if (
-        !data.VARIANTES_ERRORES ||
-        data.VARIANTES_ERRORES == null ||
-        data.VARIANTES_ERRORES == ""
-      ) {
-        data.VARIANTES_ERRORES = null;
-        if (
-          !data.FOTO_VARIANTES_ERRORES ||
-          data.FOTO_VARIANTES_ERRORES == null ||
-          data.FOTO_VARIANTES_ERRORES == ""
-        ) {
-          data.FOTO_VARIANTES_ERRORES = null;
-        } else {
-          console.log("encontre");
-          data.COMPLETA = false;
-        }
-      } else {
-        //Como VARIANTES_ERRORES existe, se debe validar si existe un nombre en la foto de variantes y errores
-        if (
-          !data.FOTO_VARIANTES_ERRORES ||
-          data.FOTO_VARIANTES_ERRORES == null ||
-          data.FOTO_VARIANTES_ERRORES == ""
-        ) {
-          data.FOTO_VARIANTES_ERRORES = "N/A";
-        }
-      }
     });
 
     return datosAValidar;
@@ -279,131 +256,45 @@ function validarCamposExcel(datos) {
   }
 }
 
-function agruparVariantes(datos) {
-  if (datos.length > 0) {
-    var datosAgrupados = new Array();
-    var codigos = new Array();
-    codigos = datos;
-    var arrayObjetos = new Array();
-    var variantes_errores = new Object();
-    var variantes = new Object();
-    var contador = 0;
-    for (let index = 0; index < datos.length; index++) {
-      const element = datos[index];
-
-      contador = 0;
-      if (variantes_errores[element.CODIGO]) {
-        console.log("Existe");
-        variantes = {};
-        variantes.id = element.CODIGO;
-        variantes.descripcion = element.VARIANTES_ERRORES;
-        variantes.imagen = element.FOTO_VARIANTES_ERRORES;
-        variantes_errores[element.CODIGO].push(variantes);
-      } else {
-        console.log("No existe");
-        variantes = {};
-
-        variantes.id = element.CODIGO;
-        variantes.descripcion = element.VARIANTES_ERRORES;
-        variantes.imagen = element.FOTO_VARIANTES_ERRORES;
-        variantes_errores[element.CODIGO] = [variantes];
-      }
-    }
-
-    return [variantes_errores];
-  } else {
-    return null;
-  }
-}
 async function guardarEstampillas(datos, id_catalogo) {
   var datosGuardar = [];
   estampillasGuardadas = [];
-  var temporal = [];
+
   for (let index = 0; index < datos.length; index++) {
     var element = datos[index];
 
-    //consultando id estampilla
-    const imagenEstampillaBD = await Imagenes.findOne({
-      codigo_estampilla: element.CODIGO,
+    var estampillaBD = await Estampillas.findOne({
+      CODIGO: element.CODIGO_NO_TOCAR,
     });
-    if (imagenEstampillaBD != null) {
-      var estampillaBD = await Estampillas.findOne({ CODIGO: element.CODIGO });
-      if (estampillaBD == null) {
-        //asociando datos para guardar
+    console.log("estampillaBD", estampillaBD);
+    if (estampillaBD == null) {
+      //asociando datos para guardar
+      var temporal = new Object();
 
-        temporal.CATALOGO = id_catalogo;
-        temporal.FOTO_ESTAMPILLAS = imagenEstampillaBD._id;
-        temporal.CODIGO = element.CODIGO;
-        temporal.DESCRIPCION_ESTAMPILLA = element.DESCRIPCION_ESTAMPILLA;
-        temporal.ANIO = element.ANIO;
-        temporal.CATEGORIA = element.CATEGORIA;
-        temporal.GRUPO = element.GRUPO;
-        temporal.NRO_ESTAMPILLAS = element.NRO_ESTAMPILLAS;
-        temporal.TITULO_DE_LA_SERIE = element.TITULO_DE_LA_SERIE;
-        temporal.NUMERO_DE_CATALOGO = element.NUMERO_DE_CATALOGO;
-        temporal.VALOR_FACIAL = element.VALOR_FACIAL;
-        temporal.TIPO_MONEDA_VALOR_FACIAL = element.TIPO_MONEDA_VALOR_FACIAL;
-        temporal.VALOR_CATALOGO_NUEVO = element.VALOR_CATALOGO_NUEVO;
-        temporal.VALOR_DEL_CATALOGO_USADO = element.VALOR_DEL_CATALOGO_USADO;
-        temporal.MONEDA_VALOR_CATALOGO_NUEVO_USADO =
-          element.MONEDA_VALOR_CATALOGO_NUEVO_USADO;
-        temporal.TIPO = element.TIPO;
+      temporal.CATALOGO = id_catalogo;
+      temporal.CODIGO = element.CODIGO_NO_TOCAR;
+      temporal.DESCRIPCION_ESTAMPILLA = element.DESCRIPCION_ESTAMPILLA;
+      temporal.ANIO = element.ANIO;
+      temporal.CATEGORIA = element.CATEGORIA;
+      temporal.GRUPO = element.GRUPO;
+      temporal.NRO_ESTAMPILLAS = element.NRO_ESTAMPILLAS;
+      temporal.TITULO_DE_LA_SERIE = element.TITULO_DE_LA_SERIE;
+      temporal.NUMERO_DE_CATALOGO = element.NUMERO_DE_CATALOGO;
+      temporal.VALOR_FACIAL = element.VALOR_FACIAL;
+      temporal.TIPO_MONEDA_VALOR_FACIAL = element.TIPO_MONEDA_VALOR_FACIAL;
+      temporal.VALOR_CATALOGO_NUEVO = element.VALOR_CATALOGO_NUEVO;
+      temporal.VALOR_DEL_CATALOGO_USADO = element.VALOR_DEL_CATALOGO_USADO;
+      temporal.MONEDA_VALOR_CATALOGO_NUEVO_USADO =
+        element.MONEDA_VALOR_CATALOGO_NUEVO_USADO;
+      temporal.TIPO = element.TIPO;
 
-        const objEstampilla = new Estampillas(temporal);
-
-        const estampillaGuardada = await objEstampilla.save();
-        if (estampillaGuardada._id) {
-          element.guardado = false;
-          datosGuardar.push(element);
-        } else {
-          element.guardado = false;
-          datosGuardar.push(element);
-        }
-      }
-    } else {
-      element.guardado = false;
-      datosGuardar.push(element);
+      datosGuardar.push(temporal);
     }
   }
-  return datosGuardar;
+  var guardados = await Estampillas.insertMany(datosGuardar);
+  return guardados;
 }
 
-async function asociarVariablesYErrores(data) {
-  var asociados = new Array();
-  for (let index = 0; index < data.length; index++) {
-    const element = data[index];
-    var objeto = new Object();
-
-    objeto.nombre_imagen_excel = element.FOTO_VARIANTES_ERRORES;
-    objeto.Descripcion = element.VARIANTES_ERRORES;
-    objeto.codigo_excel = element.CODIGO;
-
-    console.log("Objeto", objeto);
-
-    var objVariantes = new VariantesErrores_(objeto);
-    const varianteGuardada = await objVariantes.save();
-    if (varianteGuardada._id) {
-      //Buscando estampilla con codigo
-      var estampillaBD = await Estampillas.findOne({ CODIGO: element.CODIGO });
-      if (estampillaBD == null) {
-        console.log("Null en buscar estampilla");
-      } else {
-        const modificarEstampilla = await agregarVariantesErroresEstampilla(
-          estampillaBD._id,
-          varianteGuardada._id
-        );
-        if (modificarEstampilla._id) {
-          console.log("variante y error asociada en BD");
-          asociados.push(modificarEstampilla);
-        } else {
-          console.log("Null en modificar estampilla");
-        }
-      }
-    } else {
-      console.log("Null en guardar variante");
-    }
-  }
-}
 const editarEstampillaIndividual = async (req = request, res = response) => {
   try {
     const { idEstampilla } = req.body;

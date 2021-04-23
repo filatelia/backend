@@ -16,6 +16,7 @@
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "download": "^8.0.0",
     "exceljs": "^4.2.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",

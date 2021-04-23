@@ -11,8 +11,6 @@ const ImagenesEstampillas = require("../../models/catalogo/uploads");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 
 const generarExcel = async (req, res = response) => {
-
-
   const { idCatalogo } = req.params;
 
   //se evalua que el id recibido sea valido
@@ -23,70 +21,57 @@ const generarExcel = async (req, res = response) => {
     });
   }
 
+  var archivos = await fsP.readdir(
+    path.join(__dirname, "../../uploads/documentos/")
+  );
 
-
-
- var archivos= await fsP.readdir(path.join(__dirname, "../../uploads/documentos/"));
-
- archivos.map(files =>{
-
-  fs.unlink(path.join(__dirname, "../../uploads/documentos/", files), function (err) {
-    if (err) {
-      console.log("No hay archivo para borrrar");
-
-    } else {
-      console.log("eliminado correctamente");
-  }
-}
-
-);
-
-
- });
-
-
-
-
+  archivos.map((files) => {
+    fs.unlink(
+      path.join(__dirname, "../../uploads/documentos/", files),
+      function (err) {
+        if (err) {
+          console.log("No hay archivo para borrrar");
+        } else {
+          console.log("eliminado correctamente");
+        }
+      }
+    );
+  });
 
   var arrCodigosImagenesNoAsociadas = [];
   var arrImagenesNoAsociadas = [];
- // Buscar imagenes de estampillas del catálogo
-  const imagenesEstampillasBD = await ImagenesEstampillas.aggregate(
-    [
-
-      {
-        $lookup: {
-          from: "bdfc_estampillas",
-          localField: "codigo_estampilla",
-          foreignField:"CODIGO",
-          as: "arrEstampilla"
-        }
+  // Buscar imagenes de estampillas del catálogo
+  const imagenesEstampillasBD = await ImagenesEstampillas.aggregate([
+    {
+      $lookup: {
+        from: "bdfc_estampillas",
+        localField: "codigo_estampilla",
+        foreignField: "CODIGO",
+        as: "arrEstampilla",
       },
-     {
-       $project: {
-        catalogo:1,
-         estampillaAsociada: { $arrayElemAt: ["$arrEstampilla", 0] },
-         codigo_estampilla:1,
-         imagen_url:1
-       }
-     },
-     {
-       $match: {
-        catalogo: ObjectId(id_catalogo)
-       }
-     },
+    },
+    {
+      $project: {
+        catalogo: 1,
+        estampillaAsociada: { $arrayElemAt: ["$arrEstampilla", 0] },
+        codigo_estampilla: 1,
+        imagen_url: 1,
+      },
+    },
+    {
+      $match: {
+        catalogo: ObjectId(id_catalogo),
+      },
+    },
+  ]);
 
-    ]
-    );
-
-    imagenesEstampillasBD.map((data) => {
-      if (!data.estampillaAsociada){
-
-        arrImagenesNoAsociadas.push(data);
-      }
-    });
-    console.log("imagenesEstampillasBD -> ",imagenesEstampillasBD.length);
-    console.log("arrImagenesNoAsociadas -> ", arrImagenesNoAsociadas);
+  imagenesEstampillasBD.map((data) => {
+    if (!data.estampillaAsociada) {
+      arrImagenesNoAsociadas.push(data);
+    }
+  });
+  console.log("imagenesEstampillasBD -> ", imagenesEstampillasBD.length);
+  console.log("arrImagenesNoAsociadas -> ", arrImagenesNoAsociadas);
 
   const [, , filename] = process.argv;
 
@@ -114,7 +99,7 @@ const generarExcel = async (req, res = response) => {
     "R",
   ];
 
- // agregando titulos de las columnas
+  // agregando titulos de las columnas
   ws.columns = [
     { header: "NUMERO", key: "id", width: 10 },
     { header: "CODIGO", key: "id", width: 40 },
@@ -136,10 +121,10 @@ const generarExcel = async (req, res = response) => {
     { header: "FOTO_VARIANTES_ERRORES", key: "id", width: 40 },
   ];
 
-//  Asignando total de imagenes a mostrar
+  //  Asignando total de imagenes a mostrar
   var totalEstampillas = arrImagenesNoAsociadas.length;
 
- // Centrando contenido de las columnas
+  // Centrando contenido de las columnas
   letrasColumnas.map((datos, i) => {
     ws.getCell(datos + "1").alignment = {
       vertical: "center",
@@ -154,7 +139,6 @@ const generarExcel = async (req, res = response) => {
     ws.getRow(index).values = [
       contador,
       arrImagenesNoAsociadas[index - 2].codigo_estampilla,
-
     ];
   }
 
@@ -190,38 +174,32 @@ const generarExcel = async (req, res = response) => {
 
   var nombreDocumento = uuidv4();
 
-
   wb.xlsx
     .writeFile(
-      path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
+      path.join(
+        __dirname,
+        "../../uploads/documentos/" + nombreDocumento + ".xlsx"
+      )
     )
     .then(() => {
       console.log("Done.");
 
       res.download(
-        path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
-
+        path.join(
+          __dirname,
+          "../../uploads/documentos/" + nombreDocumento + ".xlsx"
+        )
       );
-
     })
     .catch((error) => {
       console.log(error.message);
     });
-
-
-
-
-
 };
 
-
 const generarExcelFormularios = async (req, res = response) => {
-
-
   const { idCatalogo, cantidad } = req.body;
   //  Asignando total de imagenes a mostrar
   var totalEstampillas = parseInt(cantidad);
-
 
   //se evalua que el id recibido sea valido
   if (!mongoose.isValidObjectId(idCatalogo)) {
@@ -231,29 +209,22 @@ const generarExcelFormularios = async (req, res = response) => {
     });
   }
 
+  var archivos = await fsP.readdir(
+    path.join(__dirname, "../../uploads/documentos/")
+  );
 
-
-
- var archivos= await fsP.readdir(path.join(__dirname, "../../uploads/documentos/"));
-
- archivos.map(files =>{
-
-  fs.unlink(path.join(__dirname, "../../uploads/documentos/", files), function (err) {
-    if (err) {
-      console.log("No hay archivo para borrrar");
-
-    } else {
-      console.log("eliminado correctamente");
-  }
-}
-
-);
-
-
- });
-
-
-
+  archivos.map((files) => {
+    fs.unlink(
+      path.join(__dirname, "../../uploads/documentos/", files),
+      function (err) {
+        if (err) {
+          console.log("No hay archivo para borrrar");
+        } else {
+          console.log("eliminado correctamente");
+        }
+      }
+    );
+  });
 
   const [, , filename] = process.argv;
 
@@ -281,10 +252,10 @@ const generarExcelFormularios = async (req, res = response) => {
     "R",
   ];
 
- // agregando titulos de las columnas
+  // agregando titulos de las columnas
   ws.columns = [
     { header: "N°", key: "id", width: 4 },
-    { header: "CODIGO-NO-TOCAR", key: "id", width: 0 },
+    { header: "CODIGO_NO_TOCAR", key: "id", width: 0 },
     { header: "FOTO_ESTAMPILLAS", key: "id", width: 30 },
     { header: "DESCRIPCION_ESTAMPILLA", key: "id", width: 25 },
     { header: "NRO_ESTAMPILLAS", key: "id", width: 18 },
@@ -300,23 +271,22 @@ const generarExcelFormularios = async (req, res = response) => {
     { header: "VALOR_DEL_CATALOGO_USADO", key: "id", width: 30 },
     { header: "MONEDA_VALOR_CATALOGO_NUEVO_USADO", key: "id", width: 43 },
     { header: "VARIANTES_ERRORES", key: "id", width: 25 },
-    { header: "CATALOGO-NO-TOCAR", key: "id", width: 0 },
-
+    { header: "CATALOGO_NO_TOCAR", key: "id", width: 0 },
   ];
 
-
-
- // Centrando contenido de las columnas
+  // Centrando contenido de las columnas
   letrasColumnas.map((datos, i) => {
     ws.getCell(datos + "1").alignment = {
       vertical: "center",
       horizontal: "center",
     };
   });
-var url ="https://docs.google.com/forms/d/e/1FAIpQLSevoBbNVw00sSQH-eAr5V9IaOyj8j_xkfPE4vD9ihC1nf3Ilw/viewform?usp=pp_url&entry.1011886594=";
-var codUnicoEstampilla = [];
+  var url =
+    "https://docs.google.com/forms/d/e/1FAIpQLSevoBbNVw00sSQH-eAr5V9IaOyj8j_xkfPE4vD9ihC1nf3Ilw/viewform?usp=pp_url&entry.1011886594=";
+  var codUnicoEstampilla = [];
 
-var urlImagen = "https://docs.google.com/forms/d/e/1FAIpQLSfNdPRwcpdMR56WEQkn3eYnwLKhUXfplNWVOTTBhsa1Zr5kaA/viewform?usp=pp_url&entry.390722268=";
+  var urlImagen =
+    "https://docs.google.com/forms/d/e/1FAIpQLSfNdPRwcpdMR56WEQkn3eYnwLKhUXfplNWVOTTBhsa1Zr5kaA/viewform?usp=pp_url&entry.390722268=";
 
   //agregando ids al excel
   var contador = 0;
@@ -324,26 +294,26 @@ var urlImagen = "https://docs.google.com/forms/d/e/1FAIpQLSfNdPRwcpdMR56WEQkn3eY
     contador = contador + 1;
     codUnicoEstampilla.push(uuidv4());
 
-    ws.getRow(index).values = [
-      contador,
-      codUnicoEstampilla[index-2]
-      
-
-    ];
+    ws.getRow(index).values = [contador, codUnicoEstampilla[index - 2]];
   }
-  
+
   for (let index = 0; index < totalEstampillas; index++) {
-    ws.getCell('C'+(index+2)).value = {
-      text: 'Añadir imagen estampilla  ❒',
-      hyperlink: urlImagen+idCatalogo+"&entry.1224789801="+codUnicoEstampilla[index],
-      tooltip: 'Click para agregar estampilla'
+    ws.getCell("C" + (index + 2)).value = {
+      text: "Añadir imagen estampilla  ❒",
+      hyperlink:
+        urlImagen +
+        idCatalogo +
+        "&entry.1224789801=" +
+        codUnicoEstampilla[index],
+      tooltip: "Click para agregar estampilla",
     };
-    ws.getCell('Q'+(index+2)).value = {
-      text: 'Añadir variante o error ❒',
-      hyperlink: url+idCatalogo+"&entry.252659182="+codUnicoEstampilla[index],
-      tooltip: 'Click para agregar variante o error'
+    ws.getCell("Q" + (index + 2)).value = {
+      text: "Añadir variante o error ❒",
+      hyperlink:
+        url + idCatalogo + "&entry.252659182=" + codUnicoEstampilla[index],
+      tooltip: "Click para agregar variante o error",
     };
-    ws.getCell('R'+(index+2)).value = idCatalogo;
+    ws.getCell("R" + (index + 2)).value = idCatalogo;
   }
 
   for (let index = 1; index < totalEstampillas + 2; index++) {
@@ -357,35 +327,31 @@ var urlImagen = "https://docs.google.com/forms/d/e/1FAIpQLSfNdPRwcpdMR56WEQkn3eY
     });
   }
 
-
   var nombreDocumento = uuidv4();
-
 
   wb.xlsx
     .writeFile(
-      path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
+      path.join(
+        __dirname,
+        "../../uploads/documentos/" + nombreDocumento + ".xlsx"
+      )
     )
     .then(() => {
       console.log("Done.");
 
       res.download(
-        path.join(__dirname, "../../uploads/documentos/"+nombreDocumento+".xlsx")
-
+        path.join(
+          __dirname,
+          "../../uploads/documentos/" + nombreDocumento + ".xlsx"
+        )
       );
-
     })
     .catch((error) => {
       console.log(error.message);
     });
-
-
-
-
-
 };
-
 
 module.exports = {
   generarExcel,
-  generarExcelFormularios
+  generarExcelFormularios,
 };
