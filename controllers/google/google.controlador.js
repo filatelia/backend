@@ -13,29 +13,40 @@ const googlePruebas = async (req, res = response) => {
   await googleSeetFotoEstampilla("607e12f251f7fb33db4069ec", estampilasss);
 };
 
-const googleSeetFotoEstampilla = async (idCatalogo, arrayEstampillas) => {
-  var idsImagenes = [];
+const googleSeetFotoEstampilla = async (arrayEstampillas) => {
+  var arrayAgreagar = [];
+  var arrayEliminar = [];
+  console.log("Llegamos a googleSeetFotoEstampilla");
+
   const hoja = await accederGoogleSheetHojaUno();
-  for (let index = 0; index < arrayEstampillas.length; index++) {
-    const element = arrayEstampillas[index].CODIGO;
 
-    //Buscando id estampilla y id catalogo en documento
-    for (let index = 0; index < hoja.length; index++) {
-      const data = hoja[index];
-
-      if (data["[ID_CATALOGO]"] == idCatalogo && data["[CODIGO]"] == element) {
-        var idFoto = data["Imagen principal estampillas"].split("=")[1];
-        var guardadass = await guardarImagenGoogleSeet(
-          idFoto,
-          element,
-          "estampilla"
-        );
-        console.log("Estampillas Guardadas", guardadass);
-      }
-
-      idsImagenes.push(idFoto);
+  var conImagenrr = [];
+  console.log("arrayEstampillas", arrayEstampillas);
+  
+  //////////SEPARANDO LAS IMAGENES DEL CATALOGO SOLICITADO ////////////
+  arrayEstampillas.map((data) => {
+    conImagenrr = hoja.find((dat) => dat["[CODIGO]"] == data.CODIGO);
+    var objeto = new Object();
+    console.log("conImagenrr",conImagenrr);
+    if (conImagenrr) {
+      objeto.idFoto = conImagenrr["Imagen principal estampillas"].split("=")[1];
+      objeto.codigo = data.CODIGO;
+      arrayAgreagar.push(objeto);
+    } else {
+      arrayEliminar.push(data.CODIGO);
     }
+  });
+
+  console.log("array agregar", arrayAgreagar);
+  for (let index = 0; index < arrayAgreagar.length; index++) {
+    const element = arrayAgreagar[index];
+    console.log("element" , element);
+    var guardadass = await guardarImagenGoogleSeet(element.idFoto, element.codigo, "estampilla");
+   console.log("Estampillas Guardadas", guardadass);
   }
+  
+
+
 };
 
 module.exports = {

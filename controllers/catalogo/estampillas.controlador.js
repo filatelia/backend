@@ -122,14 +122,13 @@ const subirEstampillasExcel = async (req, res = response) => {
     }
   });
 
-  console.log("Completos -> ", completos);
 
   //Guardando estampillas
   var esguarda = await guardarEstampillas(completos, idCatalogo);
 
   if (esguarda.length > 0) {
     //Asociar Imagenes desde google meet
-    await googleSeetFotoEstampilla(idCatalogo, esguarda);
+    await googleSeetFotoEstampilla(esguarda);
 
 
     //Creando solicitud
