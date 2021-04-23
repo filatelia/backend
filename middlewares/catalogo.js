@@ -132,8 +132,32 @@ async function consultarCatalogosIdUsuario(idUsuario) {
     return false;
   }
 }
+
+const buscarIdCatConIdTema = async (tema_catalogo) => {
+ 
+  var catBD = await Catalogo.findOne( { tema_catalogo } , { _id:1 });
+  if (catBD != null) {
+    return catBD._id;
+      
+    }else{
+      return "No existe catalogo con el tema proporcionado."
+    }
+};
+const buscarIdCatConIdPais = async (pais) => {
+ 
+  var catBD = await Catalogo.findOne( { pais } , { _id:1 });
+  if (catBD != null) {
+  return catBD._id;
+    
+  }else{
+    return "No existe catalogo con el pais proporcionado."
+  }
+
+};
+
 module.exports = {
   crearCatalogo,
   eliminarCatalogo,
-  consultarCatalogosIdUsuario,
+  buscarIdCatConIdTema,
+  buscarIdCatConIdPais
 };

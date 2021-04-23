@@ -62,3 +62,15 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 {
 
 }
+
+###
+//Consultatr id cat con id pais o id tema
+
+
+get http://localhost:3000/api/catalogo/uploads/excel/obtener-id-catalogo?tipo=tema&id=6053ed14e8b8240da847beaa
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
+
+{
+
+}

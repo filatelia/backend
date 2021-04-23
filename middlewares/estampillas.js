@@ -48,10 +48,17 @@ async function asociarImagenEstampillaAEstampilla(CODIGO, idImagen) {
   
 
 }
+async function eliminarEstampillaPorCodigo(CODIGO) {
+  var eliminandoEstampillas = await Estampillas.deleteOne({
+    CODIGO
+  });
+  return eliminandoEstampillas;
 
+}
 module.exports = {
   eliminarEstampillasConIdCatalogo,
   actualizarImagenEstampillaConCodigo,
-  asociarImagenEstampillaAEstampilla
+  asociarImagenEstampillaAEstampilla,
+  eliminarEstampillaPorCodigo
   
 };
