@@ -155,9 +155,11 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
     nombreImagen: "",
     catch: false,
   });
-  var urlImagenServidor = "";
-  var urlImagenBD = "";
   try {
+
+
+    var urlImagenServidor = "";
+    var urlImagenBD = "";
     if (tipoImagen == "estampilla") {
       urlImagenServidor = path.join(
         __dirname,
@@ -181,15 +183,22 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
     urlImagenBD = urlImagenBD + nombreImagen + ".png";
 
     //descargando y guardado imagen en directorio servidor
-    fs.writeFileSync(
-      path.join(urlImagenServidor, nombreImagen + ".png"),
-      await download(
-        "https://drive.google.com/uc?export=download&id=" + idImagen
-      )
-    );
+    if(tipoImagen == "variante_error" && idImagen == null){
+      urlImagenBD = "imagenes/predeterminadas/sin-imagen.jpg"
+
+    }else{
+
+      fs.writeFileSync(
+        path.join(urlImagenServidor, nombreImagen + ".png"),
+        await download(
+          "https://drive.google.com/uc?export=download&id=" + idImagen
+        )
+      );
+    }
 
     objetoRespuesta.urlImagenBD = urlImagenBD;
     objetoRespuesta.nombreImagen = nombreImagen;
+    objetoRespuesta.msg = "Imagen guardada en directorio correctamente"
     objetoRespuesta.ok = true;
     return objetoRespuesta;
   } catch (error) {
@@ -203,6 +212,8 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
 }
 
 async function guadarImagenEnBD(imagen) {
+
+
   try {
     var objetoRespuesta = new Object({
       ok: false,
