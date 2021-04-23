@@ -1,34 +1,44 @@
-const { response } = require("express")
-const { accederGoogleSheetHojaUno } = require("../../credenciales_google_apis/conexion.google");
+const { response } = require("express");
+const {
+  accederGoogleSheetHojaUno,
+} = require("../../credenciales_google_apis/conexion.google");
 const path = require("path");
-const axios = require("axios");
 const fs = require("fs");
-const imageDownloader = require('../../credenciales_google_apis/imagenes.google').download;
-
-
-
+const { guardarImagenGoogleSeet } = require("../../middlewares/subir_imagen");
+const Estampillas = require("../../models/catalogo/estampillas.modelo");
 const googlePruebas = async (req, res = response) => {
+  var estampilasss = await Estampillas.find({
+    CATALOGO: "607e12f251f7fb33db4069ec",
+  });
+  await googleSeetFotoEstampilla("607e12f251f7fb33db4069ec", estampilasss);
+};
 
-// Importamos la función para descargar imágenes
+const googleSeetFotoEstampilla = async (idCatalogo, arrayEstampillas) => {
+  var idsImagenes = [];
+  const hoja = await accederGoogleSheetHojaUno();
+  for (let index = 0; index < arrayEstampillas.length; index++) {
+    const element = arrayEstampillas[index].CODIGO;
 
-// URL de la imagen que queremos descargar
-const imageUrl = 'https://drive.google.com/file/d/1eQooEbZFlE1LvduGZti4M8ciEFNV_zoL/view?usp=sharing';
+    //Buscando id estampilla y id catalogo en documento
+    for (let index = 0; index < hoja.length; index++) {
+      const data = hoja[index];
 
-// Fichero de salida con el directorio al que vamos a guardar
-const filename = 'images/'.concat('regular-expresion.jpg');
+      if (data["[ID_CATALOGO]"] == idCatalogo && data["[CODIGO]"] == element) {
+        var idFoto = data["Imagen principal estampillas"].split("=")[1];
+        var guardadass = await guardarImagenGoogleSeet(
+          idFoto,
+          element,
+          "estampilla"
+        );
+        console.log("Estampillas Guardadas", guardadass);
+      }
 
-// Función para descargar las imágenes
-imageDownloader(imageUrl, filename, function(){
-    console.log(`${imageUrl} image download!!`);
-});
-    const hoja = await accederGoogleSheetHojaUno();
-    console.log("Hoja", hoja);
-
-       
-}
-
-
+      idsImagenes.push(idFoto);
+    }
+  }
+};
 
 module.exports = {
-    googlePruebas,
-}
+  googlePruebas,
+  googleSeetFotoEstampilla,
+};
