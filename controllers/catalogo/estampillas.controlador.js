@@ -18,7 +18,7 @@ const {
   validarCamposGeneral,
   isValidObjectIdGeneral,
 } = require("../../middlewares/validar-campos");
-const { googleSeetFotoEstampilla, googleSheetVariantesErrores } = require("../google/google.controlador");
+const { googleSheetFotoEstampilla, googleSheetVariantesErrores } = require("../google/google.controlador");
 const crearEstampillaIndividual = async (req, res = response) => {
   try {
     console.log(req.files);
@@ -122,30 +122,31 @@ const subirEstampillasExcel = async (req, res = response) => {
     }
   });
 
-  await googleSheetVariantesErrores(completos);
 
 
-  // //Guardando estampillas
-  // var esguarda = await guardarEstampillas(completos, idCatalogo);
+  //Guardando estampillas
+  var esguarda = await guardarEstampillas(completos, idCatalogo);
 
-  // if (esguarda.length > 0) {
-  //   //Asociar Imagenes desde google meet
-  //   await googleSheetFotoEstampilla(esguarda);
+  if (esguarda.length > 0) {
+    //Asociar Imagenes desde google meet
+    await googleSheetFotoEstampilla(esguarda);
+  await googleSheetVariantesErrores(esguarda);
 
 
-  //   //Creando solicitud
-  //   await crearSegundaSolicitud(catalogoBD.solicitud._id);
+
+    //Creando solicitud
+    await crearSegundaSolicitud(catalogoBD.solicitud._id);
     
-  // }else{
-  //   return res.json({
-  //     ok: false,
-  //     msg: "No se han guardado las estampillas."
-  //   })
-  // }
+  }else{
+    return res.json({
+      ok: false,
+      msg: "No se han guardado las estampillas."
+    })
+  }
 
   return res.json({
     ok: true,
-    msg: esguarda,
+    msg: "aaa"
   });
 };
 
