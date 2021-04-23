@@ -15,8 +15,8 @@ const { retornarDatosJWT } = require("../../middlewares/index.middle");
 const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
 const Solicitud = require("../../models/solicitudes/solicitudes.model");
 const { ObjectId } = require("mongoose").Types;
-const { validarCamposGeneral } = require("../../middlewares/validar-campos");
-const { consultarCatalogosIdUsuario } = require("../../middlewares/catalogo");
+const { validarCamposGeneral, isValidObjectIdGeneral } = require("../../middlewares/validar-campos");
+const { consultarCatalogosIdUsuario, buscarIdCatConIdTema, buscarIdCatConIdPais } = require("../../middlewares/catalogo");
 
 const crearCatalogo = async (req, res = response) => {
   try {
@@ -776,6 +776,56 @@ const listarCatalogosIdUsuario = async (req, res) => {
     }
   }
 };
+const obtenerIdCatPaisTema = async (req, res= response) => {
+
+  var aValidar = [];
+  const { id, tipo  } = req.query;
+  aValidar.push(id);
+  aValidar.push(tipo);
+  var validacionExistencia = validarCamposGeneral(2, aValidar);
+  if (validacionExistencia != true) {
+    return res.json(
+      {
+        ok: false,
+        msg: "Debes enviar los datos obligatorios"
+      });
+    
+  }
+
+  var validarObjet = isValidObjectIdGeneral(1, aValidar);
+  if (validarObjet != true) {
+    return res.json(
+      {
+        ok: false,
+        msg: "Debes enviar un id válido"
+      });
+    
+  }
+var idCat = "";
+  if(tipo == "tema"){
+     idCat = await buscarIdCatConIdTema(id);
+    
+  }else{
+    if (tipo== "pais") {
+      idCat = await buscarIdCatConIdPais(id);
+      
+    } else {
+      idCat = tipo+" no es un tipo aceptado."
+      return res.json({
+        ok: false,
+        msg: idCat
+      })
+    
+    }
+  }
+
+  return res.json({
+    ok: true,
+    msg: idCat
+  });
+
+
+}
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -791,4 +841,5 @@ module.exports = {
   crearSolicitud,
   procesarExcelPruebas,
   listarCatalogosIdUsuario,
+  obtenerIdCatPaisTema
 };
