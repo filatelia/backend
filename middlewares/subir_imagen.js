@@ -187,7 +187,7 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
       urlImagenBD = "imagenes/predeterminadas/sin-imagen.jpg"
 
     }else{
-
+console.log("id imagen -> ", idImagen);
       fs.writeFileSync(
         path.join(urlImagenServidor, nombreImagen + ".png"),
         await download(
