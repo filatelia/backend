@@ -11,11 +11,13 @@ const ImagenesEstampillas = require("../../models/catalogo/uploads");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 
 const generarExcel = async () => {
-  
+
 }
 
 const generarExcelFormularios = async (req, res = response) => {
-  const { idCatalogo, cantidad } = req.query;
+  const { id_catalogo, cantidad } = req.query;
+
+  var idCatalogo = id_catalogo;
   //  Asignando total de imagenes a mostrar
   var totalEstampillas = parseInt(cantidad);
   console.log("archivosRecibidos parta generar exce->", req.query); 
