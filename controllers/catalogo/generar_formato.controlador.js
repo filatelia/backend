@@ -10,7 +10,9 @@ var { ObjectId } = require("mongoose").Types;
 const ImagenesEstampillas = require("../../models/catalogo/uploads");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 
-
+const generarExcel = async () => {
+  
+}
 
 const generarExcelFormularios = async (req, res = response) => {
   const { idCatalogo, cantidad } = req.query;
