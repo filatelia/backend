@@ -32,9 +32,7 @@ const UsuarioSchema = Schema(
     }],
     temas: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Tema",
-        autopopulate: true,
+        type: String,
       },
     ],
 
