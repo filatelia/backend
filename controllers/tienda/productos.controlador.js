@@ -3,7 +3,10 @@ const {
   validarCamposGeneral,
   isValidObjectIdGeneral,
 } = require("../../middlewares/validar-campos");
-const { crearNuevoProducto } = require("../../middlewares/tienda");
+const {
+  crearNuevoProducto,
+  listarProductosPorIdCliente,
+} = require("../../middlewares/tienda");
 const {
   crearNuevaCategoria,
   consultarTodasCategorias,
@@ -28,30 +31,23 @@ const crearProducto = async (req, res = response) => {
       id_usuario,
       tamanios,
     } = req.body;
-    console.log("cantidad",cantidad_productos);
+    console.log("cantidad", cantidad_productos);
 
     var codigoProducto = uuidv4();
 
     var { fotos_producto } = req.files;
-  
+
     var tipo = typeof cantidad_productos;
     // console.log("Tipo ->", tipo);
     // if(tipo == "string") cantidad_productos = JSON.parse(cantidad_productos);
-    
-    
 
     if (!Array.isArray(req.files.fotos_producto)) {
       console.log("no es array");
       req.files.fotos_producto = [req.files.fotos_producto];
     }
-    var fotos_producto =     req.files.fotos_producto;
-    cantidad_productos= JSON.parse(cantidad_productos);
+    var fotos_producto = req.files.fotos_producto;
+    cantidad_productos = JSON.parse(cantidad_productos);
     console.log("fotos", req.files.fotos_producto);
-
-    
-
-    
-
 
     console.log("- Guardando Producto");
     ///////// VALIDACIONES ////////
@@ -69,7 +65,6 @@ const crearProducto = async (req, res = response) => {
     arrayCamposValidar.push(moneda_producto);
     arrayCamposValidar.push(tamanios);
     arrayCamposValidar.push(id_usuario);
-    
 
     if (validarCamposGeneral(8, arrayCamposValidar) != true) {
       return res.json({
@@ -93,8 +88,6 @@ const crearProducto = async (req, res = response) => {
 
     arrayIdsValidar.push(categoria);
     arrayIdsValidar.push(id_usuario);
-    
-   
 
     if (
       isValidObjectIdGeneral(arrayIdsValidar.length, arrayIdsValidar) != true
@@ -176,14 +169,24 @@ const crearProducto = async (req, res = response) => {
     });
   }
 };
-const listarProductosPorIdUsuario = async () =>{
-
+const listarProductosPorIdUsuario = async (req, res = response) => {
   try {
-    
+    console.log("Entramos");
+    const { idUsuario } = req.params;
+    console.log("idUsuario",idUsuario);
+    var listaBD = await listarProductosPorIdCliente(idUsuario);
+    if (!listaBD.ok) return res.json(listaBD);
+
+    return res.json(listaBD);
   } catch (error) {
-    
+    console.log("Error en catch de listarProductosPorIdUsuario ", error);
+    return res.json({
+      ok: false,
+      msg: error,
+      tipo_error: "Catch",
+    });
   }
-}
+};
 
 const crearCategoria = async (req, res = response) => {
   try {
@@ -278,4 +281,5 @@ module.exports = {
   crearCategoria,
   listarTodasCategorias,
   buscarCategoriaId,
+  listarProductosPorIdUsuario
 };

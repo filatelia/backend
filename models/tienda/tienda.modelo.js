@@ -33,7 +33,7 @@ const productoSchema = Schema(
         ref: "uploads_imagen",
         required: true,
         autopopulate: true,
-      }
+      },
     ],
     cantidad_productos: [
       {
@@ -41,8 +41,7 @@ const productoSchema = Schema(
         ref: "Cantidad_producto_color",
         required: true,
         autopopulate: true,
-      }
-   
+      },
     ],
     tarifa_envio: {
       type: String,
