@@ -1,0 +1,76 @@
+
+//////////////COLORES//////////////////
+
+###
+//Consultando todos los colores
+get http://localhost:3000/api/tienda/colores
+content-type: application/json
+
+{
+ 
+}
+
+###
+//Consultando color con id color
+get http://localhost:3000/api/tienda/color?idColor=6085093e7a1117230c2ae60f
+content-type: application/json
+
+{
+
+
+}
+
+
+
+//////////////CATEGORIAS//////////////////
+
+
+
+###
+//Crear categoría 
+post http://localhost:3000/api/tienda/categorias
+content-type: application/json
+
+{
+
+"nombre_categoria": "Categoria de prueba 3"
+
+}
+
+
+###
+//listar categoría con id categoria 
+get http://localhost:3000/api/tienda/categorias?idCategoria=6085cb8fac8965069884f066
+content-type: application/json
+
+{
+
+}
+
+###
+//listar categoría con id categoria 
+get http://localhost:3000/api/tienda/categorias/todas
+content-type: application/json
+
+{
+
+}
+
+
+
+//////////////PRODUCTOS//////////////////
+###
+//Crear producto
+post http://localhost:3000/api/tienda/producto
+content-type: application/json
+
+{
+    "cantidad_color": [
+        {
+            "color_hex": null,
+            "cantidad": 2
+
+        }
+    ]
+
+}
