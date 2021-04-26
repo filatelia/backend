@@ -73,6 +73,7 @@ app.use("/api/moderacion/", require("./routes/moderacion/moderacion.ruta"));
 
 //app.use( '/api/catalogo/temas', require('./routes/catalogo/temas') );
 app.use("/api/login", require("./routes/auth/auth"));
+app.use("/api/tienda", require("./routes/tienda/tienda.ruta"));
 
 app.listen(process.env.PORT, () => {
   console.log("Servidor corriendo en puerto " + process.env.PORT);

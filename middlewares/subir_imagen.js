@@ -156,38 +156,79 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
     catch: false,
   });
   try {
-
-
     var urlImagenServidor = "";
     var urlImagenBD = "";
+
+    /////// PROCESO DE GUARDAR LAS IMAGENES DE ESTAMPILLAS EN EL SERVIDOR //////
     if (tipoImagen == "estampilla") {
       urlImagenServidor = path.join(
         __dirname,
         "../uploads/imagenes/catalogo/estampillas/"
       );
       urlImagenBD = "imagenes/catalogo/estampillas/";
-    } else {
+    }
+    /////// FIN PROCESO //////
+    else {
+      /////// PROCESO DE GUARDAR LAS IMAGENES DE VARIANTES Y ERRORES EN EL SERVIDOR //////
       if (tipoImagen == "variante_error") {
         urlImagenServidor = path.join(
           __dirname,
           "../uploads/imagenes/catalogo/variantes-errores/"
         );
         urlImagenBD = "imagenes/catalogo/variantes-errores/";
-      } else {
+      }
+      /////// FIN PROCESO //////
+
+      /////// PROCESO DE GUARDAR LAS IMAGENES DE PRODUCTOS EN EL SERVIDOR //////
+      if (tipoImagen == "producto") {
+        if (
+          !fs.existsSync(path.join(__dirname, "../uploads/imagenes/productos"))
+        ) {
+          fs.mkdirSync(path.join(__dirname, "../uploads/imagenes/productos"));
+        }
+
+        var objetoImagen = idImagen;
+        var nombreImagen = uuidv4();
+
+        urlImagenServidor = path.join(
+          __dirname,
+          "../uploads/imagenes/productos/",
+          nombreImagen + ".png"
+        );
+
+        urlImagenBD = "imagenes/productos/";
+        urlImagenBD = urlImagenBD + nombreImagen + ".png";
+        await objetoImagen.mv(urlImagenServidor).then(() => {
+          objetoRespuesta.idImagenBD = null;
+          objetoRespuesta.urlImagenBD = urlImagenBD;
+          objetoRespuesta.nombreImagen = nombreImagen;
+          objetoRespuesta.msg = "Imagen guardada en directorio correctamente";
+          objetoRespuesta.ok = true;
+        });
+
+        return objetoRespuesta;
+      }
+      /////// FIN PROCESO //////
+
+      /////// PROCESO DE RETORNAR EL ERROR PARA TIPOS DE IMAGEN NO ACPETADOS //////
+      else {
         console.log("tipoImagen -> ", tipoImagen);
         objetoRespuesta.msg = "Tipo de imagen no aceptado.";
         return objetoRespuesta;
       }
+      /////// FIN PROCESO //////
     }
+
+    /////// ASIGNANDO NOMBRE ÚNICO DE IMAGEN //////
+
     var nombreImagen = uuidv4();
     urlImagenBD = urlImagenBD + nombreImagen + ".png";
 
     //descargando y guardado imagen en directorio servidor
-    if(tipoImagen == "variante_error" && idImagen == null){
-      urlImagenBD = "imagenes/predeterminadas/sin-imagen.jpg"
-
-    }else{
-console.log("id imagen -> ", idImagen);
+    if (tipoImagen == "variante_error" && idImagen == null) {
+      urlImagenBD = "imagenes/predeterminadas/sin-imagen.jpg";
+    } else {
+      console.log("id imagen -> ", idImagen);
       fs.writeFileSync(
         path.join(urlImagenServidor, nombreImagen + ".png"),
         await download(
@@ -196,9 +237,11 @@ console.log("id imagen -> ", idImagen);
       );
     }
 
+    /////// LLENANDO OBJETO DE RESPUESTA SATISFACTORIO //////
+
     objetoRespuesta.urlImagenBD = urlImagenBD;
     objetoRespuesta.nombreImagen = nombreImagen;
-    objetoRespuesta.msg = "Imagen guardada en directorio correctamente"
+    objetoRespuesta.msg = "Imagen guardada en directorio correctamente";
     objetoRespuesta.ok = true;
     return objetoRespuesta;
   } catch (error) {
@@ -212,8 +255,6 @@ console.log("id imagen -> ", idImagen);
 }
 
 async function guadarImagenEnBD(imagen) {
-
-
   try {
     var objetoRespuesta = new Object({
       ok: false,

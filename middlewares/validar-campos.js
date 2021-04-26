@@ -90,6 +90,7 @@ const validarDatoscambiarEstadoReporte = async (req, res = response, next) => {
 
 const validarCamposGeneral = (cantidadElementos, array) =>{
 
+  console.log("array", array);
   var respuesta = true;
   for (let index = 0; index < cantidadElementos; index++) {
 
