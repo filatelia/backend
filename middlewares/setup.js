@@ -10,7 +10,6 @@ const Usuarios = require("../models/usuario/usuario");
 const bcrypt = require("bcryptjs");
 const TipoEsperadoEstampilla = require("../models/catalogo/tipoEsperadoEstampilla.model");
 const {buscarPaisPorNombre} = require("../middlewares/paises");
-const { setupColores } = require("../middlewares/colores")
 
 const initial_setup = async () => {
   console.log(Color.blue("Ejecutando initial setup..."));
