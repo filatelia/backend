@@ -196,6 +196,7 @@ const compartirManco_list = async (req, res = response) => {
             $arrayElemAt: ["$EstampillasEnMancolista._id", 0]
           }, 
           idCategoriaEstampilla: "$id_mancolist_cat",
+          EstadoBusquedaEstampilla: "$estado_estampilla",
           FotoEstampilla: { 
             $arrayElemAt: ["$ImagenesEstampilla", 0]
           },
