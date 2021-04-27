@@ -43,7 +43,7 @@ const getUsuarioId = async (req, res) => {
           
         }
       );
-      console.log("User", users);
+      console.log("User", user);
       res.status(200).send({
         ok: true,
         data: user,
