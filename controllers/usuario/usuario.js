@@ -39,8 +39,8 @@ const getUsuarioId = async (req, res) => {
           nickname: 1,
           tipo_catalogo: 0,
           pais_usuario: 0,
-          temas: 0,
-          paises_coleccionados: 0,
+          
+          
         }
       );
       console.log("User", users);
