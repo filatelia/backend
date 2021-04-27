@@ -23,51 +23,34 @@
     <script>
         function enviar() {
             //Taemos el formulario
-            var formData = new FormData(document.getElementById("formulario"));
             //Traemos los datos del input file multiple
             var fotos_producto = document.getElementById("inp");
 
-            var cantidad_productos = [];
-            var obj = new Object(
-                {
-                    color_hex: "#123121",
-                    cantidad: 12
-                });
-                cantidad_productos.push(obj);
-                var obj = new Object(
-                {
-                    color_hex: "#1FFFFFFF",
-                    cantidad: 1
-                });
-                cantidad_productos.push(obj);
-
-
-            console.log(cantidad_productos);
-            const json = cantidad_productos;
-
-
             var tamanios = [];
-            tamanios.push("Grande");
-            tamanios.push("Pequeño");
+            tamanios.push("Medio 293x330x70 mm.");
+            tamanios.push("Grande 493x730x100 mm.");
+            tamanios.push("Pequeño 193x130x30 mm.");
 
+            var colores_hex = [];
+            colores_hex.push("#F07459");
+            colores_hex.push("#465690");
+            colores_hex.push("#A00082");
 
-                
-            formData.append("cantidad_productos", JSON.stringify (cantidad_productos) );
-            
-            formData.append("nombre_producto", "Estampilla dorada");
+            /////ASIGNANDO VALORES/////
+
+            var formData = new FormData(document.getElementById("formulario"));
+
             formData.append("id_usuario", "60775d7eddb0b610f83d117a");
-            formData.append("categoria", "6085cba8ac8965069884f067");
+            formData.append("nombre_producto", "Estampillas Azules");
             formData.append("descripcion", "Éste es un producto de prueba");
+            formData.append("categoria", "6085cba8ac8965069884f067");
             formData.append("precio_normal", 1500);
             formData.append("precio_descuento", 1354);
-            formData.append("tarifa_envio", 0);
+            formData.append("cantidad_productos", 12);
+            colores_hex.map(data => formData.append("colores_hex", data));
+            formData.append("tarifa_envio", 40);
             formData.append("moneda_producto", "USD");
-            tamanios.map(data=> formData.append("tamanios", data));
-            
-
-
-
-
+            tamanios.map(data => formData.append("tamanios", data));
 
             const Http = new XMLHttpRequest();
             const url = 'http://localhost:3000/api/tienda/producto';
@@ -75,20 +58,13 @@
 
             Http.send(formData);
 
-            var colores = [];
-
             Http.onreadystatechange = (e) => {
-                colores.push(Http.responseText);
+                console.log("Http.responseText", Http.responseText);;
             }
-            console.log(colores);
 
         }
 
-
-
     </script>
-
-
 
 </body>
 

@@ -35,16 +35,18 @@ const productoSchema = Schema(
         autopopulate: true,
       },
     ],
-    cantidad_productos: [
+    cantidad_productos: {
+      type: Number,
+      required: true,
+    },
+    colores_hex: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Cantidad_producto_color",
-        required: true,
-        autopopulate: true,
+        type: String,
       },
     ],
+
     tarifa_envio: {
-      type: String,
+      type: Number,
       required: true,
     },
     moneda_producto: {

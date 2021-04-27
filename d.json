@@ -1,443 +1,102 @@
-{
-  "ok": true,
-  "msg": [
-    {
-      "catalogo_nombre_interno": "Reina Victoria",
-      "usuario_id": {
-        "reputacion": -480,
-        "tipo_catalogo": [
-          {
-            "_id": "605fc7fef45d98d0fcfc7892",
-            "name": "Temático",
-            "__v": 0
-          },
-          {
-            "_id": "605fc7fef45d98d0fcfc7893",
-            "name": "País",
-            "__v": 0
-          }
-        ],
-        "temas": [],
-        "paises_coleccionados": [
-          {
-            "_id": "6053ed00e8b8240da847bdfb",
-            "name": "Afghanistan",
-            "moneda_nombre": "Afghan afghani",
-            "moneda_code": "AFN",
-            "abreviatura_uno": "AF",
-            "abreviatura_dos": "AFG",
-            "img": "/imagenes/banderas_paises/afg.svg",
-            "para_buscar": "afghanistan",
-            "__v": 0
-          },
-          {
-            "_id": "6053ed03e8b8240da847be06",
-            "name": "Armenia",
-            "moneda_nombre": "Armenian dram",
-            "moneda_code": "AMD",
-            "abreviatura_uno": "AM",
-            "abreviatura_dos": "ARM",
-            "img": "/imagenes/banderas_paises/arm.svg",
-            "para_buscar": "armenia",
-            "__v": 0
-          },
-          {
-            "_id": "6053ed03e8b8240da847be09",
-            "name": "Austria",
-            "moneda_nombre": "Euro",
-            "moneda_code": "EUR",
-            "abreviatura_uno": "AT",
-            "abreviatura_dos": "AUT",
-            "img": "/imagenes/banderas_paises/aut.svg",
-            "para_buscar": "austria",
-            "__v": 0
-          }
-        ],
-        "roleuser": "cliente",
-        "estado": true,
-        "token": "",
-        "_id": "60774b621e87731fecedabbb",
-        "name": "Club",
-        "apellidos": "Soluciones Empresariales",
-        "email": "club@yopmail.com",
-        "password": "$2a$10$toFCZbFk3X1jxXXfH2EB5e18tOBB7m68qQGvZ0j1NDMakQ9e4mMKO",
-        "nickname": "club_soluciones",
-        "pais_usuario": {
-          "_id": "6053ed14e8b8240da847beaa",
-          "name": "Peru",
-          "moneda_nombre": "Peruvian sol",
-          "moneda_code": "PEN",
-          "abreviatura_uno": "PE",
-          "abreviatura_dos": "PER",
-          "img": "/imagenes/banderas_paises/per.svg",
-          "para_buscar": "peru",
-          "__v": 0
-        },
-        "imagenP": "/imagenes/predeterminadas/cliente.png",
-        "__v": 0
-      },
-      "tipo_catalogo": {
-        "_id": "605fc7fef45d98d0fcfc7892",
-        "name": "Temático",
-        "__v": 0
-      },
-      "tema": {
-        "_id": "60790e04ca4f448aca44f908",
-        "name": "Reina Victoria",
-        "ParaBuscar": "reinavictoria",
-        "imagen": "/imagenes/predeterminadas/temas.png",
-        "__v": 0
-      },
-      "tipoEstadoSolicitud_id": {
-        "_id": "60591d68c581542d2868bfb6",
-        "name": "Catalogo Publicado",
-        "abreviacion": "ACE2",
-        "descripcion": "El catalogo es público para todos",
-        "__v": 0
-      },
-      "createdAt": "2021-04-16T04:09:40.652Z",
-      "updatedAt": "2021-04-16T05:33:49.216Z",
-      "uid": "60790e04ca4f448aca44f909"
-    },
-    {
-      "catalogo_nombre_interno": "Catalogo de Perú",
-      "usuario_id": {
-        "reputacion": -480,
-        "tipo_catalogo": [
-          {
-            "_id": "605fc7fef45d98d0fcfc7892",
-            "name": "Temático",
-            "__v": 0
-          },
-          {
-            "_id": "605fc7fef45d98d0fcfc7893",
-            "name": "País",
-            "__v": 0
-          }
-        ],
-        "temas": [],
-        "paises_coleccionados": [
-          {
-            "_id": "6053ed00e8b8240da847bdfb",
-            "name": "Afghanistan",
-            "moneda_nombre": "Afghan afghani",
-            "moneda_code": "AFN",
-            "abreviatura_uno": "AF",
-            "abreviatura_dos": "AFG",
-            "img": "/imagenes/banderas_paises/afg.svg",
-            "para_buscar": "afghanistan",
-            "__v": 0
-          },
-          {
-            "_id": "6053ed03e8b8240da847be06",
-            "name": "Armenia",
-            "moneda_nombre": "Armenian dram",
-            "moneda_code": "AMD",
-            "abreviatura_uno": "AM",
-            "abreviatura_dos": "ARM",
-            "img": "/imagenes/banderas_paises/arm.svg",
-            "para_buscar": "armenia",
-            "__v": 0
-          },
-          {
-            "_id": "6053ed03e8b8240da847be09",
-            "name": "Austria",
-            "moneda_nombre": "Euro",
-            "moneda_code": "EUR",
-            "abreviatura_uno": "AT",
-            "abreviatura_dos": "AUT",
-            "img": "/imagenes/banderas_paises/aut.svg",
-            "para_buscar": "austria",
-            "__v": 0
-          }
-        ],
-        "roleuser": "cliente",
-        "estado": true,
-        "token": "",
-        "_id": "60774b621e87731fecedabbb",
-        "name": "Club",
-        "apellidos": "Soluciones Empresariales",
-        "email": "club@yopmail.com",
-        "password": "$2a$10$toFCZbFk3X1jxXXfH2EB5e18tOBB7m68qQGvZ0j1NDMakQ9e4mMKO",
-        "nickname": "club_soluciones",
-        "pais_usuario": {
-          "_id": "6053ed14e8b8240da847beaa",
-          "name": "Peru",
-          "moneda_nombre": "Peruvian sol",
-          "moneda_code": "PEN",
-          "abreviatura_uno": "PE",
-          "abreviatura_dos": "PER",
-          "img": "/imagenes/banderas_paises/per.svg",
-          "para_buscar": "peru",
-          "__v": 0
-        },
-        "imagenP": "/imagenes/predeterminadas/cliente.png",
-        "__v": 0
-      },
-      "tipo_catalogo": {
-        "_id": "605fc7fef45d98d0fcfc7893",
-        "name": "País",
-        "__v": 0
-      },
-      "pais": {
-        "_id": "6053ed14e8b8240da847beaa",
-        "name": "Peru",
-        "moneda_nombre": "Peruvian sol",
-        "moneda_code": "PEN",
-        "abreviatura_uno": "PE",
-        "abreviatura_dos": "PER",
-        "img": "/imagenes/banderas_paises/per.svg",
-        "para_buscar": "peru",
-        "__v": 0
-      },
-      "tipoEstadoSolicitud_id": {
-        "_id": "60591d68c581542d2868bfb6",
-        "name": "Catalogo Publicado",
-        "abreviacion": "ACE2",
-        "descripcion": "El catalogo es público para todos",
-        "__v": 0
-      },
-      "createdAt": "2021-04-16T08:33:32.741Z",
-      "updatedAt": "2021-04-16T09:20:18.141Z",
-      "uid": "60794bdc1e9ed4b8fb638956"
-    },
-    {
-      "catalogo_nombre_interno": "Animations",
-      "usuario_id": {
-        "reputacion": 100,
-        "tipo_catalogo": [
-          {
-            "_id": "605fc7fef45d98d0fcfc7892",
-            "name": "Temático",
-            "__v": 0
-          },
-          {
-            "_id": "605fc7fef45d98d0fcfc7893",
-            "name": "País",
-            "__v": 0
-          }
-        ],
-        "temas": [],
-        "paises_coleccionados": [
-          {
-            "_id": "6053ed14e8b8240da847beaa",
-            "name": "Peru",
-            "moneda_nombre": "Peruvian sol",
-            "moneda_code": "PEN",
-            "abreviatura_uno": "PE",
-            "abreviatura_dos": "PER",
-            "img": "/imagenes/banderas_paises/per.svg",
-            "para_buscar": "peru",
-            "__v": 0
-          },
-          {
-            "_id": "6053ed10e8b8240da847be8b",
-            "name": "Mexico",
-            "moneda_nombre": "Mexican peso",
-            "moneda_code": "MXN",
-            "abreviatura_uno": "MX",
-            "abreviatura_dos": "MEX",
-            "img": "/imagenes/banderas_paises/mex.svg",
-            "para_buscar": "mexico",
-            "__v": 0
-          }
-        ],
-        "roleuser": "cliente",
-        "estado": true,
-        "token": "",
-        "_id": "60776089b7b7df1db1a8426e",
-        "email": "raulin@gmail.com",
-        "name": "raul",
-        "password": "$2a$10$uDpLRYvNlLVzPttJeR.6iO9Kz9./Qz./h4LhxVMqtZQrucA7ou2/G",
-        "apellidos": "rojas",
-        "nickname": "raulin ",
-        "pais_usuario": {
-          "_id": "6053ed14e8b8240da847beaa",
-          "name": "Peru",
-          "moneda_nombre": "Peruvian sol",
-          "moneda_code": "PEN",
-          "abreviatura_uno": "PE",
-          "abreviatura_dos": "PER",
-          "img": "/imagenes/banderas_paises/per.svg",
-          "para_buscar": "peru",
-          "__v": 0
-        },
-        "imagenP": "/imagenes/predeterminadas/cliente.png",
-        "__v": 0
-      },
-      "tipo_catalogo": {
-        "_id": "605fc7fef45d98d0fcfc7892",
-        "name": "Temático",
-        "__v": 0
-      },
-      "tema": {
-        "_id": "60799e7b5d2dd0c106538620",
-        "name": "Animations, cartoons",
-        "ParaBuscar": "animations,cartoons",
-        "imagen": "/imagenes/predeterminadas/temas.png",
-        "__v": 0
-      },
-      "tipoEstadoSolicitud_id": {
-        "_id": "60591d68c581542d2868bfb3",
-        "name": "Aprobado catalogo etapa 1",
-        "abreviacion": "ACE1",
-        "descripcion": "Puedes subir tu catalogo con las respectivas estampillas, una vez terminado, haces la solicitud para la aprobación de etapa 2, la publicación",
-        "__v": 0
-      },
-      "createdAt": "2021-04-16T14:26:03.665Z",
-      "updatedAt": "2021-04-16T14:30:58.854Z",
-      "uid": "60799e7b5d2dd0c106538621"
-    },
-    {
-      "catalogo_nombre_interno": "Lunes",
-      "usuario_id": {
-        "reputacion": -480,
-        "tipo_catalogo": [
-          {
-            "_id": "605fc7fef45d98d0fcfc7892",
-            "name": "Temático",
-            "__v": 0
-          },
-          {
-            "_id": "605fc7fef45d98d0fcfc7893",
-            "name": "País",
-            "__v": 0
-          }
-        ],
-        "temas": [],
-        "paises_coleccionados": [
-          {
-            "_id": "6053ed00e8b8240da847bdfb",
-            "name": "Afghanistan",
-            "moneda_nombre": "Afghan afghani",
-            "moneda_code": "AFN",
-            "abreviatura_uno": "AF",
-            "abreviatura_dos": "AFG",
-            "img": "/imagenes/banderas_paises/afg.svg",
-            "para_buscar": "afghanistan",
-            "__v": 0
-          },
-          {
-            "_id": "6053ed03e8b8240da847be06",
-            "name": "Armenia",
-            "moneda_nombre": "Armenian dram",
-            "moneda_code": "AMD",
-            "abreviatura_uno": "AM",
-            "abreviatura_dos": "ARM",
-            "img": "/imagenes/banderas_paises/arm.svg",
-            "para_buscar": "armenia",
-            "__v": 0
-          },
-          {
-            "_id": "6053ed03e8b8240da847be09",
-            "name": "Austria",
-            "moneda_nombre": "Euro",
-            "moneda_code": "EUR",
-            "abreviatura_uno": "AT",
-            "abreviatura_dos": "AUT",
-            "img": "/imagenes/banderas_paises/aut.svg",
-            "para_buscar": "austria",
-            "__v": 0
-          }
-        ],
-        "roleuser": "cliente",
-        "estado": true,
-        "token": "",
-        "_id": "60774b621e87731fecedabbb",
-        "name": "Club",
-        "apellidos": "Soluciones Empresariales",
-        "email": "club@yopmail.com",
-        "password": "$2a$10$toFCZbFk3X1jxXXfH2EB5e18tOBB7m68qQGvZ0j1NDMakQ9e4mMKO",
-        "nickname": "club_soluciones",
-        "pais_usuario": {
-          "_id": "6053ed14e8b8240da847beaa",
-          "name": "Peru",
-          "moneda_nombre": "Peruvian sol",
-          "moneda_code": "PEN",
-          "abreviatura_uno": "PE",
-          "abreviatura_dos": "PER",
-          "img": "/imagenes/banderas_paises/per.svg",
-          "para_buscar": "peru",
-          "__v": 0
-        },
-        "imagenP": "/imagenes/predeterminadas/cliente.png",
-        "__v": 0
-      },
-      "tipo_catalogo": {
-        "_id": "605fc7fef45d98d0fcfc7892",
-        "name": "Temático",
-        "__v": 0
-      },
-      "tema": {
-        "_id": "607e12f151f7fb33db4069ea",
-        "name": "Presentación",
-        "ParaBuscar": "presentación",
-        "imagen": "/imagenes/predeterminadas/temas.png",
-        "__v": 0
-      },
-      "tipoEstadoSolicitud_id": {
-        "_id": "60591d68c581542d2868bfb6",
-        "name": "Catalogo Publicado",
-        "abreviacion": "ACE2",
-        "descripcion": "El catalogo es público para todos",
-        "__v": 0
-      },
-      "createdAt": "2021-04-19T23:32:01.863Z",
-      "updatedAt": "2021-04-20T00:01:12.277Z",
-      "uid": "607e12f151f7fb33db4069eb"
-    },
-    {
-      "catalogo_nombre_interno": "Prueba",
-      "usuario_id": {
-        "reputacion": 100,
-        "tipo_catalogo": [],
-        "temas": [],
-        "paises_coleccionados": [],
-        "roleuser": "cliente",
-        "estado": true,
-        "token": "",
-        "_id": "607e56b551f7fb33db406a03",
-        "email": "rivasjy@gmail.com",
-        "name": "Yorvis",
-        "password": "$2a$10$FhMNkzcrO4xSW/0U2zXd/eu758mWwWkrTyIP0/cT9hBIsRVgUtHdC",
-        "apellidos": "Rivas",
-        "nickname": "Yorvis Rivas QA",
-        "pais_usuario": {
-          "_id": "6053ed1ae8b8240da847beee",
-          "name": "Venezuela (Bolivarian Republic of)",
-          "moneda_nombre": "Venezuelan bolívar",
-          "moneda_code": "VEF",
-          "abreviatura_uno": "VE",
-          "abreviatura_dos": "VEN",
-          "img": "/imagenes/banderas_paises/ven.svg",
-          "para_buscar": "venezuela(bolivarianrepublicof)",
-          "__v": 0
-        },
-        "imagenP": "/imagenes/predeterminadas/cliente.png",
-        "__v": 0
-      },
-      "tipo_catalogo": {
-        "_id": "605fc7fef45d98d0fcfc7892",
-        "name": "Temático",
-        "__v": 0
-      },
-      "tema": {
-        "_id": "607e587d51f7fb33db406a04",
-        "name": "Prueba",
-        "ParaBuscar": "prueba",
-        "imagen": "/imagenes/predeterminadas/temas.png",
-        "__v": 0
-      },
-      "tipoEstadoSolicitud_id": {
-        "_id": "60591d68c581542d2868bfb3",
-        "name": "Aprobado catalogo etapa 1",
-        "abreviacion": "ACE1",
-        "descripcion": "Puedes subir tu catalogo con las respectivas estampillas, una vez terminado, haces la solicitud para la aprobación de etapa 2, la publicación",
-        "__v": 0
-      },
-      "createdAt": "2021-04-20T04:28:46.093Z",
-      "updatedAt": "2021-04-20T06:00:12.065Z",
-      "uid": "607e587d51f7fb33db406a05"
-    }
-  ]
-}
+[
+  {
+    "nombreMoneda": "dólar australiano",
+    "codigoMoneda": "AUD"
+  },
+  {
+    "nombreMoneda": "Real brasileño 2",
+    "codigoMoneda": "BRL"
+  },
+  {
+    "nombreMoneda": "Dolar canadiense",
+    "codigoMoneda": "CAD"
+  },
+  {
+    "nombreMoneda": "Renmenbi chino 3",
+    "codigoMoneda": "CNY"
+  },
+  {
+    "nombreMoneda": "Corona checa",
+    "codigoMoneda": "CZK"
+  },
+  {
+    "nombreMoneda": "Corona danesa",
+    "codigoMoneda": "DKK"
+  },
+  {
+    "nombreMoneda": "Euro",
+    "codigoMoneda": "EUR"
+  },
+  {
+    "nombreMoneda": "Dolar de Hong Kong",
+    "codigoMoneda": "HKD"
+  },
+  {
+    "nombreMoneda": "Florín húngaro 1",
+    "codigoMoneda": "HUF"
+  },
+  {
+    "nombreMoneda": "Nuevo shekel israelí",
+    "codigoMoneda": "ILS"
+  },
+  {
+    "nombreMoneda": "Yenes japoneses 1",
+    "codigoMoneda": "JPY"
+  },
+  {
+    "nombreMoneda": "Ringgit malayo 3",
+    "codigoMoneda": "MYR"
+  },
+  {
+    "nombreMoneda": "Peso mexicano",
+    "codigoMoneda": "MXN"
+  },
+  {
+    "nombreMoneda": "Nuevo dólar taiwanés 1",
+    "codigoMoneda": "TWD"
+  },
+  {
+    "nombreMoneda": "Dolar de Nueva Zelanda",
+    "codigoMoneda": "NZD"
+  },
+  {
+    "nombreMoneda": "Corona noruega",
+    "codigoMoneda": "NOK"
+  },
+  {
+    "nombreMoneda": "Peso filipino",
+    "codigoMoneda": "PHP"
+  },
+  {
+    "nombreMoneda": "Zloty polaco",
+    "codigoMoneda": "PLN"
+  },
+  {
+    "nombreMoneda": "Libra esterlina",
+    "codigoMoneda": "GBP"
+  },
+  {
+    "nombreMoneda": "Rublo ruso",
+    "codigoMoneda": "RUB"
+  },
+  {
+    "nombreMoneda": "dolar de Singapur",
+    "codigoMoneda": "SGD"
+  },
+  {
+    "nombreMoneda": "Corona sueca",
+    "codigoMoneda": "SEK"
+  },
+  {
+    "nombreMoneda": "Franco suizo",
+    "codigoMoneda": "CHF"
+  },
+  {
+    "nombreMoneda": "Baht tailandés",
+    "codigoMoneda": "THB"
+  },
+  {
+    "nombreMoneda": "dólar de los Estados Unidos",
+    "codigoMoneda": "USD"
+  }
+]

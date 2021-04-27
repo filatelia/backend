@@ -1,4 +1,4 @@
-const CantidadColor = require("../models/tienda/cantidad-productos.model");
+const CantidadColor = require("../models/tienda/monedas");
 
 const crearCantidadColor = async (objetoCantidadColor) => {
   try {
