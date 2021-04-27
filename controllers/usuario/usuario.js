@@ -40,6 +40,7 @@ const getUsuarioId = async (req, res) => {
           paises_coleccionados: 0,
         }
       );
+
       res.status(200).send({
         ok: true,
         data: user,
