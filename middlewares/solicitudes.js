@@ -201,16 +201,25 @@ const crearSolicitudAdmin = async (
     //Creando catalogo
     console.log("Primera", primera);
     console.log("Antes de entrar a crear cataloho");
-    await crearCatalogo(
+    
+
+  
+    var vatn = await crearCatalogo(
       nombre_catalogo_solicitud,
       primera._id,
       paisEnBD._id,
       tipo_catalogo_solicitud,
-      tema_catalogo_solicitud,
+      objNuevaSolicitud.tema,
       true
     );
+    console.log("vatn", vatn);
 
-    console.log("Primera", primera);
+    if (!vatn) {
+      return null;
+      
+    }
+
+
    
     return primera;
   } catch (e) {

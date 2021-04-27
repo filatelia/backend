@@ -128,7 +128,7 @@ const crearSolicitud = async (req, res) => {
       ok: false,
       mensaje: "No se ha podido crear la solicitud",
       ubicado_error: "Controller -> tipo_solicitud.js -> catch",
-      error: e,
+      error:""+ e,
     });
   }
 };

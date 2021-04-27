@@ -22,12 +22,12 @@ const crearCatalogo = async (
       nuevoCat.estado = estadoCat;
     }
     nuevoCat.tema_catalogo = id_tema;
-
+    console.log("nuevoCat", nuevoCat);
     var nuevoC = await nuevoCat.save();
     console.log("Nuevo c caralogo middel", nuevoC);
     return nuevoC;
   } catch (e) {
-    console.log("Error al crear catálogo catch catalogo middlewears");
+    console.log("Error al crear catálogo catch catalogo middlewears", error);
     return false;
   }
 };
