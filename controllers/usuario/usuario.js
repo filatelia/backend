@@ -21,9 +21,12 @@ const getUsuario = async (req, res) => {
   });
 };
 const getUsuarioId = async (req, res) => {
+  console.log("entramos");
   const token = req.header("x-access-token");
-  const email = retornarDatosJWT(token);
+  console.log("token ->", token);
 
+  const email = retornarDatosJWT(token);
+ console.log("email->", email);
   try {
     if (email != null) {
       const user = await Usuario.findOne(
@@ -40,17 +43,18 @@ const getUsuarioId = async (req, res) => {
           paises_coleccionados: 0,
         }
       );
-
+      console.log("User", users);
       res.status(200).send({
         ok: true,
         data: user,
       });
     }
     throw "not token";
-  } catch ($e) {
+  } catch (error) {
+    console.log("Error en catch", error);
     res.status(500).send({
       ok: false,
-      msg: $e,
+      msg: ""+error,
     });
   }
 };
