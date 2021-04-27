@@ -5,7 +5,7 @@ const fs = require("fs");
 const download = require("download");
 const Imagenes = require("../models/catalogo/uploads");
 const { asociarImagenEstampillaAEstampilla } = require("./estampillas");
-
+const Productos = require("../models/tienda/tienda.modelo");
 const crearImagen = (req, ruta) => {
   const pathParaRetornar = new Object();
   pathParaRetornar.error = "";
@@ -58,10 +58,41 @@ const crearImagen = (req, ruta) => {
 const eliminarImagenServidor = (urlImgBD) => {
   const pahtImgServer = path.join(__dirname, "../uploads", urlImgBD);
 
-  console.log("Eliminando imagen servidor", pahtImgServer);
   if (fs.existsSync(pahtImgServer)) {
     fs.unlinkSync(pahtImgServer);
-    console.log("Imagen eliminada");
+    return true;
+  } else {
+    return false;
+  }
+};
+const eliminarImagenBDConId = async (_id) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    var eli = await Imagenes.deleteOne({ _id });
+    if (eli.deletedCount == 0) {
+      objetoRespuesta.ok = false;
+      objetoRespuesta.msg = "No existe imagen que deseas borrar.";
+      return objetoRespuesta;
+    } else {
+      objetoRespuesta.msg = eli;
+      return objetoRespuesta;
+    }
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log(
+      "Error en catch eliminarImagenBDConId | middlewares subir_imagenes.js",
+      error
+    );
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch eliminarImagenBDConId";
+    return objetoRespuesta;
   }
 };
 
@@ -142,6 +173,7 @@ const guardarImagenGoogleSeet = async (
       "error en catch de guardarImagenGoogleSeet | middlewares subir_imagen ->",
       error
     );
+    objetoRespuesta.msg = "" + error;
     objetoRespuesta.origenError = "catch";
     return objetoRespuesta;
   }
@@ -249,7 +281,8 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
       "Error en catch de crearImagenDirectorio | middleweares -> subir_imagen.js ->",
       error
     );
-    objetoRespuesta.catch = true;
+    objetoRespuesta.catch = false;
+    objetoRespuesta.msg = "" + error;
     return objetoRespuesta;
   }
 }
@@ -273,8 +306,81 @@ async function guadarImagenEnBD(imagen) {
   } catch (error) {
     console.log("Error en catch guadarImagenEnBD | middlewares", error);
     objetoRespuesta.catch = true;
-    objetoRespuesta.descipcionError = error;
+    objetoRespuesta.descipcionError = "" + error;
     return objetoRespuesta;
+  }
+}
+async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    var arrayImagenes = [];
+    var productoBD = await Productos.findById(_id);
+    if (productoBD != null) {
+      var contador = 0;
+      productoBD.fotos_producto.map((data) => {
+        if (data._id != id_foto) {
+          contador = contador + 1;
+          arrayImagenes.push(data._id);
+        }
+      });
+
+      if (contador != productoBD.fotos_producto) {
+        productoBD.fotos_producto = arrayImagenes;
+
+        var imagenFF = await productoBD.save();
+        objetoRespuesta.msg = imagenFF;
+        return objetoRespuesta;
+      } else {
+        objetoRespuesta.ok = false;
+        objetoRespuesta.msg = "No existe la imagen en el producto";
+      }
+    }
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch");
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg =
+      "Error en catch de desasociarImagenDeProductoConIdImagen";
+  }
+}
+async function asociarImagenDeProductoConIdImagen(_id, arrayIDs) {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    var arrayImagenes = [];
+    var productoBD = await Productos.findById(_id);
+    if (productoBD != null) {
+
+      arrayIDs.map(data => productoBD.fotos_producto.push(data));
+      
+
+      var imagenFF = await productoBD.save();
+      objetoRespuesta.msg = imagenFF;
+      return objetoRespuesta;
+    }else{
+      objetoRespuesta.ok= false;
+      objetoRespuesta.msg = "No existe producto con el id proporcionado";
+      return objetoRespuesta;
+    }
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch", error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg =
+      "Error en catch de asociarImagenDeProductoConIdImagen";
   }
 }
 module.exports = {
@@ -283,4 +389,7 @@ module.exports = {
   guardarImagenGoogleSeet,
   guadarImagenEnBD,
   crearImagenDirectorio,
+  eliminarImagenBDConId,
+  desasociarImagenDeProductoConIdImagen,
+  asociarImagenDeProductoConIdImagen,
 };

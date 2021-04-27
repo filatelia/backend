@@ -1,4 +1,9 @@
 const Tienda = require("../models/tienda/tienda.modelo");
+const {
+  eliminarImagenServidor,
+  eliminarImagenBDConId,
+  desasociarImagenDeProductoConIdImagen
+} = require("./subir_imagen");
 
 const crearNuevoProducto = async (objetoProducto) => {
   var objeto = new Object({
@@ -50,8 +55,104 @@ const listarProductosPorIdCliente = async (id_usuario) => {
     return objetoRespuesta;
   }
 };
+const borarImagenProducto = async (urlImagen, idImagen, idProducto) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+    //Eliminado imagen de la base de datos ////
+    var imagenElimadaBD = await eliminarImagenBDConId(idImagen);
+    if (!imagenElimadaBD.ok) return imagenElimadaBD;
+    console.log("Imagen elimianda de la colección de imágenes");
 
+    var  imagenDesasociadaDeProducto = await desasociarImagenDeProductoConIdImagen(idProducto, idImagen );
+    
+    if (!imagenDesasociadaDeProducto.ok) {
+      
+      return imagenDesasociadaDeProducto;
+    }
+    console.log("Imagen desasociada del prducto");
+
+    ///ELIMINADO IMAGEN DEL SERVIDOR //////
+    var imagenElimadaServidor = eliminarImagenServidor(urlImagen);
+    
+    if (!imagenElimadaServidor) {
+      
+      objetoRespuesta.msg =
+        "No se ha podido borrar la imagen del servidor, pero si de la base de datos de imagenes y desasociar del producto,.";
+      return objetoRespuesta;
+    }
+    console.log("Imagen elimianda del servidor");
+
+
+    objetoRespuesta.msg = "Imagen elimianda del servidor, de la base de datos y desasociada del producto.";
+    return objetoRespuesta;
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch");
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = error;
+    objetoRespuesta.msg = "Error en catch de borarImagenProducto";
+  }
+};
+
+const listarTodosProductosBD = async () => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    ///Cuando todo sale ok/////
+    var productosBD = await Tienda.find();
+    if(productosBD== null){
+      objetoRespuesta.msg = "No existen productos en la BD.";
+      return objetoRespuesta;
+    }else{
+      objetoRespuesta.msg = productosBD;
+      return objetoRespuesta;
+
+    }
+  } catch (error) {
+    console.log("Error en catch de listarTodosProductosBD");
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch";
+  }
+}
+const listarTodosProductosBDPorIdCategoria = async (categoria) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    ///Cuando todo sale ok/////
+    var productosBD = await Tienda.find( { categoria } );
+    if(productosBD== null){
+      objetoRespuesta.msg = "No existen productos con el id categoría en la BD.";
+      return objetoRespuesta;
+    }else{
+      objetoRespuesta.msg = productosBD;
+      return objetoRespuesta;
+
+    }
+  } catch (error) {
+    console.log("Error en catch de listarTodosProductosBDPorIdCategoria");
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch";
+  }
+}
 module.exports = {
   crearNuevoProducto,
   listarProductosPorIdCliente,
+  borarImagenProducto,
+  listarTodosProductosBD,
+  listarTodosProductosBDPorIdCategoria
 };

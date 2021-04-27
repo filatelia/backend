@@ -178,7 +178,13 @@ const crearSolicitudAdmin = async (
       // console.log("Tema en bd", buscarTemaEnBD);
 
       // //Asociando tema
-      objNuevaSolicitud.tema = tema_catalogo_solicitud;
+      var crearTema = await crearNuevoTema(tema_catalogo_solicitud);
+      console.log("crearTema", crearTema);
+      if(crearTema == null)return false;
+
+      objNuevaSolicitud.tema = crearTema._id;
+
+      
     }
     if (nameTipoCatalogo == "País") {
       paisEnBD = await buscarPaisPorNombre(pais_catalogo_solicitud);
@@ -204,14 +210,11 @@ const crearSolicitudAdmin = async (
       true
     );
 
-    await enviarCorreos(
-      usuarioBD.email,
-      usuarioBD.name,
-      primeraSolicitud.descripcion
-    );
+    console.log("Primera", primera);
+   
     return primera;
   } catch (e) {
-    console.log("Error desde catch solicitudes crear solicitud admin");
+    console.log("Error desde catch solicitudes crear solicitud admin", error);
     return null;
   }
 };
