@@ -44,7 +44,7 @@ const getUsuarioId = async (req, res) => {
         }
       );
       console.log("User", user);
-      res.status(200).send({
+     return res.status(200).send({
         ok: true,
         data: user,
       });
