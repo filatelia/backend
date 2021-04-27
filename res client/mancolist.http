@@ -36,7 +36,7 @@ content-type: application/json
 
 }
 ###
-post http://localhost:3000/api/catalogo/manco_list/listar
+get http://localhost:3000/api/catalogo/manco_list/listar/6079fe845d2dd0c10653862c
 content-type: application/json
 x-access-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
 

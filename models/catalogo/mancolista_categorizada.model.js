@@ -11,6 +11,7 @@ const manco_listSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "Usuarios",
       required: true,
+      autopopulate: true,
     },
     estado: {
       type: String,
