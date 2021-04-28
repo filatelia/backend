@@ -41,7 +41,7 @@ const actuaizarProductoBD = async (objetoProducto) => {
     var objProducto = new Tienda.findById(objetoProducto.id_producto);
     console.log("Obje pruducto bd", objProducto);
     var objetoProductoEd = objProducto(objetoProducto);
-    console.log("objetoProductoEd con objeto agregado", objetoProductoEd);
+    console.log("objetoProductoEd con", objetoProductoEd);
 
     var productoActuzadoBD = await objetoProductoEd.save();
     console.log("productoActuzadoBD", productoActuzadoBD);
@@ -183,6 +183,33 @@ const listarTodosProductosBDPorIdCategoria = async (categoria) => {
     objetoRespuesta.msg = "Error en catch";
   }
 };
+const listarProductosPorIdProducto = async (_id) => {
+  var objetoRespuesta = new Object({
+    ok: true,
+    msg: null,
+    tipo_error: null,
+  });
+
+  try {
+    const productoBD = await Tienda.findById({ _id });
+    if (productoBD == null) {
+      objetoRespuesta.msg = "El id no cuenta con productos asociados.";
+      return objetoRespuesta;
+    }
+
+    objetoRespuesta.msg = productoBD;
+    return objetoRespuesta;
+  } catch (error) {
+    console.log(
+      "Error en catch de listarProductosPorIdCliente | middelwares tienda"
+    );
+    objetoRespuesta.ok = false;
+    objetoRespuesta.msg = ""+error;
+    objetoRespuesta.tipo_error = "Catch.";
+
+    return objetoRespuesta;
+  }
+};
 const eliminarProductoYAsociados = async (id_producto) => {};
 
 module.exports = {
@@ -193,4 +220,5 @@ module.exports = {
   listarTodosProductosBDPorIdCategoria,
   eliminarProductoYAsociados,
   actuaizarProductoBD,
+  listarProductosPorIdProducto
 };
