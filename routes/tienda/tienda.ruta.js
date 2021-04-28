@@ -12,7 +12,9 @@ const { listarProductosPorIdUsuario,
     listarTodasCategorias, 
     eliminarFotosProducto,
     listarProductosIdCategoria,
-    modificarProducto 
+    modificarProducto,
+    mostrarProductoPorIdProducto,
+    eliminarProducto 
 } = require("../../controllers/tienda/productos.controlador")
 
 const router = Router();
@@ -21,48 +23,44 @@ const router = Router();
 
 ////////////////////////// CATEGORÍAS /////////////////////////////
 
-////CREAR CATEGORÍA////
+//1//CREAR CATEGORÍA////
 router.post('/categorias', [], crearCategoria);
 
-////BUSCAR CATEGORÍA POR ID////
+//2//BUSCAR CATEGORÍA POR ID////
 router.get('/categorias', [], buscarCategoriaId);
 
-////LISTAR TODAS LAS CATEGORÍAS////
+///3/LISTAR TODAS LAS CATEGORÍAS////
 router.get('/categorias/todas', [], listarTodasCategorias);
 
 
 ///////////////////////////// PRODUCTOS /////////////////////////////
 
-////CREAR UN NUEVO PRODUCTO ////
+////4CREAR UN NUEVO PRODUCTO ////
 router.post('/producto', [], crearProducto);
 
-
-/////MODIFICAR DATOS PRODUCTO //////
+//5///MODIFICAR DATOS PRODUCTO //////
 router.put('/producto', [], modificarProducto);
 
+///6//ELIMINAR PRODUCTO //////
+router.delete('/producto', [], eliminarProducto);
 
-
-/////ELIMINAR PRODUCTO //////
-
-
-
-////LISTAR PRODUCTOS POR USUARIO ////
+//7//LISTAR PRODUCTOS POR USUARIO ////
 router.get('/producto/:idUsuario', [], listarProductosPorIdUsuario);
 
-
-////LISTAR TODOS LOS PRODUCTOS ////
+//8//LISTAR TODOS LOS PRODUCTOS ////
 router.get('/producto/', [], listarTodosProductos);
 
-////LISTAR TODOS LOS PRODUCTOS POR CATEGORIA ////
+//9//LISTAR TODOS LOS PRODUCTOS POR CATEGORIA ////
 router.get('/productos-cat/:idCat', [], listarProductosIdCategoria);
 
+//10 //MOSTRAR PRODUCTO POR ID PRODUCTO///////
+router.get('/producto/individual/:idProducto', [], mostrarProductoPorIdProducto);
 
 
-
-////ELIMINAR IMAGEN DE UN PRODUCTO ////
+//10//ELIMINAR IMAGEN DE UN PRODUCTO ////
 router.delete('/producto/imagen', [], eliminarFotosProducto);
 
-////AGREGAR IMAGEN DE UN PRODUCTO ////
+//11//AGREGAR IMAGEN DE UN PRODUCTO ////
 router.post('/producto/imagen/', [], agregarFotosProducto);
 
 

@@ -76,6 +76,16 @@ content-type: application/json
 }
 
 ###
+//Consultar productos con id producto
+get http://localhost:3000/api/tienda/producto/individual/6087ae7e09326a1558b8650a
+
+content-type: application/json
+
+{
+}
+
+
+###
 //Eliminar una imagen del producto
 delete http://localhost:3000/api/tienda/producto/imagen?urlImagenBD=imagenes/productos/13c8782a-d959-4189-bd24-0e5038ea535a.png&idImagen=6087aad328066632d859585f&idProducto=6087aad328066632d8595860
 content-type: application/json
@@ -112,7 +122,16 @@ put http://localhost:3000/api/tienda/producto
 content-type: application/json
 
 {
-   "id_producto": "aaaaaaa",
-   "nombre_producto": "Bbbbbb"
+      "id_producto":"",
+      "nombre_producto":"",
+      "descripcion":"",
+      "categoria":"",
+      "precio_normal":"",
+      "precio_descuento":"",
+      "cantidad_productos":"",
+      "colores_hex":"",
+      "tarifa_envio":"",
+      "moneda_producto":"",
+      "tamanios":""
 }
 
