@@ -2,7 +2,7 @@ const Tienda = require("../models/tienda/tienda.modelo");
 const {
   eliminarImagenServidor,
   eliminarImagenBDConId,
-  desasociarImagenDeProductoConIdImagen
+  desasociarImagenDeProductoConIdImagen,
 } = require("./subir_imagen");
 
 const crearNuevoProducto = async (objetoProducto) => {
@@ -10,10 +10,13 @@ const crearNuevoProducto = async (objetoProducto) => {
     ok: true,
     tipo_error: null,
     msg: "Se ha creado correctamente el producto",
+    producto: null,
   });
   try {
     var objProducto = new Tienda(objetoProducto);
-    await objProducto.save();
+    var productoCreado = await objProducto.save();
+
+    objeto.producto = productoCreado;
 
     return objeto;
   } catch (error) {
@@ -23,6 +26,37 @@ const crearNuevoProducto = async (objetoProducto) => {
     );
     objeto.ok = false;
     (objeto.tipo_error = error), (objeto.msg = "Error al crear producto.");
+
+    return objeto;
+  }
+};
+const actuaizarProductoBD = async (objetoProducto) => {
+  var objeto = new Object({
+    ok: true,
+    tipo_error: null,
+    msg: "Se ha creado actualizado el producto",
+    producto: null,
+  });
+  try {
+    var objProducto = new Tienda.findById(objetoProducto.id_producto);
+    console.log("Obje pruducto bd", objProducto);
+    var objetoProductoEd = objProducto(objetoProducto);
+    console.log("objetoProductoEd con objeto agregado", objetoProductoEd);
+
+    var productoActuzadoBD = await objetoProductoEd.save();
+    console.log("productoActuzadoBD", productoActuzadoBD);
+
+    objeto.producto = productoActuzadoBD;
+
+    return objeto;
+  } catch (error) {
+    console.log(
+      "Error en catch actuaizarProductoBD | middlewares tienda",
+      error
+    );
+    objeto.ok = false;
+    objeto.tipo_error = "" + error;
+    objeto.msg = "Error al crear producto.";
 
     return objeto;
   }
@@ -67,27 +101,28 @@ const borarImagenProducto = async (urlImagen, idImagen, idProducto) => {
     if (!imagenElimadaBD.ok) return imagenElimadaBD;
     console.log("Imagen elimianda de la colección de imágenes");
 
-    var  imagenDesasociadaDeProducto = await desasociarImagenDeProductoConIdImagen(idProducto, idImagen );
-    
+    var imagenDesasociadaDeProducto = await desasociarImagenDeProductoConIdImagen(
+      idProducto,
+      idImagen
+    );
+
     if (!imagenDesasociadaDeProducto.ok) {
-      
       return imagenDesasociadaDeProducto;
     }
     console.log("Imagen desasociada del prducto");
 
     ///ELIMINADO IMAGEN DEL SERVIDOR //////
     var imagenElimadaServidor = eliminarImagenServidor(urlImagen);
-    
+
     if (!imagenElimadaServidor) {
-      
       objetoRespuesta.msg =
         "No se ha podido borrar la imagen del servidor, pero si de la base de datos de imagenes y desasociar del producto,.";
       return objetoRespuesta;
     }
     console.log("Imagen elimianda del servidor");
 
-
-    objetoRespuesta.msg = "Imagen elimianda del servidor, de la base de datos y desasociada del producto.";
+    objetoRespuesta.msg =
+      "Imagen elimianda del servidor, de la base de datos y desasociada del producto.";
     return objetoRespuesta;
 
     ///Cuando todo sale ok/////
@@ -109,21 +144,20 @@ const listarTodosProductosBD = async () => {
 
     ///Cuando todo sale ok/////
     var productosBD = await Tienda.find();
-    if(productosBD== null){
+    if (productosBD == null) {
       objetoRespuesta.msg = "No existen productos en la BD.";
       return objetoRespuesta;
-    }else{
+    } else {
       objetoRespuesta.msg = productosBD;
       return objetoRespuesta;
-
     }
   } catch (error) {
     console.log("Error en catch de listarTodosProductosBD");
     objetoRespuesta.ok = false;
-    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.tipo_error = "" + error;
     objetoRespuesta.msg = "Error en catch";
   }
-}
+};
 const listarTodosProductosBDPorIdCategoria = async (categoria) => {
   try {
     var objetoRespuesta = new Object({
@@ -133,26 +167,30 @@ const listarTodosProductosBDPorIdCategoria = async (categoria) => {
     });
 
     ///Cuando todo sale ok/////
-    var productosBD = await Tienda.find( { categoria } );
-    if(productosBD== null){
-      objetoRespuesta.msg = "No existen productos con el id categoría en la BD.";
+    var productosBD = await Tienda.find({ categoria });
+    if (productosBD == null) {
+      objetoRespuesta.msg =
+        "No existen productos con el id categoría en la BD.";
       return objetoRespuesta;
-    }else{
+    } else {
       objetoRespuesta.msg = productosBD;
       return objetoRespuesta;
-
     }
   } catch (error) {
     console.log("Error en catch de listarTodosProductosBDPorIdCategoria");
     objetoRespuesta.ok = false;
-    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.tipo_error = "" + error;
     objetoRespuesta.msg = "Error en catch";
   }
-}
+};
+const eliminarProductoYAsociados = async (id_producto) => {};
+
 module.exports = {
   crearNuevoProducto,
   listarProductosPorIdCliente,
   borarImagenProducto,
   listarTodosProductosBD,
-  listarTodosProductosBDPorIdCategoria
+  listarTodosProductosBDPorIdCategoria,
+  eliminarProductoYAsociados,
+  actuaizarProductoBD,
 };
