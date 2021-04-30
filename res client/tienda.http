@@ -1,30 +1,5 @@
 
-//////////////COLORES//////////////////
-
-###
-//Consultando todos los colores
-get http://localhost:3000/api/tienda/colores
-content-type: application/json
-
-{
- 
-}
-
-###
-//Consultando color con id color
-get http://localhost:3000/api/tienda/color?idColor=6085093e7a1117230c2ae60f
-content-type: application/json
-
-{
-
-
-}
-
-
-
 //////////////CATEGORIAS//////////////////
-
-
 
 ###
 //Crear categoría 
@@ -59,6 +34,11 @@ content-type: application/json
 
 
 //////////////PRODUCTOS//////////////////
+
+
+
+
+
 ###
 //Crear producto
 post http://localhost:3000/api/tienda/producto
@@ -78,6 +58,15 @@ content-type: application/json
 ###
 //Consultar productos con id producto
 get http://localhost:3000/api/tienda/producto/individual/6087ae7e09326a1558b8650a
+
+content-type: application/json
+
+{
+}
+
+###
+//Eliminar producto con id producto
+delete http://localhost:3000/api/tienda/producto/individual/6089e479d29c2800529ce272
 
 content-type: application/json
 
@@ -135,3 +124,16 @@ content-type: application/json
       "tamanios":""
 }
 
+
+
+//////////////PAGOS////////////////
+
+###
+///CONSULTAR TODAS LAS MONEDAS ACEPTADAS POR PAYPAL
+
+get http://localhost:3000/api/tienda/pagos/conversion?valor=1000
+content-type: application/json
+
+{
+      
+}

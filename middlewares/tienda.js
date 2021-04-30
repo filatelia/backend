@@ -30,6 +30,7 @@ const crearNuevoProducto = async (objetoProducto) => {
     return objeto;
   }
 };
+
 const actuaizarProductoBD = async (objetoProducto) => {
   var objeto = new Object({
     ok: true,
@@ -89,6 +90,7 @@ const listarProductosPorIdCliente = async (id_usuario) => {
     return objetoRespuesta;
   }
 };
+
 const borarImagenProducto = async (urlImagen, idImagen, idProducto) => {
   try {
     var objetoRespuesta = new Object({
@@ -158,6 +160,7 @@ const listarTodosProductosBD = async () => {
     objetoRespuesta.msg = "Error en catch";
   }
 };
+
 const listarTodosProductosBDPorIdCategoria = async (categoria) => {
   try {
     var objetoRespuesta = new Object({
@@ -183,6 +186,7 @@ const listarTodosProductosBDPorIdCategoria = async (categoria) => {
     objetoRespuesta.msg = "Error en catch";
   }
 };
+
 const listarProductosPorIdProducto = async (_id) => {
   var objetoRespuesta = new Object({
     ok: true,
@@ -191,11 +195,41 @@ const listarProductosPorIdProducto = async (_id) => {
   });
 
   try {
-    const productoBD = await Tienda.findById({ _id });
+    const productoBD = await Tienda.findById(_id);
     if (productoBD == null) {
       objetoRespuesta.msg = "El id no cuenta con productos asociados.";
       return objetoRespuesta;
     }
+
+    objetoRespuesta.msg = productoBD;
+    return objetoRespuesta;
+  } catch (error) {
+    console.log(
+      "Error en catch de listarProductosPorIdCliente | middelwares tienda"
+    );
+    objetoRespuesta.ok = false;
+    objetoRespuesta.msg = "" + error;
+    objetoRespuesta.tipo_error = "Catch.";
+
+    return objetoRespuesta;
+  }
+};
+
+const eliminarProductoYAsociados = async (_id) => {
+  var objetoRespuesta = new Object({
+    ok: true,
+    msg: null,
+    tipo_error: null,
+  });
+
+  try {
+    const productoBD = await Tienda.findByIdAndDelete(_id);
+    if (productoBD == null) {
+      objetoRespuesta.msg = "El id no cuenta con productos asociados.";
+          return objetoRespuesta;
+    }
+
+    console.log("Producto eliminado: ", productoBD);
 
     objetoRespuesta.msg = productoBD;
     return objetoRespuesta;
@@ -210,7 +244,6 @@ const listarProductosPorIdProducto = async (_id) => {
     return objetoRespuesta;
   }
 };
-const eliminarProductoYAsociados = async (id_producto) => {};
 
 module.exports = {
   crearNuevoProducto,
@@ -220,5 +253,6 @@ module.exports = {
   listarTodosProductosBDPorIdCategoria,
   eliminarProductoYAsociados,
   actuaizarProductoBD,
-  listarProductosPorIdProducto
+  listarProductosPorIdProducto,
+  
 };

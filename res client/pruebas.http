@@ -58,3 +58,27 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 
 {
 }
+
+
+###
+
+
+    
+GET https://openexchangerates.org/api/latest.json?app_id=2753f0ce42a641188e6b96a31977228e
+
+content-type: application/json
+{
+
+}
+
+
+###
+
+
+    
+GET https://openexchangerates.org/api/convert/19999.95/GBP/EUR?app_id=2753f0ce42a641188e6b96a31977228e
+
+
+content-type: application/json
+{
+}
