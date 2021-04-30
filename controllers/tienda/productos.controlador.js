@@ -10,7 +10,8 @@ const {
   listarTodosProductosBD,
   listarTodosProductosBDPorIdCategoria,
   actuaizarProductoBD,
-  listarProductosPorIdProducto
+  listarProductosPorIdProducto,
+  eliminarProductoYAsociados,
 } = require("../../middlewares/tienda");
 const {
   crearNuevaCategoria,
@@ -22,8 +23,7 @@ const {
   guadarImagenEnBD,
   asociarImagenDeProductoConIdImagen,
 } = require("../../middlewares/subir_imagen");
-const { v4: uuidv4 } = require("uuid");
-const { crearCantidadColor } = require("../../middlewares/cantidad_color");
+const { todasMonedasPaypalMD, consultarConvertirMonedaTiempoReal } = require("../../middlewares/paypal");
 
 const crearProducto = async (req, res = response) => {
   try {
@@ -154,6 +154,7 @@ const crearProducto = async (req, res = response) => {
     });
   }
 };
+
 const listarProductosPorIdUsuario = async (req, res = response) => {
   try {
     console.log("Entramos");
@@ -260,6 +261,7 @@ const buscarCategoriaId = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const agregarFotosProducto = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -374,6 +376,7 @@ const eliminarFotosProducto = async (req, res = response) => {
     objetoRespuesta.msg = "Error en catch";
   }
 };
+
 const listarTodosProductos = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -393,6 +396,7 @@ const listarTodosProductos = async (req, res = response) => {
     objetoRespuesta.msg = "Error en catch";
   }
 };
+
 const listarProductosIdCategoria = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -415,6 +419,7 @@ const listarProductosIdCategoria = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const modificarProducto = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -440,7 +445,6 @@ const modificarProducto = async (req, res = response) => {
     console.log("objetoRecibidoActualizar", req.body);
     console.log("nombre_producto", nombre_producto);
 
-
     ///////////////////// VALIDACIONES ///////////////////
 
     var arrayCamposValidar = [];
@@ -455,21 +459,20 @@ const modificarProducto = async (req, res = response) => {
     arrayCamposValidar.push(tamanios);
     arrayCamposValidar.push(id_usuario);
 
-
     if (!Array.isArray(tamanios))
-    return res.json({ ok: false, msg: "Debes enviar un array de tamaños." });
+      return res.json({ ok: false, msg: "Debes enviar un array de tamaños." });
 
-  arrayIdsValidar.push(categoria);
-  arrayIdsValidar.push(id_usuario);
+    arrayIdsValidar.push(categoria);
+    arrayIdsValidar.push(id_usuario);
 
-  if (
-    isValidObjectIdGeneral(arrayIdsValidar.length, arrayIdsValidar) != true
-  ) {
-    return res.json({
-      ok: false,
-      msg: "Debes enviar los ids válidos.",
-    });
-  }
+    if (
+      isValidObjectIdGeneral(arrayIdsValidar.length, arrayIdsValidar) != true
+    ) {
+      return res.json({
+        ok: false,
+        msg: "Debes enviar los ids válidos.",
+      });
+    }
 
     //##////////////////// FIN VALIDACIONES ////////////////##///
 
@@ -479,31 +482,22 @@ const modificarProducto = async (req, res = response) => {
      * Creando objeto con datos permitidos a actualizar
      */
 
-
-    var objetoProducto= new Object(
-      {
-        id_producto:id_producto,
-        nombre_producto:nombre_producto,
-        descripcion:descripcion,
-        categoria:categoria,
-        precio_normal:precio_normal,
-        precio_descuento:precio_descuento,
-        cantidad_productos:cantidad_productos,
-        colores_hex:colores_hex,
-        tarifa_envio:tarifa_envio,
-        moneda_producto:moneda_producto,
-        tamanios:tamanios
-
-      }
-    );
+    var objetoProducto = new Object({
+      id_producto: id_producto,
+      nombre_producto: nombre_producto,
+      descripcion: descripcion,
+      categoria: categoria,
+      precio_normal: precio_normal,
+      precio_descuento: precio_descuento,
+      cantidad_productos: cantidad_productos,
+      colores_hex: colores_hex,
+      tarifa_envio: tarifa_envio,
+      moneda_producto: moneda_producto,
+      tamanios: tamanios,
+    });
 
     var productoActuzado = await actuaizarProductoBD(objetoProducto);
     console.log("productoActuzado", productoActuzado);
-
-
-
-
-
   } catch (error) {
     console.log("Error en catch");
     objetoRespuesta.ok = false;
@@ -512,42 +506,8 @@ const modificarProducto = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
-const eliminarProducto = async (req, res = response) => {
-  try {
-    var objetoRespuesta = new Object({
-      ok: true,
-      msg: null,
-      tipo_error: null,
-    });
 
-    const { id_producto } = req.query;
-
-    var arrayCamposValidar = [];
-    var arrayIdsValidar = [];
-
-    arrayCamposValidar.push(id_producto);
-
-
-    var validarCamposG = validarCamposGeneral(1, arrayCamposValidar);
-    if(!validarCamposG) return res.json({ok:false, msg: "Debes enviar los datos necesarios."});
-
-    arrayIdsValidar.push(id_producto);
-    var validarIds= isValidObjectIdGeneral(1, arrayIdsValidar);
-    if(!validarIds) return res.json({ok:false, msg: "Debes enviar ids válidos."});
-
-    
-
-    ///Cuando todo sale ok/////
-  } catch (error) {
-    console.log("Error en catch eliminarProducto.");
-    objetoRespuesta.ok = false;
-    objetoRespuesta.tipo_error = "" + error;
-    objetoRespuesta.msg = "Error en catch eliminarProducto";
-    
-    return res.json(objetoRespuesta);
-  }
-};
-const mostrarProductoPorIdProducto = async (req, res=response) =>{
+const eliminarProductoIdProducto = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
       ok: true,
@@ -558,9 +518,36 @@ const mostrarProductoPorIdProducto = async (req, res=response) =>{
 
     var arrayIdsValidar = [];
     arrayIdsValidar.push(idProducto);
-    var validarIds= isValidObjectIdGeneral(1, arrayIdsValidar);
-    if(!validarIds) return res.json({ok:false, msg: "Debes enviar ids válidos."});
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
 
+    ///Cuando todo sale ok/////
+    var productosBD = await eliminarProductoYAsociados(idProducto);
+
+    return res.json(productosBD);
+  } catch (error) {
+    console.log("Error en catch eliminarProductoIdProducto", error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch eliminarProductoIdProducto";
+    return res.json(objetoRespuesta);
+  }
+};
+const mostrarProductoPorIdProducto = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+    const { idProducto } = req.params;
+
+    var arrayIdsValidar = [];
+    arrayIdsValidar.push(idProducto);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
 
     ///Cuando todo sale ok/////
     var productosBD = await listarProductosPorIdProducto(idProducto);
@@ -573,7 +560,82 @@ const mostrarProductoPorIdProducto = async (req, res=response) =>{
     objetoRespuesta.msg = "Error en catch mostrarProductoPorIdProducto";
     return res.json(objetoRespuesta);
   }
-}
+};
+const consultarTodasMonedasPaypalCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    var todasMonedasPaypal = await todasMonedasPaypalMD();
+    return res.json(todasMonedasPaypal);
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch");
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch";
+
+    return res.json(objetoRespuesta);
+  }
+};
+const converirADolarPagarPaypalCtr = async (req, res = response) => {
+  try {
+    ///////ASIGNACIÓN DE DATO RECIBIDO ///////
+    const { valor } = req.query;
+    
+
+    
+
+    //////////// VALIDACIONES ////////////
+    var arrayCamposValidar = [];
+
+    arrayCamposValidar.push(Number(valor));
+
+    var validarCamposG = validarCamposGeneral(1, arrayCamposValidar);
+
+    /////DECLARANDO OBJETO A RESPONDER SOLICITUD ///////
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      soles: Number(valor),
+      usd: null,
+      tipo_error: null,
+    });
+    
+    if (!validarCamposG) {
+      objetoRespuesta.ok = false;
+      objetoRespuesta.msg = "Debes enviar un valor a convertir.";
+      objetoRespuesta.tipo_error = "Dato no recibido.";
+
+      return res.json(objetoRespuesta);
+    }
+
+
+    //////// CONVERSIÓN PEN - USD //////
+    var conversion = await consultarConvertirMonedaTiempoReal(valor);
+
+    ///////PROCESO DE CONVERSIÓN FALLIDO/////
+    if (!conversion.ok) return res.json(conversion);
+
+    ///////PROCESO DE CONVERSIÓN EXITOSO/////
+
+    objetoRespuesta.msg = "Conversión realizada correctamente.";
+    delete objetoRespuesta.tipo_error;
+    objetoRespuesta.usd = conversion.usd;
+
+    return res.json(objetoRespuesta);
+  } catch (error) {
+    console.log("Error en catch converirADolarPagarPaypalCtr" + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error faltal, ver tipo error.";
+    return res.json(objetoRespuesta);
+  }
+};
 module.exports = {
   crearProducto,
   crearCategoria,
@@ -585,6 +647,8 @@ module.exports = {
   listarTodosProductos,
   listarProductosIdCategoria,
   modificarProducto,
-  eliminarProducto,
-  mostrarProductoPorIdProducto
+  eliminarProductoIdProducto,
+  mostrarProductoPorIdProducto,
+  consultarTodasMonedasPaypalCtr,
+  converirADolarPagarPaypalCtr,
 };
