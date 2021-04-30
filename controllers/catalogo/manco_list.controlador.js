@@ -9,6 +9,8 @@ const { consultarDatosConCorreo } = require("../../middlewares/usuario");
 const funcionesValidaciones = require("../../middlewares/validar-campos"); 
 
 const { ObjectId } = require("mongoose").Types;
+const { isValidObjectId } = require("mongoose");
+const estampillasModelo = require("../../models/catalogo/estampillas.modelo");
 
 const actualizarMancolist = async (req, res = response) => {
   const { id_estampilla, estado_estampilla, id_manco_list } = req.body;
@@ -159,84 +161,73 @@ const compartirManco_list = async (req, res = response) => {
     });
   }
 
-  var mancolista = await MancolistCat.findOne(
-    { _id: id },
-    { name: 1, id_usuario: 1 }
-  ).populate({
-    path: "id_usuario",
-    model: "Usuarios",
-    select: {
-      name: 1,
-      email: 1,
-      apellidos: 1,
-      temas: 0,
-      paises_coleccionados: 0,
-      tipo_catalogo: 0,
-    },
-  });
-  const objMancoListBD = await Mancolist.aggregate([
-    {
-      $match: { id_mancolist_cat: ObjectId(id) },
-    },
-    {
-      $lookup: {
-        from: "bdfc_estampillas",
-        localField: "id_estampilla",
-        foreignField: "_id",
-        as: "estampillas",
+  var mancolistasBD = await Mancolist.aggregate(
+    [
+      {
+        $lookup:
+        {
+          from: "bdfc_estampillas",
+          localField: "id_estampilla",
+          foreignField: "_id",
+          as:"EstampillasEnMancolista"
+        }
       },
-    },
-    {
-      $project: {
-        _id: 1,
-        estado_estampilla: 1,
-        id_estampilla: 1,
-        id_mancolist_cat: 1,
-        estampillas: { $arrayElemAt: ["$estampillas", 0] },
+      {
+        $lookup:
+        {
+          from: "bdfc_variantes_errores",
+          localField: "EstampillasEnMancolista.VARIANTES_ERRORES",
+          foreignField: "_id",
+          as:"Variantes_erroresEstampilla"
+        }
       },
-    },
-    {
-      $unwind: "$estampillas",
-    },
-    {
-      $lookup: {
-        from: "bdfc_uploads_imagenes",
-        localField: "estampillas.FOTO_ESTAMPILLAS",
-        foreignField: "_id",
-        as: "photo",
+      {
+        $lookup:{
+          from: "bdfc_uploads_imagenes",
+          localField: "EstampillasEnMancolista.FOTO_ESTAMPILLAS",
+          foreignField: "_id",
+          as:"ImagenesEstampilla"
+       
+        }
       },
-    },
-    {
-      $project: {
-        _id: 1,
-        estado_estampilla: 1,
-        id_estampilla: 1,
-        id_mancolist_cat: 1,
-        estampillas: 1,
-        FOTO_ESTAMPILLAS: { $arrayElemAt: ["$photo", 0] },
+      {
+        $project:{
+          idEstampilla:  { 
+            $arrayElemAt: ["$EstampillasEnMancolista._id", 0]
+          }, 
+          idCategoriaEstampilla: "$id_mancolist_cat",
+          EstadoBusquedaEstampilla: "$estado_estampilla",
+          FotoEstampilla: { 
+            $arrayElemAt: ["$ImagenesEstampilla", 0]
+          },
+          InformacionEstampilla:  { 
+            $arrayElemAt: ["$EstampillasEnMancolista", 0]
+          },
+          VariantesErroresEstampilla: "$Variantes_erroresEstampilla"
+
+        }
+
       },
-    },
-  ]);
-  try {
-    if (objMancoListBD != null) {
-      return res.json({
-        ok: true,
-        msg: objMancoListBD,
-        mancolista: mancolista,
-      });
-    } else {
-      return res.json({
-        ok: true,
-        msg: "Usuario aún sin mancolista",
-      });
-    }
-  } catch (e) {
-    return res.json({
-      ok: false,
-      msg: "Error, contacte al administrador",
-      error: e,
-    });
-  }
+      {
+        $match:{
+          idCategoriaEstampilla: ObjectId(id)
+        }
+      }
+     
+      
+    ])
+
+    var usuarioPro = await MancolistCat.findById(id);
+    console.log(usuarioPro);
+    var objetoUsuario = new Object(
+      {
+        nombreCompleto: usuarioPro.id_usuario.name+" "+ usuarioPro.id_usuario.apellidos,
+        correoElectronico: usuarioPro.id_usuario.email,
+        reputacion: usuarioPro.id_usuario.reputacion,
+        apodo:  usuarioPro.id_usuario.nickname
+      })
+
+  return res.json({ok:true, usuarioPropietario:objetoUsuario, mancolista: mancolistasBD})
 };
 
 /*
@@ -484,8 +475,60 @@ const validarMancolist = async (req, res) => {
   }
 };
 const agregarSerieMancolista = async (req, res) => {
-  const { ids_estampillas, id_mancolist_cat } = req.body;
+  const { ids_estampillas, id_mancolist_cat, id_catalogo } = req.body;
   var aAgregar = [];
+
+  //Validando si envia el id catálogo
+  if(id_catalogo && isValidObjectId(id_catalogo)){
+
+    var estampillasIDCatalogo = await estampillasModelo.find( {CATALOGO:id_catalogo } );
+    for (let index = 0; index < estampillasIDCatalogo.length; index++) {
+      const element = estampillasIDCatalogo[index];
+      
+  
+       var estampillaEnMancolista = await Mancolist.aggregate([
+            { 
+              $lookup:
+              {
+                from: "bdfc_manco_list_cat",
+                localField: "id_mancolist_cat",
+                foreignField: "_id",
+                as: "MancolistaCategorizada"
+              }
+            },
+            {
+              $project: 
+              {
+                IdEstampilla: "$id_estampilla",
+                IdCategoriaMancolista: "$id_mancolist_cat",
+                NombreCategoriaMancolista: 
+                {
+                  $arrayElemAt: ["$MancolistaCategorizada.name", 0]
+
+                }
+
+              }
+            },
+            {
+              $match: 
+              {
+                IdCategoriaMancolista: ObjectId(id_mancolist_cat),
+                IdEstampilla: ObjectId(element._id)
+
+              }
+            }
+          ]);
+                 
+          if(estampillaEnMancolista.length == 0){
+            var objMancolista = new Object();
+            objMancolista.id_mancolist_cat = id_mancolist_cat;
+            objMancolista.id_estampilla = element._id;
+            aAgregar.push(objMancolista);
+
+          }
+      }
+  }else{
+    
   console.log("aAgregar inicial", aAgregar);
   for (let index = 0; index < ids_estampillas.length; index++) {
     const element = ids_estampillas[index];
@@ -505,6 +548,11 @@ const agregarSerieMancolista = async (req, res) => {
       aAgregar.push(objMancolista);
     }
   }
+
+  }
+
+
+
 
   console.log("aAgregar", aAgregar);
   if (aAgregar.length > 0) {
@@ -658,12 +706,28 @@ const paginacionMancolistas = async (req, res = response, next) => {
         }
       },
       {
+        $lookup: 
+        {
+          from: "bdfc_uploads_imagenes",
+          localField: "EstampillasBD.FOTO_ESTAMPILLAS",
+          foreignField: "_id",
+          as: "ImagenEstampilla"
+
+        }
+      },
+    
+      {
         $project: {
+          UrlImagenEstampilla: 
+          {
+            $arrayElemAt: ["$ImagenEstampilla.imagen_url", 0]
+          },
           IdCategoriaMancolistas: "$id_mancolist_cat",
           NombreCategoriaMancolista: 
           {
             $arrayElemAt: ["$CategoriasMancolista.name", 0]
           },
+          EstadoESperadoEstampilla: "$estado_estampilla",
           Estampillas: 
           {
             $arrayElemAt: ["$EstampillasBD", 0]
@@ -684,6 +748,8 @@ const paginacionMancolistas = async (req, res = response, next) => {
     ]
     ).skip((porPagina*pagina))
     .limit(porPagina);
+
+    console.log("estampillasCategoriaMancolista", estampillasCategoriaMancolista);
 
 
     var totalListados = estampillasCategoriaMancolista.length;

@@ -10,7 +10,6 @@ const EstampillasSchema = Schema({
     FOTO_ESTAMPILLAS: {
         type: Schema.Types.ObjectId,
         ref: "uploads_imagen",
-        required: true,
         autopopulate: true,
     },
 

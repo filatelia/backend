@@ -36,7 +36,7 @@ content-type: application/json
 
 }
 ###
-post http://localhost:3000/api/catalogo/manco_list/listar
+get http://localhost:3000/api/catalogo/manco_list/listar/6079fe845d2dd0c10653862c
 content-type: application/json
 x-access-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
 
@@ -88,10 +88,26 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 
 
 ###
-
+//Paginacion de mancolistas
 get http://localhost:3000/api/catalogo/manco_list/paginacion?idCategoriaMancolista=6079fe845d2dd0c10653862c&pagina=2&porPagina=6
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE5MTEzMzc2LCJleHAiOjE2MTkxOTk3NzZ9.RzM1kRUpo-fAROkukH0ZtxGIGMYzcmims1pV9izE5Qc
+
+{
+}
+
+
+###
+
+
+post http://localhost:3000/api/catalogo/manco_list/agregar-serie
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
 
 {
+    "id_mancolist_cat": "6080963d5ba984f3e2647141",
+    "id_catalogo": "60794bdc1e9ed4b8fb638957"
+
+
+
 }

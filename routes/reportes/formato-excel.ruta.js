@@ -1,11 +1,11 @@
 /*
-    Ruta: /api/reportes/generar-excel/:id_catalogo
+    Ruta: /api/reportes/generar-excel/
 */
 const { Router } = require('express');
-const { generarExcel } = require('../../controllers/catalogo/generar_formato.controlador');
+const { generarExcel, generarExcelFormularios } = require('../../controllers/catalogo/generar_formato.controlador');
 
 const router = Router();
 
-router.get('/generar-excel/:id_catalogo', generarExcel);
+router.get('/generar-excel/', generarExcelFormularios);
 
 module.exports = router;

@@ -1,0 +1,139 @@
+
+//////////////CATEGORIAS//////////////////
+
+###
+//Crear categoría 
+post http://localhost:3000/api/tienda/categorias
+content-type: application/json
+
+{
+
+"nombre_categoria": "Categoria de prueba 3"
+
+}
+
+
+###
+//listar categoría con id categoria 
+get http://localhost:3000/api/tienda/categorias?idCategoria=6085cb8fac8965069884f066
+content-type: application/json
+
+{
+
+}
+
+###
+//listar categoría con id categoria 
+get http://localhost:3000/api/tienda/categorias/todas
+content-type: application/json
+
+{
+
+}
+
+
+
+//////////////PRODUCTOS//////////////////
+
+
+
+
+
+###
+//Crear producto
+post http://localhost:3000/api/tienda/producto
+content-type: application/json
+
+{
+}
+
+###
+//Consultar productos con id usuario
+get http://localhost:3000/api/tienda/producto/60775d7eddb0b610f83d117a
+content-type: application/json
+
+{
+}
+
+###
+//Consultar productos con id producto
+get http://localhost:3000/api/tienda/producto/individual/6087ae7e09326a1558b8650a
+
+content-type: application/json
+
+{
+}
+
+###
+//Eliminar producto con id producto
+delete http://localhost:3000/api/tienda/producto/individual/6089e479d29c2800529ce272
+
+content-type: application/json
+
+{
+}
+
+
+###
+//Eliminar una imagen del producto
+delete http://localhost:3000/api/tienda/producto/imagen?urlImagenBD=imagenes/productos/13c8782a-d959-4189-bd24-0e5038ea535a.png&idImagen=6087aad328066632d859585f&idProducto=6087aad328066632d8595860
+content-type: application/json
+
+{
+   
+}
+
+
+
+###
+//Listar todos los productos
+get http://localhost:3000/api/tienda/producto/
+content-type: application/json
+
+{
+   
+}
+
+
+###
+//Listar  los productos con id cat
+get http://localhost:3000/api/tienda/productos-cat/6085cba8ac8965069884f067
+content-type: application/json
+
+{
+   
+}
+
+
+###
+//Modificar prodicto
+put http://localhost:3000/api/tienda/producto
+content-type: application/json
+
+{
+      "id_producto":"",
+      "nombre_producto":"",
+      "descripcion":"",
+      "categoria":"",
+      "precio_normal":"",
+      "precio_descuento":"",
+      "cantidad_productos":"",
+      "colores_hex":"",
+      "tarifa_envio":"",
+      "moneda_producto":"",
+      "tamanios":""
+}
+
+
+
+//////////////PAGOS////////////////
+
+###
+///CONSULTAR TODAS LAS MONEDAS ACEPTADAS POR PAYPAL
+
+get http://localhost:3000/api/tienda/pagos/conversion?valor=1000
+content-type: application/json
+
+{
+      
+}

@@ -178,7 +178,13 @@ const crearSolicitudAdmin = async (
       // console.log("Tema en bd", buscarTemaEnBD);
 
       // //Asociando tema
-      objNuevaSolicitud.tema = tema_catalogo_solicitud;
+      var crearTema = await crearNuevoTema(tema_catalogo_solicitud);
+      console.log("crearTema", crearTema);
+      if(crearTema == null)return false;
+
+      objNuevaSolicitud.tema = crearTema._id;
+
+      
     }
     if (nameTipoCatalogo == "País") {
       paisEnBD = await buscarPaisPorNombre(pais_catalogo_solicitud);
@@ -195,23 +201,29 @@ const crearSolicitudAdmin = async (
     //Creando catalogo
     console.log("Primera", primera);
     console.log("Antes de entrar a crear cataloho");
-    await crearCatalogo(
+    
+
+  
+    var vatn = await crearCatalogo(
       nombre_catalogo_solicitud,
       primera._id,
       paisEnBD._id,
       tipo_catalogo_solicitud,
-      tema_catalogo_solicitud,
+      objNuevaSolicitud.tema,
       true
     );
+    console.log("vatn", vatn);
 
-    await enviarCorreos(
-      usuarioBD.email,
-      usuarioBD.name,
-      primeraSolicitud.descripcion
-    );
+    if (!vatn) {
+      return null;
+      
+    }
+
+
+   
     return primera;
   } catch (e) {
-    console.log("Error desde catch solicitudes crear solicitud admin");
+    console.log("Error desde catch solicitudes crear solicitud admin", error);
     return null;
   }
 };

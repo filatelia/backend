@@ -3,7 +3,10 @@
 */
 const { Router } = require('express');
 const router = Router();
-const {listarCatalogosIdUsuario,  mostrarCatalogoPais,mostrarCatalogoId,estampillaPage, mostrarCatalogoAnio, mostrarMisEstampillas, mostrarMisCatalogos, crearCatalogo, mostrarCatalogo, eliminarCatalogo, editarCatExcel } = require('../../controllers/catalogo/catalogo.controlador');
+const {obtenerIdCatPaisTema, listarCatalogosIdUsuario,  mostrarCatalogoPais,mostrarCatalogoId,
+    estampillaPage, mostrarCatalogoAnio, mostrarMisEstampillas, mostrarMisCatalogos, 
+    crearCatalogo, mostrarCatalogo, eliminarCatalogo, 
+    editarCatExcel } = require('../../controllers/catalogo/catalogo.controlador');
 const { subirEstampillasExcel } = require('../../controllers/catalogo/estampillas.controlador');
 const { verificarTemaYCrearlo } = require('../../middlewares/excel');
 const { validarJWT,validarDeJWTRoleAdmin } = require('../../middlewares/index.middle');
@@ -24,6 +27,8 @@ router.get( '/paises/:pais', [], mostrarCatalogoPais);
 router.get( '/cat-anio/:anioI&:anioF', [], mostrarCatalogoAnio);
 router.get('/estampillas',[],estampillaPage);
 router.get('/catalogos-id-usuario/:idUsuario',[validarDeJWTRoleAdmin], listarCatalogosIdUsuario);
+
+router.get('/obtener-id-catalogo',[], obtenerIdCatPaisTema);
 
 
 module.exports = router;

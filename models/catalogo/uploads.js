@@ -21,7 +21,7 @@ const uploads_ImagenSchema = Schema({
     },
     codigo_estampilla : {
         type:String,
-        unique: true
+        unique: false
     },
     
     catalogo: {
