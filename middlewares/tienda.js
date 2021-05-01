@@ -1,4 +1,5 @@
 const Tienda = require("../models/tienda/tienda.modelo");
+
 const {
   eliminarImagenServidor,
   eliminarImagenBDConId,
@@ -101,7 +102,7 @@ const borarImagenProducto = async (urlImagen, idImagen, idProducto) => {
     //Eliminado imagen de la base de datos ////
     var imagenElimadaBD = await eliminarImagenBDConId(idImagen);
     if (!imagenElimadaBD.ok) return imagenElimadaBD;
-    console.log("Imagen elimianda de la colección de imágenes");
+    console.log(" | Imagen eliminada de la colección de imágenes. ", idImagen);
 
     var imagenDesasociadaDeProducto = await desasociarImagenDeProductoConIdImagen(
       idProducto,
@@ -111,17 +112,18 @@ const borarImagenProducto = async (urlImagen, idImagen, idProducto) => {
     if (!imagenDesasociadaDeProducto.ok) {
       return imagenDesasociadaDeProducto;
     }
-    console.log("Imagen desasociada del prducto");
+    console.log(" | Imagen desasociada del producto. ", idImagen);
 
     ///ELIMINADO IMAGEN DEL SERVIDOR //////
     var imagenElimadaServidor = eliminarImagenServidor(urlImagen);
 
     if (!imagenElimadaServidor) {
+      objetoRespuesta.ok = false;
       objetoRespuesta.msg =
         "No se ha podido borrar la imagen del servidor, pero si de la base de datos de imagenes y desasociar del producto,.";
       return objetoRespuesta;
     }
-    console.log("Imagen elimianda del servidor");
+    console.log(" | Imagen elimianda del servidor. ", idImagen);
 
     objetoRespuesta.msg =
       "Imagen elimianda del servidor, de la base de datos y desasociada del producto.";
@@ -129,9 +131,9 @@ const borarImagenProducto = async (urlImagen, idImagen, idProducto) => {
 
     ///Cuando todo sale ok/////
   } catch (error) {
-    console.log("Error en catch");
+    console.log("Error en catch borarImagenProducto " + error);
     objetoRespuesta.ok = false;
-    objetoRespuesta.tipo_error = error;
+    objetoRespuesta.tipo_error = "" + error;
     objetoRespuesta.msg = "Error en catch de borarImagenProducto";
   }
 };
@@ -224,22 +226,48 @@ const eliminarProductoYAsociados = async (_id) => {
   });
 
   try {
+    const producto = await Tienda.findById(_id);
+
+    for (let index = 0; index < producto.fotos_producto.length; index++) {
+      const element = producto.fotos_producto[index];
+
+      console.log("- Eliminando imagenes asociadas al producto.");
+
+      ///ELIMINADO IMAGEN DE LA BD //////
+      var imagenElimadaBD = await eliminarImagenBDConId(element._id);
+      if (!imagenElimadaBD.ok) return imagenElimadaBD;
+      console.log(
+        " | Imagen eliminada de la colección de imágenes. ",
+        element._id
+      );
+
+      ///ELIMINADO IMAGEN DEL SERVIDOR //////
+      var imagenElimadaServidor = eliminarImagenServidor(element.imagen_url);
+
+      if (!imagenElimadaServidor) {
+        objetoRespuesta.ok = false;
+        objetoRespuesta.msg =
+          "No se ha podido borrar la imagen del servidor, pero si de la base de datos de imagenes y desasociar del producto,.";
+        return objetoRespuesta;
+      }
+      console.log(" | Imagen elimianda del servidor. ", element._id);
+    }
     const productoBD = await Tienda.findByIdAndDelete(_id);
     if (productoBD == null) {
       objetoRespuesta.msg = "El id no cuenta con productos asociados.";
-          return objetoRespuesta;
+      return objetoRespuesta;
     }
 
-    console.log("Producto eliminado: ", productoBD);
-
-    objetoRespuesta.msg = productoBD;
+    console.log("Producto eliminado ", productoBD._id);
+    objetoRespuesta.msg =
+      "Se ha borrado correctamente el producto " + productoBD._id;
     return objetoRespuesta;
   } catch (error) {
     console.log(
       "Error en catch de listarProductosPorIdCliente | middelwares tienda"
     );
     objetoRespuesta.ok = false;
-    objetoRespuesta.msg = ""+error;
+    objetoRespuesta.msg = "" + error;
     objetoRespuesta.tipo_error = "Catch.";
 
     return objetoRespuesta;
@@ -255,5 +283,4 @@ module.exports = {
   eliminarProductoYAsociados,
   actuaizarProductoBD,
   listarProductosPorIdProducto,
-  
 };

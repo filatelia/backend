@@ -14,7 +14,6 @@ const crearImagen = (req, ruta) => {
 
   try {
     const { sampleFile } = req.files;
-    console.log("Sample File ->", sampleFile);
 
     //Asignando nombre único a la imagen:
     let now = new Date();
@@ -125,7 +124,6 @@ const guardarImagenGoogleSeet = async (
       objetoRespuesta.origenError = crearImagenDirectorioDir;
       return objetoRespuesta;
     }
-    console.log("95 ->", crearImagenDirectorioDir);
 
     /////////////////////////// ASOCIANDO IMAGEN A ESTAMPILLA ////////////////////
 
@@ -236,7 +234,6 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
         await fsp
           .writeFile(urlImagenServidor, objetoImagen, { encoding: "base64" })
           .then((res) => {
-            console.log("Se ha guardado correctamente:: ", res);
             objetoRespuesta.idImagenBD = null;
             objetoRespuesta.urlImagenBD = urlImagenBD;
             objetoRespuesta.nombreImagen = nombreImagen;
@@ -247,7 +244,6 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
             console.log("error ->", err);
           });
 
-        console.log("foto", objetoRespuesta);
 
         return objetoRespuesta;
       }
@@ -342,12 +338,12 @@ async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
       });
 
       if (contador != productoBD.fotos_producto) {
-        console.log("idFoto", id_foto);
-        console.log("id foto principal", productoBD);
+        
+
         if (!productoBD.foto_principal) {
-          console.log("Entramos");
           productoBD.foto_principal = arrayImagenes[0];
         }
+
         productoBD.fotos_producto = arrayImagenes;
 
         var imagenFF = await productoBD.save();
@@ -356,12 +352,13 @@ async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
       } else {
         objetoRespuesta.ok = false;
         objetoRespuesta.msg = "No existe la imagen en el producto";
+        return objetoRespuesta;
       }
     }
 
     ///Cuando todo sale ok/////
   } catch (error) {
-    console.log("Error en catch");
+    console.log("Error en catch desasociarImagenDeProductoConIdImagen ", error);
     objetoRespuesta.ok = false;
     objetoRespuesta.tipo_error = "" + error;
     objetoRespuesta.msg =

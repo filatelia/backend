@@ -51,6 +51,7 @@ const crearProducto = async (req, res = response) => {
       req.body.fotos_producto = [req.body.fotos_producto];
     }
     var fotos_producto = req.body.fotos_producto;
+    console.log("");
 
     console.log("- Guardando Producto");
     ///////// VALIDACIONES ////////
@@ -90,6 +91,8 @@ const crearProducto = async (req, res = response) => {
         msg: "Debes enviar los ids válidos.",
       });
     }
+    console.log(" ⚫ Creando producto nuevo.");
+
 
     ///CREANDO IMAGEN DE PRODUCTO /////
     var imagenes = req.body.fotos_producto;
@@ -127,18 +130,18 @@ const crearProducto = async (req, res = response) => {
     }
     console.log(" | Imagenes Ok.");
 
-    console.log("req.body.fotos_producto", req.body.fotos_producto);
     req.body.foto_principal = req.body.fotos_producto[0];
 
-    console.log("req.body", req.body);
     /////////// CREANDO PRODUCTO ////////
     var nuevoProducto = await crearNuevoProducto(req.body);
     if (nuevoProducto.ok != true)
       return res.json({ ok: false, msg: nuevoProducto });
 
+      console.log("☑ Producto creado correctamente.");
     return res.json({
       ok: true,
       msg: nuevoProducto.msg,
+      producto_creado: nuevoProducto.producto._id,
     });
   } catch (error) {
     console.log("Error en catch de crearProducto | tienda controlador", error);
@@ -517,6 +520,8 @@ const eliminarProductoIdProducto = async (req, res = response) => {
       return res.json({ ok: false, msg: "Debes enviar ids válidos." });
 
     ///Cuando todo sale ok/////
+    console.log("");
+    console.log("⚫ Eliminando producto.");
     var productosBD = await eliminarProductoYAsociados(idProducto);
 
     return res.json(productosBD);
@@ -704,7 +709,6 @@ const valorInicialFinalProductoCtr = async (req, res = response) => {
 
 const cambiarImagenPrincipalProductoCtr = async (req, res = response) => {
   try {
-
     console.log("Decibidos ->", req.body);
 
     const { id_producto, id_foto } = req.body;
@@ -718,7 +722,6 @@ const cambiarImagenPrincipalProductoCtr = async (req, res = response) => {
 
     ///Cuando todo sale ok/////
   } catch (error) {
-
     var objetoRespuesta = new Object({
       ok: true,
       msg: null,

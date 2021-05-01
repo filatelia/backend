@@ -194,7 +194,7 @@ content-type: application/json
 
 ###
 //Consultar productos con id producto
-get http://localhost:3000/api/tienda/producto/individual/6087ae7e09326a1558b8650a
+get http://localhost:3000/api/tienda/producto/individual/608d55f276f49206209baa33
 
 content-type: application/json
 
@@ -203,7 +203,7 @@ content-type: application/json
 
 ###
 //Eliminar producto con id producto
-delete http://localhost:3000/api/tienda/producto/individual/6089e479d29c2800529ce272
+delete http://localhost:3000/api/tienda/producto/individual/608d5b11c889c61ee0349248
 
 content-type: application/json
 
