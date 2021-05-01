@@ -21,6 +21,91 @@
 
 
     <script>
+
+        var tamanios = [];
+        tamanios.push("Medio 293x330x70 mm.");
+        tamanios.push("Grande 493x730x100 mm.");
+        tamanios.push("Pequeño 193x130x30 mm.");
+
+        var objColorCantidad = new Object();
+
+        tamanios.map(data => {
+            objColorCantidad[data] = [null];
+        });
+
+        console.log("objColorCantidad", objColorCantidad);
+
+
+
+
+        ////////// Pequeño 193x130x30 mm. /////
+        var arrObjetos = [];
+
+
+        var objinterno = new Object();
+        objinterno.color = "negro";
+        objinterno.cantidad = 10;
+        objinterno.valor_individual = 300;
+        arrObjetos.push(objinterno);
+
+        var objinterno = new Object();
+
+        objinterno.color = "amarillo";
+        objinterno.cantidad = 2;
+        objinterno.valor_individual = 300;
+        arrObjetos.push(objinterno);
+        var objinterno = new Object();
+
+        objinterno.color = "dorado";
+        objinterno.cantidad = 6;
+        objinterno.valor_individual = 300;
+        arrObjetos.push(objinterno);
+
+        objColorCantidad["Pequeño 193x130x30 mm."] = arrObjetos;
+
+
+
+        ////////// Medio 293x330x70 mm. /////
+        arrObjetos = [];
+
+        var objinterno = new Object();
+        objinterno.color = "azul";
+        objinterno.cantidad = 1;
+        objinterno.valor_individual = 500;
+        arrObjetos.push(objinterno);
+
+
+        var objinterno = new Object();
+        objinterno.color = "verde";
+        objinterno.cantidad = 12;
+        objinterno.valor_individual = 500;
+        arrObjetos.push(objinterno);
+
+        objColorCantidad["Medio 293x330x70 mm."] = arrObjetos;
+
+
+        ////////// Grande 493x730x100 mm. /////
+        arrObjetos = [];
+
+        var objinterno = new Object();
+        objinterno.color = "gris";
+        objinterno.cantidad = 11;
+        objinterno.valor_individual = 700;
+        arrObjetos.push(objinterno);
+
+
+        var objinterno = new Object();
+        objinterno.color = "blanco";
+        objinterno.cantidad = 8;
+        objinterno.valor_individual = 700;
+        arrObjetos.push(objinterno);
+
+        objColorCantidad["Grande 493x730x100 mm."] = arrObjetos;
+
+
+
+        console.log("objColorCantidad", objColorCantidad);
+
         function enviar() {
             //Taemos el formulario
             //Traemos los datos del input file multiple
@@ -30,6 +115,12 @@
             tamanios.push("Medio 293x330x70 mm.");
             tamanios.push("Grande 493x730x100 mm.");
             tamanios.push("Pequeño 193x130x30 mm.");
+
+            objetoTamanioColor = new Object();
+
+            tamanios.map(data => {
+                objetoTamanioColor[data];
+            });
 
             var colores_hex = [];
             colores_hex.push("#F07459");

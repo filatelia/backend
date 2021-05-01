@@ -16,7 +16,7 @@ const { promises } = require("dns");
 // Crear el servidor de express
 const app = express();
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -26,7 +26,9 @@ app.use(express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 
 // Lectura y parseo del body
-app.use(express.json());
+app.use(express.json({limit: '50mb', extended: true}));
+
+
 
 //carga de archivos con fileupload
 app.use(

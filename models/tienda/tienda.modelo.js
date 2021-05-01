@@ -20,13 +20,7 @@ const productoSchema = Schema(
       required: true,
       autopopulate: true,
     },
-    precio_normal: {
-      type: Number,
-      required: true,
-    },
-    precio_descuento: {
-      type: Number,
-    },
+
     fotos_producto: [
       {
         type: Schema.Types.ObjectId,
@@ -35,13 +29,41 @@ const productoSchema = Schema(
         autopopulate: true,
       },
     ],
-    cantidad_productos: {
-      type: Number,
+    foto_principal: {
+      type: Schema.Types.ObjectId,
+      ref: "uploads_imagen",
       required: true,
+      autopopulate: true,
     },
-    colores_hex: [
+
+    tamanios: [
       {
-        type: String,
+        nombre_tamanio: {
+          type: String,
+          required: true,
+        },
+        precio: {
+          type: Number,
+          required: true,
+        },
+        precio_descuento: {
+          type: Number,
+        },
+        colores: [
+          {
+            hex: {
+              type: String,
+            },
+            nombre: {
+              type: String,
+              required: true,
+            },
+            cantidad: {
+              type: Number,
+              required: true,
+            },
+          },
+        ],
       },
     ],
 
@@ -49,16 +71,6 @@ const productoSchema = Schema(
       type: Number,
       required: true,
     },
-    moneda_producto: {
-      type: String,
-      required: true,
-    },
-    tamanios: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
   },
   { collection: "bdfc_productos" }
 );
