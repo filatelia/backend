@@ -17,7 +17,8 @@ const {
   mostrarProductoPorIdProducto,
   eliminarProductoIdProducto,
   consultarTodasMonedasPaypalCtr,
-  converirADolarPagarPaypalCtr
+  converirADolarPagarPaypalCtr,
+  valorInicialFinalProductoCtr
 } = require("../../controllers/tienda/productos.controlador");
 
 const router = Router();
@@ -73,6 +74,10 @@ router.delete("/producto/imagen", [], eliminarFotosProducto);
 router.post("/producto/imagen/", [], agregarFotosProducto);
 
 module.exports = router;
+
+//13 ////// VALOR MÍNIMO - VALOR MÁXIMO
+router.get("/producto/valores/:idProducto", [], valorInicialFinalProductoCtr);
+
 
 //
 //

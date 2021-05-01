@@ -197,6 +197,7 @@ const listarProductosPorIdProducto = async (_id) => {
   try {
     const productoBD = await Tienda.findById(_id);
     if (productoBD == null) {
+      objetoRespuesta.ok = false;
       objetoRespuesta.msg = "El id no cuenta con productos asociados.";
       return objetoRespuesta;
     }

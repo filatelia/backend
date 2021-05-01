@@ -39,7 +39,6 @@ const crearProducto = async (req, res = response) => {
       tamanios,
     } = req.body;
 
-   
     var { fotos_producto } = req.body;
 
     var tipo = typeof cantidad_productos;
@@ -545,6 +544,22 @@ const mostrarProductoPorIdProducto = async (req, res = response) => {
 
     ///Cuando todo sale ok/////
     var productosBD = await listarProductosPorIdProducto(idProducto);
+    var valores = [];
+    var stock = 0;
+    productosBD.msg.tamanios.map((data) => {
+      if (data.precio_descuento) {
+        valores.push(data.precio_descuento);
+      } else {
+        valores.push(data.precio);
+      }
+      data.colores.map(dat => stock = stock + dat.cantidad);
+    });
+    var valorMinimo = Math.min(...valores);
+    var valorMaximo = Math.max(...valores);
+    productosBD.valorMaximo = valorMaximo;
+    productosBD.valorMinimo = valorMinimo;
+    productosBD.stock = stock;
+
 
     return res.json(productosBD);
   } catch (error) {
@@ -626,6 +641,62 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+const valorInicialFinalProductoCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    const { idProducto } = req.params;
+    var arrayCamposValidar = [];
+    var arrayIdsValidar = [];
+
+    arrayCamposValidar.push(idProducto);
+
+    var validarCamposG = validarCamposGeneral(1, arrayCamposValidar);
+    if (!validarCamposG)
+      return res.json({ ok: false, msg: "Debes enviar los datos necesarios." });
+
+    arrayIdsValidar.push(idProducto);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    var productoBD = await listarProductosPorIdProducto(idProducto);
+    console.log("productoBD", productoBD);
+    if (!productoBD.ok) return res.json(productoBD);
+
+    var valores = [];
+    var stock = 0;
+    productoBD.msg.tamanios.map((data) => {
+      if (data.precio_descuento) {
+        valores.push(data.precio_descuento);
+      } else {
+        valores.push(data.precio);
+      }
+      data.colores.map(dat => stock = stock + dat.cantidad);
+    });
+    var valorMinimo = Math.min(...valores);
+    var valorMaximo = Math.max(...valores);
+
+    return res.json({
+      ok: true,
+      precioMinimo: valorMinimo,
+      precioMaximo: valorMaximo,
+      stock: stock
+    });
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch ";
+    return objetoRespuesta;
+  }
+};
 module.exports = {
   crearProducto,
   crearCategoria,
@@ -641,4 +712,5 @@ module.exports = {
   mostrarProductoPorIdProducto,
   consultarTodasMonedasPaypalCtr,
   converirADolarPagarPaypalCtr,
+  valorInicialFinalProductoCtr,
 };
