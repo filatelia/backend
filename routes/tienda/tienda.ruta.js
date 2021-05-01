@@ -3,6 +3,10 @@
  */
 
 const { Router } = require("express");
+const { agregarProductoListaDeseosCtr,
+  removerProductoListaDeseostr,
+  VerificarEnListaDeseosCtr
+ } = require("../../controllers/tienda/lista-deseos.controlador");
 const {
   listarProductosPorIdUsuario,
   listarTodosProductos,
@@ -19,8 +23,9 @@ const {
   consultarTodasMonedasPaypalCtr,
   converirADolarPagarPaypalCtr,
   valorInicialFinalProductoCtr,
-  cambiarImagenPrincipalProductoCtr
+  cambiarImagenPrincipalProductoCtr,
 } = require("../../controllers/tienda/productos.controlador");
+
 
 const router = Router();
 //
@@ -83,6 +88,24 @@ module.exports = router;
 //13 ////// VALOR MÍNIMO - VALOR MÁXIMO
 router.get("/producto/valores/:idProducto", [], valorInicialFinalProductoCtr);
 
+
+//
+//
+//
+///////////////////////////// LISTA DESEOS /////////////////////////////
+
+//14 AGREGAR PRODUCTO A LISTA DE DESEOS///
+router.post("/producto/lista-deseos/", [], agregarProductoListaDeseosCtr);
+
+//15  LISTAR TODOS LOS PRODUCTOS EN LISTA DE DESEOS///
+router.get("/producto/lista-deseos/", [], valorInicialFinalProductoCtr);
+
+
+//16  QUITAR PRODUCTO DE LISTA DE DESEOS///
+router.delete("/producto/lista-deseos/:idListaDeseos", [], removerProductoListaDeseostr);
+
+//17  VERIFICAR PRODUCTO A LISTA DE DESEOS///
+router.get("/producto/lista-deseos/estado/", [], VerificarEnListaDeseosCtr);
 
 //
 //
