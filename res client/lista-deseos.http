@@ -1,0 +1,31 @@
+//AGREDANDO PRODUCTO A LISTA DE DESEOS
+post http://localhost:3000/api/tienda/producto/lista-deseos/
+content-type: application/json
+
+{
+
+"usuario": "60775d7eddb0b610f83d117a", 
+"producto": "608cbef96b03cc0f28a4f1fa"
+
+}
+
+###
+
+//QUITANDO PRODUCTO DE LISTA DE DESEOS
+delete http://localhost:3000/api/tienda/producto/lista-deseos/60775d7eddb0b610f83d117a
+content-type: application/json
+
+{
+
+}
+
+###
+//VERIFICANDO PRODUCTO DE LISTA DE DESEOS
+GET http://localhost:3000/api/tienda/producto/lista-deseos/estado/?idusuario=60775d7eddb0b610f83d117a&idproducto=608cbef96b03cc0f28a6f1fa
+content-type: application/json
+
+{
+
+}
+
+###
