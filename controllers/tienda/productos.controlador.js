@@ -266,7 +266,7 @@ const agregarFotosProducto = async (req, res = response) => {
     const { id_producto } = req.body;
 
     /////CREANDO IMAGEN DE PRODUCTO /////
-    var imagenes = req.files.fotos_producto;
+    var imagenes = req.body.fotos_producto;
     if (!Array.isArray(imagenes)) imagenes = [imagenes];
     req.body.fotos_producto = [];
 
@@ -283,7 +283,7 @@ const agregarFotosProducto = async (req, res = response) => {
         return res.json(imagenEnDirectorio);
       }
       console.log(
-        "  | Imagen " + (index + 1) + " guarda en servidor correctamente."
+        "  | Imagen " + (index + 1) + " guardada en servidor correctamente."
       );
 
       objImagen.name = imagenEnDirectorio.nombreImagen;
@@ -527,6 +527,7 @@ const eliminarProductoIdProducto = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const mostrarProductoPorIdProducto = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -552,14 +553,13 @@ const mostrarProductoPorIdProducto = async (req, res = response) => {
       } else {
         valores.push(data.precio);
       }
-      data.colores.map(dat => stock = stock + dat.cantidad);
+      data.colores.map((dat) => (stock = stock + dat.cantidad));
     });
     var valorMinimo = Math.min(...valores);
     var valorMaximo = Math.max(...valores);
     productosBD.valorMaximo = valorMaximo;
     productosBD.valorMinimo = valorMinimo;
     productosBD.stock = stock;
-
 
     return res.json(productosBD);
   } catch (error) {
@@ -570,6 +570,7 @@ const mostrarProductoPorIdProducto = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const consultarTodasMonedasPaypalCtr = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -591,6 +592,7 @@ const consultarTodasMonedasPaypalCtr = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const converirADolarPagarPaypalCtr = async (req, res = response) => {
   try {
     ///////ASIGNACIÓN DE DATO RECIBIDO ///////
@@ -641,6 +643,7 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const valorInicialFinalProductoCtr = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -676,7 +679,7 @@ const valorInicialFinalProductoCtr = async (req, res = response) => {
       } else {
         valores.push(data.precio);
       }
-      data.colores.map(dat => stock = stock + dat.cantidad);
+      data.colores.map((dat) => (stock = stock + dat.cantidad));
     });
     var valorMinimo = Math.min(...valores);
     var valorMaximo = Math.max(...valores);
@@ -685,7 +688,7 @@ const valorInicialFinalProductoCtr = async (req, res = response) => {
       ok: true,
       precioMinimo: valorMinimo,
       precioMaximo: valorMaximo,
-      stock: stock
+      stock: stock,
     });
 
     ///Cuando todo sale ok/////
@@ -697,6 +700,7 @@ const valorInicialFinalProductoCtr = async (req, res = response) => {
     return objetoRespuesta;
   }
 };
+
 module.exports = {
   crearProducto,
   crearCategoria,

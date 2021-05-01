@@ -339,6 +339,15 @@ async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
       });
 
       if (contador != productoBD.fotos_producto) {
+
+      
+      console.log("idFoto", id_foto);
+      console.log("id foto principal",  productoBD);
+        if(!productoBD.foto_principal)
+        {
+          console.log("Entramos");
+          productoBD.foto_principal = arrayImagenes[0]; 
+        }
         productoBD.fotos_producto = arrayImagenes;
 
         var imagenFF = await productoBD.save();
