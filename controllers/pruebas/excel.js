@@ -126,7 +126,29 @@ for (let index = 1; index < totalEstampillas+1; index++) {
     });
 };
 
+const guardarImagenDirectorioBase64 = async (req, res=response) =>{
+
+  var { img64} = req.body;
+
+  img64.map(data => 
+    {
+      fs.writeFile(path.join(__dirname, "../../uploads/imagenes/predeterminadas/prueba.png"), 
+      data, 
+      {encoding:'base64'},
+      function (err) {
+        if(err){
+          console.log("error al guardar -> ", err);
+        }
+        else{
+          console.log("Se ha guardado correctamente");
+        }
+      });
+    });
+
+
+}
 
 module.exports = {
   generarExcel,
+  guardarImagenDirectorioBase64
 }

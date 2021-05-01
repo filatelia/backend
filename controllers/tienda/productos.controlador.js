@@ -23,7 +23,10 @@ const {
   guadarImagenEnBD,
   asociarImagenDeProductoConIdImagen,
 } = require("../../middlewares/subir_imagen");
-const { todasMonedasPaypalMD, consultarConvertirMonedaTiempoReal } = require("../../middlewares/paypal");
+const {
+  todasMonedasPaypalMD,
+  consultarConvertirMonedaTiempoReal,
+} = require("../../middlewares/paypal");
 
 const crearProducto = async (req, res = response) => {
   try {
@@ -31,26 +34,23 @@ const crearProducto = async (req, res = response) => {
       id_usuario,
       nombre_producto,
       categoria,
-      precio_normal,
-      cantidad_productos,
       tarifa_envio,
-      moneda_producto,
       cantidad_productos,
       tamanios,
     } = req.body;
-    console.log("cantidad", cantidad_productos);
 
-    var { fotos_producto } = req.files;
+   
+    var { fotos_producto } = req.body;
 
     var tipo = typeof cantidad_productos;
     // console.log("Tipo ->", tipo);
     // if(tipo == "string") cantidad_productos = JSON.parse(cantidad_productos);
 
-    if (!Array.isArray(req.files.fotos_producto)) {
+    if (!Array.isArray(req.body.fotos_producto)) {
       console.log("no es array");
-      req.files.fotos_producto = [req.files.fotos_producto];
+      req.body.fotos_producto = [req.body.fotos_producto];
     }
-    var fotos_producto = req.files.fotos_producto;
+    var fotos_producto = req.body.fotos_producto;
 
     console.log("- Guardando Producto");
     ///////// VALIDACIONES ////////
@@ -61,15 +61,12 @@ const crearProducto = async (req, res = response) => {
     var arrayIdsValidar = [];
     arrayCamposValidar.push(nombre_producto);
     arrayCamposValidar.push(categoria);
-    arrayCamposValidar.push(precio_normal);
     arrayCamposValidar.push(fotos_producto);
-    arrayCamposValidar.push(cantidad_productos);
     arrayCamposValidar.push(tarifa_envio);
-    arrayCamposValidar.push(moneda_producto);
     arrayCamposValidar.push(tamanios);
     arrayCamposValidar.push(id_usuario);
 
-    if (validarCamposGeneral(8, arrayCamposValidar) != true) {
+    if (validarCamposGeneral(6, arrayCamposValidar) != true) {
       return res.json({
         ok: false,
         msg: "Debes enviar los datos obligatorios.",
@@ -81,9 +78,6 @@ const crearProducto = async (req, res = response) => {
         ok: false,
         msg: "Debes enviar un array de fotos_producto.",
       });
-
-    if (!Array.isArray(tamanios))
-      return res.json({ ok: false, msg: "Debes enviar un array de tamaños." });
 
     arrayIdsValidar.push(categoria);
     arrayIdsValidar.push(id_usuario);
@@ -97,8 +91,8 @@ const crearProducto = async (req, res = response) => {
       });
     }
 
-    /////CREANDO IMAGEN DE PRODUCTO /////
-    var imagenes = req.files.fotos_producto;
+    ///CREANDO IMAGEN DE PRODUCTO /////
+    var imagenes = req.body.fotos_producto;
     req.body.fotos_producto = [];
 
     console.log(" - Procesado imágenes");
@@ -134,9 +128,9 @@ const crearProducto = async (req, res = response) => {
     console.log(" | Imagenes Ok.");
 
     console.log("req.body.fotos_producto", req.body.fotos_producto);
+    req.body.foto_principal = req.body.fotos_producto[0];
 
-    console.log("fotos_producto", fotos_producto);
-
+    console.log("req.body", req.body);
     /////////// CREANDO PRODUCTO ////////
     var nuevoProducto = await crearNuevoProducto(req.body);
     if (nuevoProducto.ok != true)
@@ -586,9 +580,6 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
   try {
     ///////ASIGNACIÓN DE DATO RECIBIDO ///////
     const { valor } = req.query;
-    
-
-    
 
     //////////// VALIDACIONES ////////////
     var arrayCamposValidar = [];
@@ -605,7 +596,7 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
       usd: null,
       tipo_error: null,
     });
-    
+
     if (!validarCamposG) {
       objetoRespuesta.ok = false;
       objetoRespuesta.msg = "Debes enviar un valor a convertir.";
@@ -613,7 +604,6 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
 
       return res.json(objetoRespuesta);
     }
-
 
     //////// CONVERSIÓN PEN - USD //////
     var conversion = await consultarConvertirMonedaTiempoReal(valor);

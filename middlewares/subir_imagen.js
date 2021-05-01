@@ -2,6 +2,7 @@ const { response } = require("express");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
+const fsp = require("fs").promises;
 const download = require("download");
 const Imagenes = require("../models/catalogo/uploads");
 const { asociarImagenEstampillaAEstampilla } = require("./estampillas");
@@ -230,13 +231,21 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
 
         urlImagenBD = "imagenes/productos/";
         urlImagenBD = urlImagenBD + nombreImagen + ".png";
-        await objetoImagen.mv(urlImagenServidor).then(() => {
-          objetoRespuesta.idImagenBD = null;
-          objetoRespuesta.urlImagenBD = urlImagenBD;
-          objetoRespuesta.nombreImagen = nombreImagen;
-          objetoRespuesta.msg = "Imagen guardada en directorio correctamente";
-          objetoRespuesta.ok = true;
-        });
+        await fsp
+          .writeFile(urlImagenServidor, objetoImagen, { encoding: "base64" })
+          .then((res) => {
+            console.log("Se ha guardado correctamente:: ", res);
+            objetoRespuesta.idImagenBD = null;
+            objetoRespuesta.urlImagenBD = urlImagenBD;
+            objetoRespuesta.nombreImagen = nombreImagen;
+            objetoRespuesta.msg = "Imagen guardada en directorio correctamente";
+            objetoRespuesta.ok = true;
+          })
+          .catch((err) => {
+            console.log("error ->", err);
+          });
+
+        console.log("foto", objetoRespuesta);
 
         return objetoRespuesta;
       }
@@ -361,15 +370,13 @@ async function asociarImagenDeProductoConIdImagen(_id, arrayIDs) {
     var arrayImagenes = [];
     var productoBD = await Productos.findById(_id);
     if (productoBD != null) {
-
-      arrayIDs.map(data => productoBD.fotos_producto.push(data));
-      
+      arrayIDs.map((data) => productoBD.fotos_producto.push(data));
 
       var imagenFF = await productoBD.save();
       objetoRespuesta.msg = imagenFF;
       return objetoRespuesta;
-    }else{
-      objetoRespuesta.ok= false;
+    } else {
+      objetoRespuesta.ok = false;
       objetoRespuesta.msg = "No existe producto con el id proporcionado";
       return objetoRespuesta;
     }
