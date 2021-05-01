@@ -126,6 +126,7 @@ const updateTema = async (req, res = response) => {
     });
   }
 };
+
 const validarDatosRecibidosMostrarDatosDuenio = async (
   req,
   res = response,
