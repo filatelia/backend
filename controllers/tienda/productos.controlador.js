@@ -22,6 +22,7 @@ const {
   crearImagenDirectorio,
   guadarImagenEnBD,
   asociarImagenDeProductoConIdImagen,
+  cambioImagenPrincipalProducto,
 } = require("../../middlewares/subir_imagen");
 const {
   todasMonedasPaypalMD,
@@ -701,6 +702,36 @@ const valorInicialFinalProductoCtr = async (req, res = response) => {
   }
 };
 
+const cambiarImagenPrincipalProductoCtr = async (req, res = response) => {
+  try {
+
+    console.log("Decibidos ->", req.body);
+
+    const { id_producto, id_foto } = req.body;
+
+    const cambioImagenPrincipal = await cambioImagenPrincipalProducto(
+      id_producto,
+      id_foto
+    );
+
+    return res.json(cambioImagenPrincipal);
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    console.log("Error en catch cambiarImagenPrincipalProductoCtr " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch cambiarImagenPrincipalProductoCtr";
+    return res.json(objetoRespuesta);
+  }
+};
 module.exports = {
   crearProducto,
   crearCategoria,
@@ -717,4 +748,5 @@ module.exports = {
   consultarTodasMonedasPaypalCtr,
   converirADolarPagarPaypalCtr,
   valorInicialFinalProductoCtr,
+  cambiarImagenPrincipalProductoCtr,
 };

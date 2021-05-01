@@ -233,6 +233,18 @@ content-type: application/json
 
 
 ###
+//Cambiar la imagen principal del producto
+put http://localhost:3000/api/tienda/producto/imagen/
+content-type: application/json
+
+{
+    "id_producto": "608cbef96b03cc0f28a4f1fa",
+    "id_foto": "608cda4568d05f041cd74dc0"
+}
+
+
+
+###
 //Listar todos los productos
 get http://localhost:3000/api/tienda/producto/
 content-type: application/json
@@ -280,15 +292,3 @@ content-type: application/json
 }
 
 
-
-//////////////PAGOS////////////////
-
-###
-///CONSULTAR TODAS LAS MONEDAS ACEPTADAS POR PAYPAL
-
-get http://localhost:3000/api/tienda/pagos/conversion?valor=1000
-content-type: application/json
-
-{
-      
-}
