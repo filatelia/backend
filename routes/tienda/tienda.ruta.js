@@ -18,7 +18,8 @@ const {
   eliminarProductoIdProducto,
   consultarTodasMonedasPaypalCtr,
   converirADolarPagarPaypalCtr,
-  valorInicialFinalProductoCtr
+  valorInicialFinalProductoCtr,
+  cambiarImagenPrincipalProductoCtr
 } = require("../../controllers/tienda/productos.controlador");
 
 const router = Router();
@@ -69,6 +70,10 @@ router.get("/productos-cat/:idCat", [], listarProductosIdCategoria);
 
 //11//ELIMINAR IMAGEN DE UN PRODUCTO ////
 router.delete("/producto/imagen", [], eliminarFotosProducto);
+
+//14 ///// CAMBIAR IMAGEN PRINCIPAL DEL PRODUCTO ////////
+router.put("/producto/imagen/", [], cambiarImagenPrincipalProductoCtr);
+
 
 //12//AGREGAR IMAGEN DE UN PRODUCTO ////
 router.post("/producto/imagen/", [], agregarFotosProducto);

@@ -66,6 +66,7 @@ const eliminarImagenServidor = (urlImgBD) => {
     return false;
   }
 };
+
 const eliminarImagenBDConId = async (_id) => {
   try {
     var objetoRespuesta = new Object({
@@ -179,6 +180,7 @@ const guardarImagenGoogleSeet = async (
     return objetoRespuesta;
   }
 };
+
 async function crearImagenDirectorio(tipoImagen, idImagen) {
   var objetoRespuesta = new Object({
     ok: false,
@@ -319,6 +321,7 @@ async function guadarImagenEnBD(imagen) {
     return objetoRespuesta;
   }
 }
+
 async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
   try {
     var objetoRespuesta = new Object({
@@ -339,14 +342,11 @@ async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
       });
 
       if (contador != productoBD.fotos_producto) {
-
-      
-      console.log("idFoto", id_foto);
-      console.log("id foto principal",  productoBD);
-        if(!productoBD.foto_principal)
-        {
+        console.log("idFoto", id_foto);
+        console.log("id foto principal", productoBD);
+        if (!productoBD.foto_principal) {
           console.log("Entramos");
-          productoBD.foto_principal = arrayImagenes[0]; 
+          productoBD.foto_principal = arrayImagenes[0];
         }
         productoBD.fotos_producto = arrayImagenes;
 
@@ -368,6 +368,7 @@ async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
       "Error en catch de desasociarImagenDeProductoConIdImagen";
   }
 }
+
 async function asociarImagenDeProductoConIdImagen(_id, arrayIDs) {
   try {
     var objetoRespuesta = new Object({
@@ -399,6 +400,66 @@ async function asociarImagenDeProductoConIdImagen(_id, arrayIDs) {
       "Error en catch de asociarImagenDeProductoConIdImagen";
   }
 }
+
+async function cambioImagenPrincipalProducto(_id, foto_principal) {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    var productoBD = await Productos.findById(_id);
+    if (!productoBD) {
+      objetoRespuesta.ok = false;
+      objetoRespuesta.msg = "No existe producto con el id proporcionado.";
+      objetoRespuesta.tipo_error = "Elemento no encontrado";
+
+      return objetoRespuesta;
+      
+    }
+
+    var existe =  false;
+    productoBD.fotos_producto.map(data =>
+      {
+
+        if(data._id == foto_principal) existe = true;
+      });
+
+      console.log("Existe -> ", existe);
+      if(existe){
+
+      productoBD.foto_principal = foto_principal;
+      await productoBD.save();
+
+      objetoRespuesta.ok = true;
+      objetoRespuesta.msg = "Imagen principal cambiada correctamente.";
+
+      return objetoRespuesta;
+
+      }else{
+
+        objetoRespuesta.ok = false;
+        objetoRespuesta.msg = "La imagen que deseas agregar como prinicpal debe estar asociada al producto.";
+  
+        return objetoRespuesta;
+    
+
+      }
+  
+  
+    
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch cambioImagenPrincipalProducto " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch cambioImagenPrincipalProducto";
+    return objetoRespuesta;
+  }
+}
+
 module.exports = {
   crearImagen,
   eliminarImagenServidor,
@@ -408,4 +469,5 @@ module.exports = {
   eliminarImagenBDConId,
   desasociarImagenDeProductoConIdImagen,
   asociarImagenDeProductoConIdImagen,
+  cambioImagenPrincipalProducto,
 };
