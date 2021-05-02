@@ -427,74 +427,43 @@ const modificarProducto = async (req, res = response) => {
 
     const {
       id_producto,
-      nombre_producto,
-      descripcion,
-      categoria,
-      precio_normal,
-      precio_descuento,
-      cantidad_productos,
-      colores_hex,
-      tarifa_envio,
-      moneda_producto,
-      tamanios,
+      categoria
     } = req.body;
 
-    console.log("objetoRecibidoActualizar", req.body);
-    console.log("nombre_producto", nombre_producto);
-
-    ///////////////////// VALIDACIONES ///////////////////
-
+    ////Validaciones////
     var arrayCamposValidar = [];
     var arrayIdsValidar = [];
 
-    arrayCamposValidar.push(nombre_producto);
-    arrayCamposValidar.push(categoria);
-    arrayCamposValidar.push(precio_normal);
-    arrayCamposValidar.push(cantidad_productos);
-    arrayCamposValidar.push(tarifa_envio);
-    arrayCamposValidar.push(moneda_producto);
-    arrayCamposValidar.push(tamanios);
-    arrayCamposValidar.push(id_usuario);
+    arrayCamposValidar.push(id_producto);
 
-    if (!Array.isArray(tamanios))
-      return res.json({ ok: false, msg: "Debes enviar un array de tamaños." });
+    var validarCamposG = validarCamposGeneral(1, arrayCamposValidar);
+    if(!validarCamposG) return res.json({ok:false, msg: "Debes enviar el id del producto."});
 
-    arrayIdsValidar.push(categoria);
-    arrayIdsValidar.push(id_usuario);
 
-    if (
-      isValidObjectIdGeneral(arrayIdsValidar.length, arrayIdsValidar) != true
-    ) {
-      return res.json({
-        ok: false,
-        msg: "Debes enviar los ids válidos.",
-      });
+    
+    arrayIdsValidar.push(id_producto);
+    var validarIds= isValidObjectIdGeneral(1, arrayIdsValidar);
+    if(!validarIds) return res.json({ok:false, msg: "Debes enviar id producto válido válido."});
+
+
+    if(categoria){
+
+      arrayCamposValidar=[];
+      arrayCamposValidar.push(categoria);
+  
+      var validarCamposGe = validarCamposGeneral(1, arrayCamposValidar);
+      if(!validarCamposGe) return res.json({ok:false, msg: "Debes enviar el id del producto."});
+
+      arrayIdsValidar=[];
+      arrayIdsValidar.push(categoria);
+
+      var validarIdse= isValidObjectIdGeneral(1, arrayIdsValidar);
+      if(!validarIdse) return res.json({ok:false, msg: "Debes enviar id categoría válido."});
     }
 
-    //##////////////////// FIN VALIDACIONES ////////////////##///
+    var productoActuzado = await actuaizarProductoBD(req.body);
 
-    //////////////////// ACTUALIZANADO PRODUCTO /////////////////
-
-    /**
-     * Creando objeto con datos permitidos a actualizar
-     */
-
-    var objetoProducto = new Object({
-      id_producto: id_producto,
-      nombre_producto: nombre_producto,
-      descripcion: descripcion,
-      categoria: categoria,
-      precio_normal: precio_normal,
-      precio_descuento: precio_descuento,
-      cantidad_productos: cantidad_productos,
-      colores_hex: colores_hex,
-      tarifa_envio: tarifa_envio,
-      moneda_producto: moneda_producto,
-      tamanios: tamanios,
-    });
-
-    var productoActuzado = await actuaizarProductoBD(objetoProducto);
-    console.log("productoActuzado", productoActuzado);
+    return res.json(productoActuzado);
   } catch (error) {
     console.log("Error en catch");
     objetoRespuesta.ok = false;
