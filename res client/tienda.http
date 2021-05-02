@@ -274,21 +274,75 @@ content-type: application/json
 }
 ###
 //Modificar prodicto
-put http://localhost:3000/api/tienda/producto
+put http://localhost:3000/api/tienda/producto/individual/
 content-type: application/json
 
 {
-      "id_producto":"",
-      "nombre_producto":"",
-      "descripcion":"",
-      "categoria":"",
-      "precio_normal":"",
-      "precio_descuento":"",
-      "cantidad_productos":"",
-      "colores_hex":"",
-      "tarifa_envio":"",
-      "moneda_producto":"",
-      "tamanios":""
+      "id_producto":"608cbef96b03cc0f28a4f1fa",
+      "nombre_producto":"Producto actualizado..",
+      "descripcion":"aaaaaaab",
+      "categoria":"6085cba8ac8965069884f067",
+      //"tarifa_envio":""
+      
+    "tamanios": [
+        {
+            "nombre_tamanio": "300 x 300",
+            "precio": 29,
+            "precio_descuento": 28,
+            "colores": [
+                {
+                    "hex": "#FFFF00",
+                    "nombre": "Yellow",
+                    "cantidad": 7
+                },
+                {
+                    "hex": "#00FF00",
+                    "nombre": "Lime",
+                    "cantidad": 3
+                }
+                ,
+                {
+                    "hex": "#800000",
+                    "nombre": "Maroon",
+                    "cantidad": 1
+                }
+            ]
+        },
+                {
+            "nombre_tamanio": "100 x 100",
+            "precio": 20,
+            "colores": [
+                {
+                    "hex": "#800000",
+                    "nombre": "Maroon",
+                    "cantidad": 6
+                },
+                {
+                    "hex": "#00FFFF",
+                    "nombre": "Aqua",
+                    "cantidad": 7
+                }
+            ]
+        },
+         {
+            "nombre_tamanio": "600 x 600",
+            "precio": 50,
+            "precio_descuento": 46,
+
+            "colores": [
+                {
+                    "hex": "#008080",
+                    "nombre": "Teal",
+                    "cantidad": 2
+                },
+                {
+                    "hex": "#FF00FF",
+                    "nombre": "Fuchsia",
+                    "cantidad": 9
+                }
+            ]
+        }
+    ]
 }
 
 

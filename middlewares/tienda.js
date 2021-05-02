@@ -36,19 +36,14 @@ const actuaizarProductoBD = async (objetoProducto) => {
   var objeto = new Object({
     ok: true,
     tipo_error: null,
-    msg: "Se ha creado actualizado el producto",
+    msg: "Se ha actualizado actualizado el producto",
     producto: null,
   });
   try {
-    var objProducto = new Tienda.findById(objetoProducto.id_producto);
-    console.log("Obje pruducto bd", objProducto);
-    var objetoProductoEd = objProducto(objetoProducto);
-    console.log("objetoProductoEd con", objetoProductoEd);
+    var objProducto = await Tienda.findByIdAndUpdate(objetoProducto.id_producto, objetoProducto);
 
-    var productoActuzadoBD = await objetoProductoEd.save();
-    console.log("productoActuzadoBD", productoActuzadoBD);
 
-    objeto.producto = productoActuzadoBD;
+    objeto.producto = objProducto._id;
 
     return objeto;
   } catch (error) {
