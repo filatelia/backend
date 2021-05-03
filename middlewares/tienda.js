@@ -6,6 +6,7 @@ const {
   desasociarImagenDeProductoConIdImagen,
 } = require("./subir_imagen");
 
+
 const crearNuevoProducto = async (objetoProducto) => {
   var objeto = new Object({
     ok: true,
@@ -67,6 +68,9 @@ const listarProductosPorIdCliente = async (id_usuario) => {
     msg: null,
     tipo_error: null,
   });
+  
+
+  
 
   try {
     const productoBD = await Tienda.find({ id_usuario });
@@ -75,14 +79,45 @@ const listarProductosPorIdCliente = async (id_usuario) => {
       return objetoRespuesta;
     }
 
-    objetoRespuesta.msg = productoBD;
+    var arr = [];
+    productoBD.map(data =>
+      {
+        var producto = new Object({
+          _id: null,
+          nombre: true,
+          descripcion: null,
+          categoria: null,
+          stock_total: null,
+        });
+
+         producto._id = data._id;
+         producto.nombre = data.nombre_producto;
+         producto.descripcion = data.descripcion;
+         producto.categoria = data.categoria.nombre_categoria;
+
+         var contador = 0;
+         data.tamanios.map(re => 
+          {
+            re.colores.map(color =>
+              {
+                contador = color.cantidad + contador;
+              });
+          });
+          producto.stock_total = contador;
+
+         arr.push(producto);
+
+      });
+
+
+    objetoRespuesta.msg = arr;
     return objetoRespuesta;
   } catch (error) {
     console.log(
-      "Error en catch de listarProductosPorIdCliente | middelwares tienda"
+      "Error en catch de listarProductosPorIdCliente | middelwares tienda", error
     );
     objetoRespuesta.ok = false;
-    objetoRespuesta.msg = error;
+    objetoRespuesta.msg = ""+ error;
     objetoRespuesta.tipo_error = "Catch.";
 
     return objetoRespuesta;
