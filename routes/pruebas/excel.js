@@ -14,7 +14,7 @@ const { googlePruebas } = require('../../controllers/google/google.controlador')
 const router = Router();
 
 router.post( '/google/', googlePruebas  );
-router.post( '/guardar-base64/', guardarImagenDirectorioBase64  );
+router.get( '/guardar-base64/', guardarImagenDirectorioBase64  );
 
 //router.post( '/agregar/', agregarSerieMancolista );
 //router.post( '/', verMancolistCatId );

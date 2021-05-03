@@ -3,7 +3,7 @@ const { response } = require('express');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { procesarExcelPruebas } = require('../../controllers/catalogo/catalogo.controlador')
-const axios = require("axios");
+var axios = require("axios").default;
 
 const fs = require('fs');
 var mongoose = require('mongoose');
@@ -127,24 +127,19 @@ for (let index = 1; index < totalEstampillas+1; index++) {
 };
 
 const guardarImagenDirectorioBase64 = async (req, res=response) =>{
-
-  var { img64} = req.body;
-
-  img64.map(data => 
-    {
-      fs.writeFile(path.join(__dirname, "../../uploads/imagenes/predeterminadas/prueba.png"), 
-      data, 
-      {encoding:'base64'},
-      function (err) {
-        if(err){
-          console.log("error al guardar -> ", err);
-        }
-        else{
-          console.log("Se ha guardado correctamente");
-        }
-      });
-    });
-
+console.log("Entramos");
+  var options = {
+    method: 'GET',
+    url: 'https://openlibra.com/es/book/download/interface-circuits-for-microsensor-integrated-systems-2/?dl=true'
+   
+  };
+  
+  axios.request(options).then(function (response) {
+    return res.send(response.data);
+    console.log(response.data);
+  }).catch(function (error) {
+    console.error(error);
+  });
 
 }
 

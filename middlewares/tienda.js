@@ -1,5 +1,5 @@
 const Tienda = require("../models/tienda/tienda.modelo");
-
+const Carrito = require("../models/tienda/carrito.modelo");
 const {
   eliminarImagenServidor,
   eliminarImagenBDConId,
@@ -40,8 +40,10 @@ const actuaizarProductoBD = async (objetoProducto) => {
     producto: null,
   });
   try {
-    var objProducto = await Tienda.findByIdAndUpdate(objetoProducto.id_producto, objetoProducto);
-
+    var objProducto = await Tienda.findByIdAndUpdate(
+      objetoProducto.id_producto,
+      objetoProducto
+    );
 
     objeto.producto = objProducto._id;
 
@@ -269,6 +271,98 @@ const eliminarProductoYAsociados = async (_id) => {
   }
 };
 
+const agregarAlCarrito = async (objeto) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    var carrito = new Carrito(objeto);
+    
+    var carritoGuardado = await carrito.save();
+    
+    objetoRespuesta.msg = "Producto agregado correctamente al carrito. Id: "+carritoGuardado._id;
+    return objetoRespuesta;
+    
+
+
+  } catch (error) {
+    console.log("Error en catch " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch agregarAlCarrito";
+    return objetoRespuesta;
+  }
+};
+
+const listarProductosCarritoUsuario = async(_id) =>{
+
+  var objetoRespuesta = new Object({
+    ok: true,
+    msg: null,
+    productos: [],
+    tipo_error: null,
+  });
+
+  try {
+    const productoBD = await Carrito.find( { usuario: _id } );
+    if (productoBD.length == 0) {
+      objetoRespuesta.ok = false;
+      objetoRespuesta.msg = "El id no cuenta con productos asociados al carrito.";
+      objetoRespuesta.tipo_error = "No existe producto";
+      return objetoRespuesta;
+    }
+
+    objetoRespuesta.msg = "Se ha encontrado productos en carrito";
+    objetoRespuesta.productos = productoBD;
+    return objetoRespuesta;
+  } catch (error) {
+    console.log(
+      "Error en catch de listarProductosCarritoUsuario | middelwares tienda"
+    );
+    objetoRespuesta.ok = false;
+    objetoRespuesta.msg = "" + error;
+    objetoRespuesta.tipo_error = "Catch.";
+
+    return objetoRespuesta;
+  }
+
+}
+
+const eliminarProductoCarrito =  async (_id) => {
+  var objetoRespuesta = new Object({
+    ok: true,
+    msg: null,
+    tipo_error: null,
+  });
+
+  try {
+
+    const productoBD = await Carrito.findByIdAndDelete(_id);
+    if (productoBD == null) {
+      objetoRespuesta.msg = "El id no cuenta con productos asociados ac carrito de compras.";
+      return objetoRespuesta;
+    }
+
+    console.log("Producto eliminado de carrito. ", productoBD._id);
+    objetoRespuesta.msg =
+      "Se ha borrado correctamente el producto " + productoBD._id + " del carrito de compras.";
+    return objetoRespuesta;
+  } catch (error) {
+    console.log(
+      "Error en catch de eliminarProductoCarrito | middelwares tienda"
+    );
+    objetoRespuesta.ok = false;
+    objetoRespuesta.msg = "" + error;
+    objetoRespuesta.tipo_error = "Catch.";
+
+    return objetoRespuesta;
+  }
+};
+
+
 module.exports = {
   crearNuevoProducto,
   listarProductosPorIdCliente,
@@ -278,4 +372,7 @@ module.exports = {
   eliminarProductoYAsociados,
   actuaizarProductoBD,
   listarProductosPorIdProducto,
+  agregarAlCarrito,
+  listarProductosCarritoUsuario,
+  eliminarProductoCarrito
 };

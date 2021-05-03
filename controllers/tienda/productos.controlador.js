@@ -12,6 +12,9 @@ const {
   actuaizarProductoBD,
   listarProductosPorIdProducto,
   eliminarProductoYAsociados,
+  agregarAlCarrito,
+  listarProductosCarritoUsuario,
+  eliminarProductoCarrito
 } = require("../../middlewares/tienda");
 const {
   crearNuevaCategoria,
@@ -93,7 +96,6 @@ const crearProducto = async (req, res = response) => {
     }
     console.log(" ⚫ Creando producto nuevo.");
 
-
     ///CREANDO IMAGEN DE PRODUCTO /////
     var imagenes = req.body.fotos_producto;
     req.body.fotos_producto = [];
@@ -137,7 +139,7 @@ const crearProducto = async (req, res = response) => {
     if (nuevoProducto.ok != true)
       return res.json({ ok: false, msg: nuevoProducto });
 
-      console.log("☑ Producto creado correctamente.");
+    console.log("☑ Producto creado correctamente.");
     return res.json({
       ok: true,
       msg: nuevoProducto.msg,
@@ -425,10 +427,7 @@ const modificarProducto = async (req, res = response) => {
       tipo_error: null,
     });
 
-    const {
-      id_producto,
-      categoria
-    } = req.body;
+    const { id_producto, categoria } = req.body;
 
     ////Validaciones////
     var arrayCamposValidar = [];
@@ -437,28 +436,34 @@ const modificarProducto = async (req, res = response) => {
     arrayCamposValidar.push(id_producto);
 
     var validarCamposG = validarCamposGeneral(1, arrayCamposValidar);
-    if(!validarCamposG) return res.json({ok:false, msg: "Debes enviar el id del producto."});
+    if (!validarCamposG)
+      return res.json({ ok: false, msg: "Debes enviar el id del producto." });
 
-
-    
     arrayIdsValidar.push(id_producto);
-    var validarIds= isValidObjectIdGeneral(1, arrayIdsValidar);
-    if(!validarIds) return res.json({ok:false, msg: "Debes enviar id producto válido válido."});
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({
+        ok: false,
+        msg: "Debes enviar id producto válido válido.",
+      });
 
-
-    if(categoria){
-
-      arrayCamposValidar=[];
+    if (categoria) {
+      arrayCamposValidar = [];
       arrayCamposValidar.push(categoria);
-  
-      var validarCamposGe = validarCamposGeneral(1, arrayCamposValidar);
-      if(!validarCamposGe) return res.json({ok:false, msg: "Debes enviar el id del producto."});
 
-      arrayIdsValidar=[];
+      var validarCamposGe = validarCamposGeneral(1, arrayCamposValidar);
+      if (!validarCamposGe)
+        return res.json({ ok: false, msg: "Debes enviar el id del producto." });
+
+      arrayIdsValidar = [];
       arrayIdsValidar.push(categoria);
 
-      var validarIdse= isValidObjectIdGeneral(1, arrayIdsValidar);
-      if(!validarIdse) return res.json({ok:false, msg: "Debes enviar id categoría válido."});
+      var validarIdse = isValidObjectIdGeneral(1, arrayIdsValidar);
+      if (!validarIdse)
+        return res.json({
+          ok: false,
+          msg: "Debes enviar id categoría válido.",
+        });
     }
 
     var productoActuzado = await actuaizarProductoBD(req.body);
@@ -704,6 +709,115 @@ const cambiarImagenPrincipalProductoCtr = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
+const agregarAlCarritoCtr = async (req, res = response) => {
+  console.log("Agregando producto a carrito de compras");
+
+  try {
+    const { producto, usuario, id_tamanio, id_color, cantidad } = req.body;
+
+    var arrayCamposValidar = [];
+    var arrayIdsValidar = [];
+
+    arrayCamposValidar.push(producto);
+    arrayCamposValidar.push(usuario);
+    arrayCamposValidar.push(id_tamanio);
+    arrayCamposValidar.push(id_color);
+    arrayCamposValidar.push(cantidad);
+
+    var validarCamposG = validarCamposGeneral(5, arrayCamposValidar);
+    if (!validarCamposG)
+      return res.json({ ok: false, msg: "Debes enviar los datos necesarios." });
+
+    arrayIdsValidar.push(producto);
+    arrayIdsValidar.push(usuario);
+    arrayIdsValidar.push(id_tamanio);
+    arrayIdsValidar.push(id_color);
+
+    var validarIds = isValidObjectIdGeneral(4, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    var carrito = await agregarAlCarrito(req.body);
+    console.log(" | Producto agregado correctamente al carrito.");
+
+    return res.json(carrito);
+  } catch (error) {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    console.log("Error en catch agregarAlCarritoCtr. " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch agregarAlCarritoCtr. ";
+
+    return res.json(objetoRespuesta);
+  }
+};
+
+const mostrarProductosCarritoCtr = async(req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+    const { idUsuario } = req.params;
+
+    var arrayIdsValidar = [];
+    arrayIdsValidar.push(idUsuario);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    ///Cuando todo sale ok/////
+    var productosBD = await listarProductosCarritoUsuario(idUsuario);
+
+    return res.json(productosBD);
+  } catch (error) {
+    console.log("Error en catch mostrarProductosCarritoCtr", error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch mostrarProductosCarritoCtr";
+    return res.json(objetoRespuesta);
+  }
+}
+
+const quitarProductoCarritoCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+    const { idItemCarrito } = req.params;
+
+    var arrayIdsValidar = [];
+    arrayIdsValidar.push(idItemCarrito);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    ///Cuando todo sale ok/////
+    console.log("");
+    console.log("⚫ Eliminando producto.");
+    var productosBD = await eliminarProductoCarrito(idItemCarrito);
+
+    return res.json(productosBD);
+  } catch (error) {
+    console.log("Error en catch eliminarProductoIdProducto", error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch eliminarProductoIdProducto";
+    return res.json(objetoRespuesta);
+  }
+};
+
+
+
 module.exports = {
   crearProducto,
   crearCategoria,
@@ -721,4 +835,7 @@ module.exports = {
   converirADolarPagarPaypalCtr,
   valorInicialFinalProductoCtr,
   cambiarImagenPrincipalProductoCtr,
+  agregarAlCarritoCtr,
+  mostrarProductosCarritoCtr,
+  quitarProductoCarritoCtr
 };
