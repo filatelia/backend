@@ -24,6 +24,9 @@ const {
   converirADolarPagarPaypalCtr,
   valorInicialFinalProductoCtr,
   cambiarImagenPrincipalProductoCtr,
+  agregarAlCarritoCtr,
+  mostrarProductosCarritoCtr,
+  quitarProductoCarritoCtr
 } = require("../../controllers/tienda/productos.controlador");
 
 
@@ -111,6 +114,17 @@ router.get("/producto/lista-deseos/estado/", [], VerificarEnListaDeseosCtr);
 //
 //
 ///////////////////////////// PAGOS /////////////////////////////
+//
+//
+
+/////// AÑADIR AL CARRITO /////////
+router.post("/pagos/carrito/", [], agregarAlCarritoCtr);
+
+/////// MOSTRAR PRODUCTOS DEL CARRITO POR ID USUARIO /////////
+router.get("/pagos/carrito/:idUsuario", [], mostrarProductosCarritoCtr);
+
+/////// QUITAR PRODUCTO DEL CARRITO /////////
+router.delete("/pagos/carrito/:idItemCarrito", [], quitarProductoCarritoCtr);
 
 //LISTAR TODAS LAS MONEDAS ACEPTADAS POR PAYPAL
 router.get("/pagos/monedas/", [], consultarTodasMonedasPaypalCtr);
