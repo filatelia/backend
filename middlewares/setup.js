@@ -10,29 +10,41 @@ const Usuarios = require("../models/usuario/usuario");
 const bcrypt = require("bcryptjs");
 const TipoEsperadoEstampilla = require("../models/catalogo/tipoEsperadoEstampilla.model");
 const {buscarPaisPorNombre} = require("../middlewares/paises");
-const { verificarCrearTodasMonedas } = require("./moneda")
+const { verificarCrearTodasMonedas } = require("./moneda");
+const { crearTipoPagoPredeterminados } = require("./tipo-pago");
 
 const initial_setup = async () => {
+  console.log("");
+  console.log("");
+  
   console.log(Color.blue("Ejecutando initial setup..."));
+  console.log("");
+
   await verificarYCrearAdmin(); 
+  console.log("");
   await verificarBanderasPaises();
+  console.log("");
   await verificarTipoSolicitudYCrearla();
+  console.log("");
   await VerificarTipoCatalogoYCrarlo();
+  console.log("");
   await verificarEstadoTipoReporte();
+  console.log("");
   await verificarEstadoEsperadoEstampillaYCrearlo();
+  console.log("");
   await verificarCrearTodasMonedas();
+  console.log("");
+  await crearTipoPagoPredeterminados();
+  console.log("");
+
 };
 const verificarYCrearAdmin = async () => {
-  console.log("Verificando existencia de usuarios");
+  console.log("- Verificando existencia de usuarios");
   var usuarioEnBD = await Usuarios.find();
   if (usuarioEnBD.length == 0) {
-    console.log("No existen usurios.");
-    console.log("Creando usurio Super Admin...");
+    console.log(" | No existen usurios.");
+    console.log("  | Creando usurio Super Admin...");
   
-  
-      
-      var pais = await buscarPaisPorNombre("Peru");
-      if(!pais)throw {msg:'pais no encontrado',ok:false}
       const usuario_ = new Usuarios();
   
       usuario_.roleuser = "admin";
@@ -50,26 +62,27 @@ const verificarYCrearAdmin = async () => {
       var usuarioGuardado = await usuario_.save();
       
       if (usuarioGuardado._id) {
-        console.log("Se ha creado el usuario correctamente");
+        console.log("   | Se ha creado el usuario correctamente");
         
       }
     
   }
   else{
-    console.log("Usuarios en BD OK.");
+    console.log(" | Usuarios en BD OK.");
 
   }
 
 }
 
 const verificarBanderasPaises = async () => {
-  console.log("Verificando las banderas de los paises");
+  console.log("- Verificando Paises y Banderas en BD.");
 
   //se verifica en la base de datos que existan paises, sino se consultan y se guardan.
   const existePais = await Paises.find();
 
   if (existePais.length == 0) {
-    console.log("*No existen paises, crenado paises");
+    console.log(" | No existen Paises ni Banderas en BD.");
+    console.log("  | Creando paises en BD.");
 
     //servicio para consultar informacion de los mpaises y liego guardarla
     const datosPaises = await axios({
@@ -93,17 +106,17 @@ const verificarBanderasPaises = async () => {
 
     //se verifica que todo haya salido bien en la descarga de las imagen al servidor
     if (resBan.estado == 200) {
-      console.log("Se han creado : ", resBan.banderas, " banderas");
+      console.log("    | Creando Banderas en BD.");
+      console.log("    | Se han creado : ", resBan.banderas, " Paises y Banderas.");
     } else {
       console.log("error al crear los paieses: ", resBan);
     }
 
     const paisesCreados = await crearPaisesAutom(upaises);
-    console.log("creando pasises: ", paisesCreados);
 
-    console.log("Paises creados: ", paisesCreados.total);
   } else {
-    console.log("*Paises OK");
+    console.log(" | Paises Y Banderas en BD OK.");
+
   }
 };
 const verificarTipoSolicitudYCrearla = async () => {
