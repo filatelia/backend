@@ -7,3 +7,27 @@ content-type: application/json
 "abreviacion": "ACE2",
 "descripcion" : "El catalogo es público para todos"
 }
+
+
+###
+
+post http://localhost:3000/api/ventas/datos-envio
+content-type: application/json
+
+{
+    "usuario": "60774b251e87731fecedabba",
+    "telefono": "+573147733106",
+    "direccion_completa": "Cra 7 # 10-72, Popayan Cauca. Colombia.",
+    "otras_indicaciones": "Casa 12, esquinera.",
+    "codigo_postal": "000057"
+}
+
+
+###
+
+get http://localhost:3000/api/ventas/datos-envio/60774b251e87731fecedabba
+content-type: application/json
+
+{
+
+}

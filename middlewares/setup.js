@@ -12,6 +12,7 @@ const TipoEsperadoEstampilla = require("../models/catalogo/tipoEsperadoEstampill
 const {buscarPaisPorNombre} = require("../middlewares/paises");
 const { verificarCrearTodasMonedas } = require("./moneda");
 const { crearTipoPagoPredeterminados } = require("./tipo-pago");
+const { verificarCrearEstadosVenta } = require("./ventas");
 
 const initial_setup = async () => {
   console.log("");
@@ -36,6 +37,9 @@ const initial_setup = async () => {
   console.log("");
   await crearTipoPagoPredeterminados();
   console.log("");
+  await verificarCrearEstadosVenta();
+  console.log("");
+
 
 };
 const verificarYCrearAdmin = async () => {

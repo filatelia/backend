@@ -220,7 +220,7 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
           fs.mkdirSync(path.join(__dirname, "../uploads/imagenes/productos"));
         }
 
-        var objetoImagen = idImagen;
+        var objetoImagen = idImagen.split(",");
         var nombreImagen = uuidv4();
 
         urlImagenServidor = path.join(
@@ -232,7 +232,7 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
         urlImagenBD = "imagenes/productos/";
         urlImagenBD = urlImagenBD + nombreImagen + ".png";
         await fsp
-          .writeFile(urlImagenServidor, objetoImagen, { encoding: "base64" })
+          .writeFile(urlImagenServidor, objetoImagen[1], { encoding: "base64" })
           .then((res) => {
             objetoRespuesta.idImagenBD = null;
             objetoRespuesta.urlImagenBD = urlImagenBD;
