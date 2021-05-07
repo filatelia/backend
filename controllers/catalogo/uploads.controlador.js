@@ -1,4 +1,4 @@
-const { Console } = require("console");
+
 const { response } = require("express");
 const path = require("path");
 const Imagenes = require("../../models/catalogo/uploads");

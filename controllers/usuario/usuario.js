@@ -7,7 +7,7 @@ const {
   eliminarImagenServidor,
   crearImagen,
   retornarDatosJWT,
-} = require("../../middlewares/index.middle");
+} = require("../../funciones/index.middle");
 const { isValidObjectId } = require("mongoose");
 
 const getUsuario = async (req, res) => {

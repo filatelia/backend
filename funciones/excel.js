@@ -1,18 +1,18 @@
 var excel = require("xlsx");
 const Tema = require("../models/catalogo/temas");
 const { response } = require("express");
-const Pais = require("../models/catalogo/paises");
+
 const Img = require("../models/catalogo/uploads");
-const Catalogo = require("../models/catalogo/catalogo");
+
 var colors = require("colors");
 
 const verificarTemaYCrearlo = async (req, res = response, next) => {
   try {
     const exc = req.files;
     const datos = procesarExcel(exc);
- //   console.log("datios:", datos);
+    //   console.log("datios:", datos);
 
- var contador = 0;
+    var contador = 0;
     for (let index = 0; index < datos.length; index++) {
       var excel_sub = new Object();
       var tema_guardar = new Object();
@@ -22,7 +22,9 @@ const verificarTemaYCrearlo = async (req, res = response, next) => {
       const tema = await Tema.findOne({ name });
 
       if (tema == null) {
-        console.log(colors.blue(">No existe tema " + name + ", creando tema..."));
+        console.log(
+          colors.blue(">No existe tema " + name + ", creando tema...")
+        );
         try {
           //buscando temas para guardar
           const UrlImgBD = await buscandoUrlImgTema(name);
@@ -54,9 +56,7 @@ const verificarTemaYCrearlo = async (req, res = response, next) => {
   }
 };
 
-const asignarImagenes = async (req, res, netx) => {
- 
-};
+const asignarImagenes = async (req, res, netx) => {};
 
 //funciones
 function procesarExcel(exc) {
@@ -66,11 +66,11 @@ function procesarExcel(exc) {
     const nombreHoja = ex.SheetNames;
     let datos = excel.utils.sheet_to_json(ex.Sheets[nombreHoja[0]]);
     return datos;
-
   } catch (e) {
     console.log("error: ", e);
   }
 }
+
 async function buscandoUrlImgCat(name) {
   try {
     const name_buscar = name.toLowerCase();
@@ -93,17 +93,20 @@ async function buscandoUrlImgCat(name) {
     );
   }
 }
+
 async function buscandoUrlImgTema(name) {
   try {
     const name_buscar = name.toLowerCase();
     imagenExistente = await Img.findOne({ name_buscar });
 
     if (imagenExistente == null) {
-      console.log( colors.blue(
-        "No se encontrtó imagen para el tema '" +
-          name +
-          "', pro lo tanto se le asigna una imagen predeterminada"
-      ));
+      console.log(
+        colors.blue(
+          "No se encontrtó imagen para el tema '" +
+            name +
+            "', pro lo tanto se le asigna una imagen predeterminada"
+        )
+      );
       const imagen_url = "/uploads/imagenes/predeterminadas/temas.png";
       return imagen_url;
     }
@@ -117,11 +120,8 @@ async function buscandoUrlImgTema(name) {
   }
 }
 
-
 module.exports = {
-
-
   asignarImagenes,
   verificarTemaYCrearlo,
-  buscandoUrlImgCat
+  buscandoUrlImgCat,
 };

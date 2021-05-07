@@ -1,7 +1,5 @@
 const nodemailer = require("nodemailer");
 const { response } = require("express");
-const path = require("path");
-const { consultarUsuariosAdmin } = require("./usuario");
 const Usuario = require("../models/usuario/usuario");
 
 function transporter() {
@@ -290,8 +288,6 @@ async function mensajeReporte(
   // Preview only available when sending through an Ethereal account
   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
-
-
 async function mensajeReporteAdmin(
   reporte,
   cuerpo,

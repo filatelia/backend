@@ -1,6 +1,6 @@
 const { response } = require("express");
-const { crearDatosEnvio, mostrarDatosEnvioIdUsuario } = require("../../middlewares/ventas");
-const { validarCamposGeneral, isValidObjectIdGeneral } = require('../../middlewares/validar-campos');
+const { crearDatosEnvio, mostrarDatosEnvioIdUsuario } = require("../../funciones/ventas");
+const { validarCamposGeneral, isValidObjectIdGeneral } = require('../../funciones/validar-campos');
 
 const crearVenta = async (req, res = response) => {};
 

@@ -13,11 +13,11 @@ const VariantesErrores_ = require("../../models/catalogo/variantes-errores.model
 const {
   agregarVariantesErroresEstampilla,
 } = require("../../controllers/catalogo/variantes-errores.controlador");
-const { crearSegundaSolicitud } = require("../../middlewares/solicitudes");
+const { crearSegundaSolicitud } = require("../../funciones/solicitudes");
 const {
   validarCamposGeneral,
   isValidObjectIdGeneral,
-} = require("../../middlewares/validar-campos");
+} = require("../../funciones/validar-campos");
 const { googleSheetFotoEstampilla, googleSheetVariantesErrores } = require("../google/google.controlador");
 const crearEstampillaIndividual = async (req, res = response) => {
   try {
