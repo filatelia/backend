@@ -1,6 +1,4 @@
-const fs = require("fs");
-const Path = require("path");
-const axios = require("axios");
+
 const Paises = require("../models/catalogo/paises");
 
 const crearPaisesAutom = async (upaises) => {

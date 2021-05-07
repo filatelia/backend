@@ -1,10 +1,10 @@
 const { response } = require("express");
 const { agregarProductoListaDeseos,
     removerProductoListaDeseos,
-    validarExistenciaEnListaDeseos  } = require("../../middlewares/lista-deseos");
-const { consultarDatosConId } = require("../../middlewares/usuario");
-const { isValidObjectIdGeneral, validarCamposGeneral } = require("../../middlewares/validar-campos");
-const { listarProductosPorIdProducto } = require("../../middlewares/tienda"); 
+    validarExistenciaEnListaDeseos  } = require("../../funciones/lista-deseos");
+const { consultarDatosConId } = require("../../funciones/usuario");
+const { isValidObjectIdGeneral, validarCamposGeneral } = require("../../funciones/validar-campos");
+const { listarProductosPorIdProducto } = require("../../funciones/tienda"); 
 const agregarProductoListaDeseosCtr = async (req, res= response) => {
 
     try {

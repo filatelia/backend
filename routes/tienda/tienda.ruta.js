@@ -3,10 +3,11 @@
  */
 
 const { Router } = require("express");
-const { agregarProductoListaDeseosCtr,
+const {
+  agregarProductoListaDeseosCtr,
   removerProductoListaDeseostr,
-  VerificarEnListaDeseosCtr
- } = require("../../controllers/tienda/lista-deseos.controlador");
+  VerificarEnListaDeseosCtr,
+} = require("../../controllers/tienda/lista-deseos.controlador");
 const {
   listarProductosPorIdUsuario,
   listarTodosProductos,
@@ -26,9 +27,8 @@ const {
   cambiarImagenPrincipalProductoCtr,
   agregarAlCarritoCtr,
   mostrarProductosCarritoCtr,
-  quitarProductoCarritoCtr
+  quitarProductoCarritoCtr,
 } = require("../../controllers/tienda/productos.controlador");
-
 
 const router = Router();
 //
@@ -58,13 +58,17 @@ router.put("/producto/individual", [], modificarProducto);
 
 //10 //MOSTRAR PRODUCTO POR ID PRODUCTO///////
 router.get(
-    "/producto/individual/:idProducto",
-    [],
-    mostrarProductoPorIdProducto
-  );
-  
+  "/producto/individual/:idProducto",
+  [],
+  mostrarProductoPorIdProducto
+);
+
 ///6//ELIMINAR PRODUCTO //////
-router.delete("/producto/individual/:idProducto", [], eliminarProductoIdProducto);
+router.delete(
+  "/producto/individual/:idProducto",
+  [],
+  eliminarProductoIdProducto
+);
 
 //7//LISTAR PRODUCTOS POR USUARIO ////
 router.get("/producto/:idUsuario", [], listarProductosPorIdUsuario);
@@ -75,13 +79,11 @@ router.get("/producto/", [], listarTodosProductos);
 //9//LISTAR TODOS LOS PRODUCTOS POR CATEGORIA ////
 router.get("/productos-cat/:idCat", [], listarProductosIdCategoria);
 
-
 //11//ELIMINAR IMAGEN DE UN PRODUCTO ////
 router.delete("/producto/imagen", [], eliminarFotosProducto);
 
 //14 ///// CAMBIAR IMAGEN PRINCIPAL DEL PRODUCTO ////////
 router.put("/producto/imagen/", [], cambiarImagenPrincipalProductoCtr);
-
 
 //12//AGREGAR IMAGEN DE UN PRODUCTO ////
 router.post("/producto/imagen/", [], agregarFotosProducto);
@@ -90,7 +92,6 @@ module.exports = router;
 
 //13 ////// VALOR MÍNIMO - VALOR MÁXIMO
 router.get("/producto/valores/:idProducto", [], valorInicialFinalProductoCtr);
-
 
 //
 //
@@ -103,9 +104,12 @@ router.post("/producto/lista-deseos/", [], agregarProductoListaDeseosCtr);
 //15  LISTAR TODOS LOS PRODUCTOS EN LISTA DE DESEOS///
 router.get("/producto/lista-deseos/", [], valorInicialFinalProductoCtr);
 
-
 //16  QUITAR PRODUCTO DE LISTA DE DESEOS///
-router.delete("/producto/lista-deseos/:idListaDeseos", [], removerProductoListaDeseostr);
+router.delete(
+  "/producto/lista-deseos/:idListaDeseos",
+  [],
+  removerProductoListaDeseostr
+);
 
 //17  VERIFICAR PRODUCTO A LISTA DE DESEOS///
 router.get("/producto/lista-deseos/estado/", [], VerificarEnListaDeseosCtr);

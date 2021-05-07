@@ -1,21 +1,21 @@
 const { response } = require("express");
-const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
-const { consultarReporteConIdReporte, consultarTodosMensajesCliente, consultarTodosTiposEstadoReporte, consultarMensajesConIdRoom, consultarMensajeConIdClienteIdMensaje } = require("../../middlewares/reportes");
+const { retornarDatosJWT } = require("../../funciones/validar-jwt");
+const { consultarReporteConIdReporte, consultarTodosMensajesCliente, consultarTodosTiposEstadoReporte, consultarMensajesConIdRoom, consultarMensajeConIdClienteIdMensaje } = require("../../funciones/reportes");
 
 const {
   consultarDatosConCorreo,
   consultarDatosConApodo,
   consultarDatosConId,
-} = require("../../middlewares/usuario");
+} = require("../../funciones/usuario");
 const {
   consultarTipoEstadoReporteConAbreviacion,
   consultarTipoEstadoReporteConId,
-} = require("../../middlewares/reportes");
+} = require("../../funciones/reportes");
 const Reportes = require("../../models/moderacion/reportes.modelo");
 const {
   enviarCorreosReporte,
   enviarCorreosReporteAnalisis,
-} = require("../../middlewares/enviar_correos");
+} = require("../../funciones/enviar_correos");
 
 const crearReporte = async (req, res = response) => {
   const { apodo_us_reportado, razones_reporte } = req.body;
@@ -271,11 +271,11 @@ const todosMensajesCliente = async(req, res) =>{
   }); 
 
 }
-const ignorarReporte = (module.exports = {
+module.exports = {
   crearReporte,
   mostrarTodosReportes,
   cambiarEstadoReporte,
   mostrarTodosReportesSinAnalizar,
   todosTipoEstadoReporte,
   todosMensajesCliente
-});
+};

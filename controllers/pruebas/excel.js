@@ -2,7 +2,7 @@ const Excel = require('exceljs');
 const { response } = require('express');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { procesarExcelPruebas } = require('../../controllers/catalogo/catalogo.controlador')
+
 var axios = require("axios").default;
 
 const fs = require('fs');

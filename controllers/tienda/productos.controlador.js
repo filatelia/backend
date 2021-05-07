@@ -2,7 +2,7 @@ const { response } = require("express");
 const {
   validarCamposGeneral,
   isValidObjectIdGeneral,
-} = require("../../middlewares/validar-campos");
+} = require("../../funciones/validar-campos");
 const {
   crearNuevoProducto,
   listarProductosPorIdCliente,
@@ -14,23 +14,23 @@ const {
   eliminarProductoYAsociados,
   agregarAlCarrito,
   listarProductosCarritoUsuario,
-  eliminarProductoCarrito
-} = require("../../middlewares/tienda");
+  eliminarProductoCarrito,
+} = require("../../funciones/tienda");
 const {
   crearNuevaCategoria,
   consultarTodasCategorias,
   consultarCategoriaIdCategoria,
-} = require("../../middlewares/categoria");
+} = require("../../funciones/categoria");
 const {
   crearImagenDirectorio,
   guadarImagenEnBD,
   asociarImagenDeProductoConIdImagen,
   cambioImagenPrincipalProducto,
-} = require("../../middlewares/subir_imagen");
+} = require("../../funciones/subir_imagen");
 const {
   todasMonedasPaypalMD,
   consultarConvertirMonedaTiempoReal,
-} = require("../../middlewares/paypal");
+} = require("../../funciones/paypal");
 
 const crearProducto = async (req, res = response) => {
   try {
@@ -758,7 +758,7 @@ const agregarAlCarritoCtr = async (req, res = response) => {
   }
 };
 
-const mostrarProductosCarritoCtr = async(req, res = response) => {
+const mostrarProductosCarritoCtr = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
       ok: true,
@@ -784,7 +784,7 @@ const mostrarProductosCarritoCtr = async(req, res = response) => {
     objetoRespuesta.msg = "Error en catch mostrarProductosCarritoCtr";
     return res.json(objetoRespuesta);
   }
-}
+};
 
 const quitarProductoCarritoCtr = async (req, res = response) => {
   try {
@@ -816,8 +816,6 @@ const quitarProductoCarritoCtr = async (req, res = response) => {
   }
 };
 
-
-
 module.exports = {
   crearProducto,
   crearCategoria,
@@ -837,5 +835,5 @@ module.exports = {
   cambiarImagenPrincipalProductoCtr,
   agregarAlCarritoCtr,
   mostrarProductosCarritoCtr,
-  quitarProductoCarritoCtr
+  quitarProductoCarritoCtr,
 };

@@ -4,9 +4,9 @@ const MancolistCat = require("../../models/catalogo/mancolista_categorizada.mode
 const Usuario = require("../../models/usuario/usuario");
 const TipoEstadoEsperadoEstampilla = require("../../models/catalogo/tipoEsperadoEstampilla.model");
 var mongo = require("mongoose");
-const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
-const { consultarDatosConCorreo } = require("../../middlewares/usuario");
-const funcionesValidaciones = require("../../middlewares/validar-campos"); 
+const { retornarDatosJWT } = require("../../funciones/validar-jwt");
+const { consultarDatosConCorreo } = require("../../funciones/usuario");
+const funcionesValidaciones = require("../../funciones/validar-campos"); 
 
 const { ObjectId } = require("mongoose").Types;
 const { isValidObjectId } = require("mongoose");

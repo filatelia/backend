@@ -2,7 +2,7 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const Usuario = require('../../models/usuario/usuario');
 const { generarJWT, generarJWTMes } = require('../../helpers/jwt');
-const { retornarDatosJWT  } = require('../../middlewares/validar-jwt');
+const { retornarDatosJWT  } = require('../../funciones/validar-jwt');
 
 const login = async( req, res = response ) => {
 
