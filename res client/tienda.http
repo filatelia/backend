@@ -45,7 +45,8 @@ content-type: application/json
       "id_usuario": "60774b251e87731fecedabba",
       "nombre_producto": "Producto 23",
       "descripcion": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
-      "tarifa_envio": 12,
+      "tarifa_envio_lima": 12,
+      "tarifa_envio_provincias": 20,
       "categoria": "6085cb8fac8965069884f066",
 
 
@@ -238,8 +239,9 @@ content-type: application/json
 
 ###
 //Listar todos los productos
-get http://localhost:3000/api/tienda/producto?usuario=60774b251e87731fecedabba
+get http://localhost:3000/api/tienda/producto
 content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyIsImVtYWlsIjoiYWxleGlzMTFkaW1lbkBnbWFpbC5jb20iLCJfaWQiOiI2MDc3NGIyNTFlODc3MzFmZWNlZGFiYmEiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYyMDUwNDgyOSwiZXhwIjoxNjIwNTkxMjI5fQ.VGRJ3WrtqlbGFZv3c8Qe8cEmontZVABvYBGWmqgZXlI
 
 {
 
@@ -247,9 +249,10 @@ content-type: application/json
 
 
 ###
-//Listar  los productos con id cat
-get http://localhost:3000/api/tienda/productos-cat/?idCat=6085cba8ac8965069884f067&usuario=60774b251e87731fecedabba
+//Listar  los productos con id cat y usuario logado
+get http://localhost:3000/api/tienda/productos-cat/6085cba8ac8965069884f067
 content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyIsImVtYWlsIjoiYWxleGlzMTFkaW1lbkBnbWFpbC5jb20iLCJfaWQiOiI2MDc3NGIyNTFlODc3MzFmZWNlZGFiYmEiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYyMDUwNDgyOSwiZXhwIjoxNjIwNTkxMjI5fQ.VGRJ3WrtqlbGFZv3c8Qe8cEmontZVABvYBGWmqgZXlI
 
 {
    

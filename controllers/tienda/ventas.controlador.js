@@ -1,4 +1,4 @@
-const { response } = require("express");
+const { response, json } = require("express");
 const {
   crearDatosEnvio,
   mostrarDatosEnvioIdUsuario,
@@ -9,7 +9,13 @@ const {
   isValidObjectIdGeneral,
 } = require("../../funciones/validar-campos");
 const Color = require("colors");
+const { listarProductosPorIdProducto } = require("../../funciones/tienda");
 const crearVenta = async (req, res = response) => {
+  function ExceptionUsuario(mensaje) {
+    this.mensaje = mensaje;
+    this.nombre = "ExceptionUsuario";
+ }
+ 
   var objetoRespuesta = new Object({
     ok: true,
     msg: null,
@@ -18,10 +24,11 @@ const crearVenta = async (req, res = response) => {
 
   const { comprador, productos } = req.body;
   console.log("productos", productos.length);
-  if(!productos || !Array.isArray(productos) || productos.length == 0) {
-    objetoRespuesta.ok = false,
-    objetoRespuesta.msg = "Error en los datos recibidos."
-    objetoRespuesta.tipo_error = "Debes enviar un producto y debe ser un array.";
+  if (!productos || !Array.isArray(productos) || productos.length == 0) {
+    (objetoRespuesta.ok = false),
+      (objetoRespuesta.msg = "Error en los datos recibidos.");
+    objetoRespuesta.tipo_error =
+      "Debes enviar un producto y debe ser un array.";
 
     return res.json(objetoRespuesta);
   }
@@ -30,19 +37,59 @@ const crearVenta = async (req, res = response) => {
     var datosEnvioBD = await mostrarDatosEnvioIdUsuario(comprador);
     if (!datosEnvioBD.ok) return res.json(datosEnvioBD);
 
+    /// Consultando datos producto ///
+    for (let index = 0; index < productos.length; index++) {
+      const element = productos[index];
+
+      var productoBD = await listarProductosPorIdProducto(element.producto);
+      if (!productoBD.ok) {
+        throw productoBD.msg;
+        
+      }
+      var contadorTamanios= 0;
+
+      productoBD.msg.tamanios.map((tamanios) => {
+
+        if (tamanios._id == element.id_tamanio) {
+          var contadorColor = 0;
+          tamanios.colores.map((color) => {
+            console.log("color.id", color.id);
+            console.log("element.id_color", element.id_color);
+            
+            if (color.id == element.id_color) {
+              if (element.cantidad > color.cantidad) {
+                                 
+                  throw  "La cantidad que deseas comprar excede el stock actual.";
+                   
+              }
+            } else {
+              contadorColor = contadorColor + 1;
+            }
+          });
+
+          if (contadorColor == tamanios.length) {
+            
+           throw "El Color enviado no existe en tamaño proporcionado, actualiza la página por favor.";
+          }
+        }else{
+          contadorTamanios =  contadorTamanios +1 ;
+
+        }
+        
+      });
+
+      if (contadorTamanios == productoBD.msg.tamanios.length) {
+        throw "No existe el tamaño que asignaste al producto."
+      }
+    }
+
     //Asignando id datos de envío
     req.body.datos_envio = datosEnvioBD.datos_envio._id;
 
-    /// Consultando datos producto ///
-
-
-
-
-    var nuevaVenta = await crearNuevaVenta(req.body);
+    var nuevaVenta = ""; //await crearNuevaVenta(req.body);
 
     return res.json(nuevaVenta);
   } catch (error) {
-   
     console.log(
       Color.red(
         "Error en catch de controlador ventas -> crearVenta, descipción del error: " +
@@ -51,7 +98,7 @@ const crearVenta = async (req, res = response) => {
     );
     objetoRespuesta.ok = false;
     objetoRespuesta.tipo_error = "Descripción del error : " + error;
-    objetoRespuesta.msg = "Error de validación al crear la venta.";
+    objetoRespuesta.msg = "Error al crear la venta.";
 
     return res.json(objetoRespuesta);
   }

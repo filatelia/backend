@@ -17,7 +17,6 @@ const ventasSchema = Schema(
 
     productos: [
       {
-        
 
         producto: {
           type: Schema.Types.ObjectId,

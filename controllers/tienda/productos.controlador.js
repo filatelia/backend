@@ -31,6 +31,7 @@ const {
   todasMonedasPaypalMD,
   consultarConvertirMonedaTiempoReal,
 } = require("../../funciones/paypal");
+const { retornarIdClienteConJWT } = require("../../funciones/validar-jwt");
 
 const crearProducto = async (req, res = response) => {
   try {
@@ -383,8 +384,15 @@ const listarTodosProductos = async (req, res = response) => {
       msg: null,
       tipo_error: null,
     });
+    var usuario = null;
 
-    const {usuario} =req.query; 
+    // Leer el Token
+    const token = req.header('x-access-token');
+    if(token){
+      usuario = retornarIdClienteConJWT(token);
+        
+    }
+   
     ///Cuando todo sale ok/////
     var productosBD = await listarTodosProductosBD(usuario);
 
@@ -405,8 +413,15 @@ const listarProductosIdCategoria = async (req, res = response) => {
       msg: null,
       tipo_error: null,
     });
+    const { idCat} = req.params;
+    var usuario = null;
 
-    const { idCat, usuario } = req.query;
+    // Leer el Token
+    const token = req.header('x-access-token');
+    if(token){
+      usuario = retornarIdClienteConJWT(token);
+        
+    }
 
     ///Cuando todo sale ok/////
     var productosBD = await listarTodosProductosBDPorIdCategoria(idCat, usuario);
