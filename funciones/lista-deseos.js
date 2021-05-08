@@ -111,8 +111,31 @@ return objetoRespuesta;
  
  
 }
+async function listarTodosProductosListaDeseos(usuario) {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    return  await ListaDeseos.find( { usuario } );
+
+  } catch (error) {
+    console.log("Error en catch "+error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch, ver tipo error ";
+
+    return objetoRespuesta;
+  }
+ 
+  
+  
+}
 module.exports = {
   agregarProductoListaDeseos,
   removerProductoListaDeseos,
-  validarExistenciaEnListaDeseos
+  validarExistenciaEnListaDeseos,
+  listarTodosProductosListaDeseos
 };
