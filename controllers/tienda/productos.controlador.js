@@ -384,8 +384,9 @@ const listarTodosProductos = async (req, res = response) => {
       tipo_error: null,
     });
 
+    const {usuario} =req.query; 
     ///Cuando todo sale ok/////
-    var productosBD = await listarTodosProductosBD();
+    var productosBD = await listarTodosProductosBD(usuario);
 
     return res.json(productosBD);
   } catch (error) {
@@ -393,6 +394,7 @@ const listarTodosProductos = async (req, res = response) => {
     objetoRespuesta.ok = false;
     objetoRespuesta.tipo_error = error;
     objetoRespuesta.msg = "Error en catch";
+    return res.json(objetoRespuesta);
   }
 };
 
@@ -404,10 +406,10 @@ const listarProductosIdCategoria = async (req, res = response) => {
       tipo_error: null,
     });
 
-    const { idCat } = req.params;
+    const { idCat, usuario } = req.query;
 
     ///Cuando todo sale ok/////
-    var productosBD = await listarTodosProductosBDPorIdCategoria(idCat);
+    var productosBD = await listarTodosProductosBDPorIdCategoria(idCat, usuario);
 
     return res.json(productosBD);
   } catch (error) {

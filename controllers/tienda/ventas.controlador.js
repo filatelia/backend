@@ -1,22 +1,73 @@
 const { response } = require("express");
-const { crearDatosEnvio, mostrarDatosEnvioIdUsuario } = require("../../funciones/ventas");
-const { validarCamposGeneral, isValidObjectIdGeneral } = require('../../funciones/validar-campos');
+const {
+  crearDatosEnvio,
+  mostrarDatosEnvioIdUsuario,
+  crearNuevaVenta,
+} = require("../../funciones/ventas");
+const {
+  validarCamposGeneral,
+  isValidObjectIdGeneral,
+} = require("../../funciones/validar-campos");
+const Color = require("colors");
+const crearVenta = async (req, res = response) => {
+  var objetoRespuesta = new Object({
+    ok: true,
+    msg: null,
+    tipo_error: null,
+  });
 
-const crearVenta = async (req, res = response) => {};
+  const { comprador, productos } = req.body;
+  console.log("productos", productos.length);
+  if(!productos || !Array.isArray(productos) || productos.length == 0) {
+    objetoRespuesta.ok = false,
+    objetoRespuesta.msg = "Error en los datos recibidos."
+    objetoRespuesta.tipo_error = "Debes enviar un producto y debe ser un array.";
+
+    return res.json(objetoRespuesta);
+  }
+  try {
+    /////Consultando datos de envio////
+    var datosEnvioBD = await mostrarDatosEnvioIdUsuario(comprador);
+    if (!datosEnvioBD.ok) return res.json(datosEnvioBD);
+
+    //Asignando id datos de envío
+    req.body.datos_envio = datosEnvioBD.datos_envio._id;
+
+    /// Consultando datos producto ///
+
+
+
+
+    var nuevaVenta = await crearNuevaVenta(req.body);
+
+    return res.json(nuevaVenta);
+  } catch (error) {
+   
+    console.log(
+      Color.red(
+        "Error en catch de controlador ventas -> crearVenta, descipción del error: " +
+          error
+      )
+    );
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "Descripción del error : " + error;
+    objetoRespuesta.msg = "Error de validación al crear la venta.";
+
+    return res.json(objetoRespuesta);
+  }
+};
 
 const crearDatosEnvioCtr = async (req, res = response) => {
   console.log("Creando datos de envío");
 
-  const { 
-      usuario,
-      telefono,
-      direccion_completa,
-      otras_indicaciones
-    
-    } = req.body;
+  const {
+    usuario,
+    telefono,
+    direccion_completa,
+    otras_indicaciones,
+  } = req.body;
 
   try {
-
     var arrayCamposValidar = [];
     var arrayIdsValidar = [];
 
@@ -26,17 +77,16 @@ const crearDatosEnvioCtr = async (req, res = response) => {
     arrayCamposValidar.push(otras_indicaciones);
 
     var validarCamposG = validarCamposGeneral(4, arrayCamposValidar);
-    if(!validarCamposG) return res.json({ok:false, msg: "Debes enviar los datos necesarios."});
+    if (!validarCamposG)
+      return res.json({ ok: false, msg: "Debes enviar los datos necesarios." });
 
     arrayIdsValidar.push(usuario);
-    var validarIds= isValidObjectIdGeneral(1, arrayIdsValidar);
-    if(!validarIds) return res.json({ok:false, msg: "Debes enviar id usuario válido."});
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar id usuario válido." });
 
     var datosEnvioCreados = await crearDatosEnvio(req.body);
     return res.json(datosEnvioCreados);
-
-    
-
   } catch (error) {
     var objetoRespuesta = new Object({
       ok: true,
@@ -48,12 +98,12 @@ const crearDatosEnvioCtr = async (req, res = response) => {
     objetoRespuesta.ok = false;
     objetoRespuesta.tipo_error = "" + error;
     objetoRespuesta.msg = "Error en catch crearDatosEnvioCtr";
-    
+
     return res.json(objetoRespuesta);
   }
 };
 
-const mostrarDatosEnvioCtr = async (req, res = response) =>{
+const mostrarDatosEnvioCtr = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
       ok: true,
@@ -79,9 +129,9 @@ const mostrarDatosEnvioCtr = async (req, res = response) =>{
     objetoRespuesta.msg = "Error en catch mostrarDatosEnvioCtr";
     return res.json(objetoRespuesta);
   }
-}
+};
 module.exports = {
   crearVenta,
   crearDatosEnvioCtr,
-  mostrarDatosEnvioCtr
+  mostrarDatosEnvioCtr,
 };

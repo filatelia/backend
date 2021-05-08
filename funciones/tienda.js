@@ -5,7 +5,7 @@ const {
   eliminarImagenBDConId,
   desasociarImagenDeProductoConIdImagen,
 } = require("./subir_imagen");
-
+const { validarExistenciaEnListaDeseos } = require("./lista-deseos");
 
 const crearNuevoProducto = async (objetoProducto) => {
   var objeto = new Object({
@@ -68,9 +68,6 @@ const listarProductosPorIdCliente = async (id_usuario) => {
     msg: null,
     tipo_error: null,
   });
-  
-
-  
 
   try {
     const productoBD = await Tienda.find({ id_usuario });
@@ -80,44 +77,40 @@ const listarProductosPorIdCliente = async (id_usuario) => {
     }
 
     var arr = [];
-    productoBD.map(data =>
-      {
-        var producto = new Object({
-          _id: null,
-          nombre: true,
-          descripcion: null,
-          categoria: null,
-          stock_total: null,
-        });
-
-         producto._id = data._id;
-         producto.nombre = data.nombre_producto;
-         producto.descripcion = data.descripcion;
-         producto.categoria = data.categoria.nombre_categoria;
-
-         var contador = 0;
-         data.tamanios.map(re => 
-          {
-            re.colores.map(color =>
-              {
-                contador = color.cantidad + contador;
-              });
-          });
-          producto.stock_total = contador;
-
-         arr.push(producto);
-
+    productoBD.map((data) => {
+      var producto = new Object({
+        _id: null,
+        nombre: true,
+        descripcion: null,
+        categoria: null,
+        stock_total: null,
       });
 
+      producto._id = data._id;
+      producto.nombre = data.nombre_producto;
+      producto.descripcion = data.descripcion;
+      producto.categoria = data.categoria.nombre_categoria;
+
+      var contador = 0;
+      data.tamanios.map((re) => {
+        re.colores.map((color) => {
+          contador = color.cantidad + contador;
+        });
+      });
+      producto.stock_total = contador;
+
+      arr.push(producto);
+    });
 
     objetoRespuesta.msg = arr;
     return objetoRespuesta;
   } catch (error) {
     console.log(
-      "Error en catch de listarProductosPorIdCliente | middelwares tienda", error
+      "Error en catch de listarProductosPorIdCliente | middelwares tienda",
+      error
     );
     objetoRespuesta.ok = false;
-    objetoRespuesta.msg = ""+ error;
+    objetoRespuesta.msg = "" + error;
     objetoRespuesta.tipo_error = "Catch.";
 
     return objetoRespuesta;
@@ -170,7 +163,7 @@ const borarImagenProducto = async (urlImagen, idImagen, idProducto) => {
   }
 };
 
-const listarTodosProductosBD = async () => {
+const listarTodosProductosBD = async (usuario) => {
   try {
     var objetoRespuesta = new Object({
       ok: true,
@@ -178,24 +171,29 @@ const listarTodosProductosBD = async () => {
       tipo_error: null,
     });
 
-    ///Cuando todo sale ok/////
     var productosBD = await Tienda.find();
     if (productosBD == null) {
       objetoRespuesta.msg = "No existen productos en la BD.";
       return objetoRespuesta;
     } else {
-      objetoRespuesta.msg = productosBD;
+      var productosEvaluados = await listarProductosYSuIdListaDeseosConIdUsuario(
+        productosBD,
+        usuario
+      );
+
+      objetoRespuesta.msg = productosEvaluados;
       return objetoRespuesta;
     }
   } catch (error) {
-    console.log("Error en catch de listarTodosProductosBD");
+    console.log("Error en catch de listarTodosProductosBD " + error);
     objetoRespuesta.ok = false;
     objetoRespuesta.tipo_error = "" + error;
     objetoRespuesta.msg = "Error en catch";
+    return objetoRespuesta;
   }
 };
 
-const listarTodosProductosBDPorIdCategoria = async (categoria) => {
+const listarTodosProductosBDPorIdCategoria = async (categoria, usuario) => {
   try {
     var objetoRespuesta = new Object({
       ok: true,
@@ -210,7 +208,12 @@ const listarTodosProductosBDPorIdCategoria = async (categoria) => {
         "No existen productos con el id categoría en la BD.";
       return objetoRespuesta;
     } else {
-      objetoRespuesta.msg = productosBD;
+      var productosEvaluados = await listarProductosYSuIdListaDeseosConIdUsuario(
+        productosBD,
+        usuario
+      );
+
+      objetoRespuesta.msg = productosEvaluados;
       return objetoRespuesta;
     }
   } catch (error) {
@@ -219,6 +222,45 @@ const listarTodosProductosBDPorIdCategoria = async (categoria) => {
     objetoRespuesta.tipo_error = "" + error;
     objetoRespuesta.msg = "Error en catch";
   }
+};
+
+const listarProductosYSuIdListaDeseosConIdUsuario = async (
+  productosBD,
+  usuario
+) => {
+  var arrayProducto = [];
+
+  for (let index = 0; index < productosBD.length; index++) {
+    var producto = productosBD[index];
+    var obje = new Object();
+
+    obje._id = producto._id;
+    obje.idListaDeseos = null;
+    obje.nombre_producto = producto.nombre_producto;
+    obje.descripcion = producto.descripcion;
+    obje.categoria = producto.categoria;
+    obje.foto_principal = producto.foto_principal;
+    obje.fotos_producto = producto.fotos_producto;
+    obje.tamanios = producto.tamanios;
+    obje.tarifa_envio = producto.tarifa_envio;
+    obje.id_usuario = producto.id_usuario;
+    if (usuario) {
+      var productoEnBD = await validarExistenciaEnListaDeseos(
+        usuario,
+        producto._id
+      );
+
+      if (productoEnBD.existe) {
+        obje.idListaDeseos = productoEnBD.id;
+      } else {
+        obje.idListaDeseos = null;
+      }
+    }
+
+    arrayProducto.push(obje);
+  }
+
+  return arrayProducto;
 };
 
 const listarProductosPorIdProducto = async (_id) => {
@@ -315,14 +357,12 @@ const agregarAlCarrito = async (objeto) => {
     });
 
     var carrito = new Carrito(objeto);
-    
+
     var carritoGuardado = await carrito.save();
-    
-    objetoRespuesta.msg = "Producto agregado correctamente al carrito. Id: "+carritoGuardado._id;
+
+    objetoRespuesta.msg =
+      "Producto agregado correctamente al carrito. Id: " + carritoGuardado._id;
     return objetoRespuesta;
-    
-
-
   } catch (error) {
     console.log("Error en catch " + error);
     objetoRespuesta.ok = false;
@@ -332,8 +372,7 @@ const agregarAlCarrito = async (objeto) => {
   }
 };
 
-const listarProductosCarritoUsuario = async(_id) =>{
-
+const listarProductosCarritoUsuario = async (_id) => {
   var objetoRespuesta = new Object({
     ok: true,
     msg: null,
@@ -342,10 +381,11 @@ const listarProductosCarritoUsuario = async(_id) =>{
   });
 
   try {
-    const productoBD = await Carrito.find( { usuario: _id } );
+    const productoBD = await Carrito.find({ usuario: _id });
     if (productoBD.length == 0) {
       objetoRespuesta.ok = false;
-      objetoRespuesta.msg = "El id no cuenta con productos asociados al carrito.";
+      objetoRespuesta.msg =
+        "El id no cuenta con productos asociados al carrito.";
       objetoRespuesta.tipo_error = "No existe producto";
       return objetoRespuesta;
     }
@@ -363,10 +403,9 @@ const listarProductosCarritoUsuario = async(_id) =>{
 
     return objetoRespuesta;
   }
+};
 
-}
-
-const eliminarProductoCarrito =  async (_id) => {
+const eliminarProductoCarrito = async (_id) => {
   var objetoRespuesta = new Object({
     ok: true,
     msg: null,
@@ -374,16 +413,18 @@ const eliminarProductoCarrito =  async (_id) => {
   });
 
   try {
-
     const productoBD = await Carrito.findByIdAndDelete(_id);
     if (productoBD == null) {
-      objetoRespuesta.msg = "El id no cuenta con productos asociados ac carrito de compras.";
+      objetoRespuesta.msg =
+        "El id no cuenta con productos asociados ac carrito de compras.";
       return objetoRespuesta;
     }
 
     console.log("Producto eliminado de carrito. ", productoBD._id);
     objetoRespuesta.msg =
-      "Se ha borrado correctamente el producto " + productoBD._id + " del carrito de compras.";
+      "Se ha borrado correctamente el producto " +
+      productoBD._id +
+      " del carrito de compras.";
     return objetoRespuesta;
   } catch (error) {
     console.log(
@@ -397,7 +438,6 @@ const eliminarProductoCarrito =  async (_id) => {
   }
 };
 
-
 module.exports = {
   crearNuevoProducto,
   listarProductosPorIdCliente,
@@ -409,5 +449,5 @@ module.exports = {
   listarProductosPorIdProducto,
   agregarAlCarrito,
   listarProductosCarritoUsuario,
-  eliminarProductoCarrito
+  eliminarProductoCarrito,
 };
