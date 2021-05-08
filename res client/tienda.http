@@ -196,7 +196,7 @@ content-type: application/json
 
 ###
 //Eliminar producto con id producto
-delete https://api.filateliaperu.com/api/tienda/producto/individual/609406ed446569f3b46e3ce4
+delete http://localhost:3000/api/tienda/producto/individual/6095873c8da50508604025e6
 
 content-type: application/json
 
@@ -238,17 +238,17 @@ content-type: application/json
 
 ###
 //Listar todos los productos
-get http://localhost:3000/api/tienda/producto/
+get http://localhost:3000/api/tienda/producto?usuario=60774b251e87731fecedabba
 content-type: application/json
 
 {
-   
+
 }
 
 
 ###
 //Listar  los productos con id cat
-get http://localhost:3000/api/tienda/productos-cat/6085cba8ac8965069884f067
+get http://localhost:3000/api/tienda/productos-cat/?idCat=6085cba8ac8965069884f067&usuario=60774b251e87731fecedabba
 content-type: application/json
 
 {

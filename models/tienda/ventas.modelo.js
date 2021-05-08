@@ -7,30 +7,61 @@ const ventasSchema = Schema(
       required: true,
       autopopulate: true,
     },
-    vendedor: {
+
+    datos_envio: {
       type: Schema.Types.ObjectId,
-      ref: "Usuarios",
+      ref: "datos_envio",
       required: true,
       autopopulate: true,
     },
+
     productos: [
       {
+        
+
         producto: {
           type: Schema.Types.ObjectId,
           ref: "Producto",
           required: true,
           autopopulate: true,
         },
+
         id_tamanio: {
           type: String,
           required: true,
         },
+
         id_color: {
           type: String,
           required: true,
         },
 
         cantidad: {
+          type: Number,
+          required: true,
+        },
+
+        valor_producto_individual: {
+          type: Number,
+          required: true,
+        },
+
+        valor_total_productos: {
+          type: Number,
+          required: true,
+        },
+
+        tipo_envio: {
+          type: String,
+          required: true,
+        },
+
+        valor_envio: {
+          type: Number,
+          required: true,
+        },
+
+        valor_total: {
           type: Number,
           required: true,
         },

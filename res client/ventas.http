@@ -24,10 +24,30 @@ content-type: application/json
 
 
 ###
-
+///Consuiltar datos de envio
 get http://localhost:3000/api/ventas/datos-envio/60774b251e87731fecedabba
 content-type: application/json
 
 {
 
+}
+
+
+###
+/// Crear nueva venta ///
+
+post http://localhost:3000/api/ventas
+content-type: application/json
+
+{
+ "comprador": "60774b251e87731fecedabba",
+ "productos": [
+     {
+         "producto": "609407aa446569f3b46e3ce8",
+         "id_tamanio": "609407aa446569f3b46e3ce9",
+         "id_color": "609407aa446569f3b46e3cea",
+         "cantidad": 2
+                
+     }
+     ]
 }

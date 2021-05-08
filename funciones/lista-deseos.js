@@ -54,6 +54,20 @@ async function removerProductoListaDeseos(_id) {
 }
 
 async function validarExistenciaEnListaDeseos(usuario, producto) {
+ 
+ 
+ 
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      existe: false,
+      id: null, 
+      tipo_error: null,
+    });
+
+    
+ 
   var lista = await ListaDeseos.aggregate(
     [
 
@@ -68,21 +82,34 @@ async function validarExistenciaEnListaDeseos(usuario, producto) {
 
     ]);
 
-    var objetoRespuesta = new Object(
-      {
-        existe:false,
-        id: null
-      });
 
     if(lista.length == 0) {
       objetoRespuesta.existe = false;
     return objetoRespuesta;
     }
-    console.log(lista);
     objetoRespuesta.existe = true;
     objetoRespuesta.id = lista[0]._id;
     return objetoRespuesta;
 
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch "+error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch ";
+return objetoRespuesta;
+  }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 }
 module.exports = {
   agregarProductoListaDeseos,
