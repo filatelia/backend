@@ -234,7 +234,7 @@ const listarProductosYSuIdListaDeseosConIdUsuario = async (
     var producto = productosBD[index];
     var obje = new Object();
 
-    obje._id = producto._id;
+    obje.uid = producto._id;
     obje.idListaDeseos = null;
     obje.nombre_producto = producto.nombre_producto;
     obje.descripcion = producto.descripcion;
