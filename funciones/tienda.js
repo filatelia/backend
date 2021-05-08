@@ -242,7 +242,8 @@ const listarProductosYSuIdListaDeseosConIdUsuario = async (
     obje.foto_principal = producto.foto_principal;
     obje.fotos_producto = producto.fotos_producto;
     obje.tamanios = producto.tamanios;
-    obje.tarifa_envio = producto.tarifa_envio;
+    obje.tarifa_envio_lima = producto.tarifa_envio_lima;
+    obje.tarifa_envio_provincias = producto.tarifa_envio_provincias;
     obje.id_usuario = producto.id_usuario;
     if (usuario) {
       var productoEnBD = await validarExistenciaEnListaDeseos(

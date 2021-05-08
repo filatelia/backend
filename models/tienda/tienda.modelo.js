@@ -67,7 +67,11 @@ const productoSchema = Schema(
       },
     ],
 
-    tarifa_envio: {
+    tarifa_envio_lima: {
+      type: Number,
+      required: true,
+    },
+    tarifa_envio_provincias: {
       type: Number,
       required: true,
     },

@@ -44,9 +44,12 @@ content-type: application/json
  "productos": [
      {
          "producto": "609407aa446569f3b46e3ce8",
-         "id_tamanio": "609407aa446569f3b46e3ce9",
-         "id_color": "609407aa446569f3b46e3cea",
-         "cantidad": 2
+         "id_tamanio": "6096ba05479db684f038c871",
+         "id_color": "6096ba05479db684f038c872",
+         "cantidad": 10
+         
+
+
                 
      }
      ]

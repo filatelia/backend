@@ -77,7 +77,7 @@ router.get("/producto/:idUsuario", [], listarProductosPorIdUsuario);
 router.get("/producto/", [], listarTodosProductos);
 
 //9//LISTAR TODOS LOS PRODUCTOS POR CATEGORIA ////
-router.get("/productos-cat/", [], listarProductosIdCategoria);
+router.get("/productos-cat/:idCat", [], listarProductosIdCategoria);
 
 //11//ELIMINAR IMAGEN DE UN PRODUCTO ////
 router.delete("/producto/imagen", [], eliminarFotosProducto);
