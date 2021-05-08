@@ -1,6 +1,7 @@
 const Datos_envio = require("../models/tienda/datos-envio.modelo");
 const EstadosVenta = require("../models/tienda/estado-venta-modelo");
 const Ventas = require("../models/tienda/ventas.modelo");
+const { listarProductosPorIdProducto } = require("./tienda");
 
 async function crearDatosEnvio(objeto) {
   try {
@@ -146,9 +147,17 @@ async function crearNuevaVenta(objetoVenta) {
     return objetoRespuesta;
   }
 }
+
+async function restarProductosVendidos(producto) {
+  
+
+  
+
+}
 module.exports = {
   crearDatosEnvio,
   mostrarDatosEnvioIdUsuario,
   verificarCrearEstadosVenta,
   crearNuevaVenta,
+  restarProductosVendidos
 };

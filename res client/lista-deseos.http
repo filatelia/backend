@@ -29,3 +29,13 @@ content-type: application/json
 }
 
 ###
+
+//listando PRODUCTOs DE LISTA DE DESEOS
+GET http://localhost:3000/api/tienda/producto/lista-deseos/todos
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyIsImVtYWlsIjoiYWxleGlzMTFkaW1lbkBnbWFpbC5jb20iLCJfaWQiOiI2MDc3NGIyNTFlODc3MzFmZWNlZGFiYmEiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYyMDUwNDgyOSwiZXhwIjoxNjIwNTkxMjI5fQ.VGRJ3WrtqlbGFZv3c8Qe8cEmontZVABvYBGWmqgZXlI
+
+{
+
+}
+
+###

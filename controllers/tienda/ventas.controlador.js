@@ -3,6 +3,7 @@ const {
   crearDatosEnvio,
   mostrarDatosEnvioIdUsuario,
   crearNuevaVenta,
+  restarProductosVendidos
 } = require("../../funciones/ventas");
 const {
   validarCamposGeneral,
@@ -52,9 +53,16 @@ const crearVenta = async (req, res = response) => {
 
         if (tamanios._id == element.id_tamanio) {
           var contadorColor = 0;
+
+          if(tamanios.precio_descuento){
+            req.body.productos[index].valor_producto_individual = tamanios.precio_descuento;
+          }else{
+            req.body.productos[index].valor_producto_individual = tamanios.precio;
+          }
+          req.body.productos[index].valor_total_productos = req.body.productos[index].valor_producto_individual * element.cantidad ;
+          req.body.productos[index].valor_total =req.body.productos[index].valor_total_productos + element.valor_envio ;
+
           tamanios.colores.map((color) => {
-            console.log("color.id", color.id);
-            console.log("element.id_color", element.id_color);
             
             if (color.id == element.id_color) {
               if (element.cantidad > color.cantidad) {
@@ -62,6 +70,7 @@ const crearVenta = async (req, res = response) => {
                   throw  "La cantidad que deseas comprar excede el stock actual.";
                    
               }
+              
             } else {
               contadorColor = contadorColor + 1;
             }
@@ -86,7 +95,14 @@ const crearVenta = async (req, res = response) => {
     //Asignando id datos de envío
     req.body.datos_envio = datosEnvioBD.datos_envio._id;
 
-    var nuevaVenta = ""; //await crearNuevaVenta(req.body);
+    var nuevaVenta = await crearNuevaVenta(req.body);
+
+    for (let index = 0; index < nuevaVenta.productos.length; index++) {
+      const element = nuevaVenta.productos[index];
+
+      var restar = await restarProductosVendidos(element);
+      
+    }
 
     return res.json(nuevaVenta);
   } catch (error) {

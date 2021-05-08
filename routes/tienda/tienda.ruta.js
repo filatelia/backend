@@ -7,6 +7,7 @@ const {
   agregarProductoListaDeseosCtr,
   removerProductoListaDeseostr,
   VerificarEnListaDeseosCtr,
+  listarTodosProductosListaDeseosCtr
 } = require("../../controllers/tienda/lista-deseos.controlador");
 const {
   listarProductosPorIdUsuario,
@@ -102,7 +103,7 @@ router.get("/producto/valores/:idProducto", [], valorInicialFinalProductoCtr);
 router.post("/producto/lista-deseos/", [], agregarProductoListaDeseosCtr);
 
 //15  LISTAR TODOS LOS PRODUCTOS EN LISTA DE DESEOS///
-router.get("/producto/lista-deseos/", [], valorInicialFinalProductoCtr);
+router.get("/producto/lista-deseos/todos", [], listarTodosProductosListaDeseosCtr);
 
 //16  QUITAR PRODUCTO DE LISTA DE DESEOS///
 router.delete(

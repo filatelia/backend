@@ -1,10 +1,14 @@
 const { response } = require("express");
 const { agregarProductoListaDeseos,
     removerProductoListaDeseos,
-    validarExistenciaEnListaDeseos  } = require("../../funciones/lista-deseos");
+    validarExistenciaEnListaDeseos,
+    listarTodosProductosListaDeseos  } = require("../../funciones/lista-deseos");
 const { consultarDatosConId } = require("../../funciones/usuario");
 const { isValidObjectIdGeneral, validarCamposGeneral } = require("../../funciones/validar-campos");
 const { listarProductosPorIdProducto } = require("../../funciones/tienda"); 
+const { retornarIdClienteConJWT } = require("../../funciones/validar-jwt");
+
+
 const agregarProductoListaDeseosCtr = async (req, res= response) => {
 
     try {
@@ -119,9 +123,47 @@ const { idusuario, idproducto } = req.query;
    var existeEnLista = await validarExistenciaEnListaDeseos(idusuario, idproducto); 
    console.log("existeEnLista", existeEnLista);
 }
+const listarTodosProductosListaDeseosCtr= async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+      lista: null
+    });
+
+    console.log("Listando todos los productos lista deseos");
+
+    var token = req.header("x-access-token");
+
+    if (!token) {
+
+      throw "No existe token en la petición."
+    }
+    var usuario =retornarIdClienteConJWT(token);
+    var listaFavoritos =  await listarTodosProductosListaDeseos(usuario); 
+    objetoRespuesta.msg= "Se ha consulltado correctamente";
+    objetoRespuesta.lista = listaFavoritos;
+
+    return res.json(objetoRespuesta);
+
+  
+
+
+  } catch (error) {
+    console.log("Error en catch listarTodosProductosListaDeseosCtr "+error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch ";
+ 
+    return res.json(objetoRespuesta);
+
+  }
+}
 
 module.exports = {
     agregarProductoListaDeseosCtr,
     removerProductoListaDeseostr,
-    VerificarEnListaDeseosCtr
+    VerificarEnListaDeseosCtr,
+    listarTodosProductosListaDeseosCtr
 }
