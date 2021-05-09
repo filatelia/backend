@@ -67,7 +67,8 @@ const crearProducto = async (req, res = response) => {
     arrayCamposValidar.push(nombre_producto);
     arrayCamposValidar.push(categoria);
     arrayCamposValidar.push(fotos_producto);
-    arrayCamposValidar.push(tarifa_envio);
+    arrayCamposValidar.push(tarifa_envio_lima);
+    arrayCamposValidar.push(tarifa_envio_provincias);
     arrayCamposValidar.push(tamanios);
     arrayCamposValidar.push(id_usuario);
 

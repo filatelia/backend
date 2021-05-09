@@ -92,9 +92,9 @@ const validarCamposGeneral = (cantidadElementos, array) =>{
 
   var respuesta = true;
   for (let index = 0; index < cantidadElementos; index++) {
+    console.log("Validación array["+index+"] ->", array[index]);
 
     if (!array[index] || array[index] == null || array[index] == "") {
-      console.log("Validación array["+index+"] ->", array[index]);
       respuesta= false;
       break;
       
