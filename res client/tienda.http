@@ -348,11 +348,11 @@ post http://localhost:3000/api/tienda/pagos/carrito/
 content-type: application/json
 
 {
-      "producto":"608cbe116b03cc0f28a4f1ec",
+      "producto":"609407aa446569f3b46e3ce8",
       "usuario":"60774b251e87731fecedabba",
-      "id_tamanio": "608cbe116b03cc0f28a4f1ed",
-      "id_color": "608cbe116b03cc0f28a4f1ef",
-      "cantidad": 2
+      "id_tamanio": "6096ba05479db684f038c871",
+      "id_color": "6096ba05479db684f038c872",
+      "cantidad": 1
 }
 
 
