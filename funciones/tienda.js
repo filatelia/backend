@@ -357,9 +357,55 @@ const agregarAlCarrito = async (objeto) => {
       tipo_error: null,
     });
 
-    var carrito = new Carrito(objeto);
+    console.log("objeto agregar", objeto);
 
-    var carritoGuardado = await carrito.save();
+    var productoEnCarrito = await Carrito.findOne({
+      producto: objeto.producto,
+      usuario: objeto.usuario,
+      id_tamanio: objeto.id_tamanio,
+      color: objeto.color,
+    });
+    var carritoGuardado = null;
+    if (!productoEnCarrito) {
+      console.log("no repetido");
+      var carrito = new Carrito(objeto);
+      carritoGuardado = await carrito.save();
+    } else {
+      console.log("Repetido");
+      productoEnCarrito.cantidad = productoEnCarrito.cantidad + objeto.cantidad;
+      
+      var totalProductos = await Tienda.findById(objeto.producto);
+
+      totalProductos.tamanios.map(producto =>
+        {
+          if (producto._id == objeto.id_tamanio) {
+            console.log("tamanios igiales");
+            producto.colores.map(color =>
+              {
+                if(color._id == objeto.id_color ){
+
+                  console.log("colores igiales");
+                  if(color.cantidad < productoEnCarrito.cantidad){
+            console.log("color.cantidad", color.cantidad);
+            console.log("productoEnCarrito.cantidad",productoEnCarrito.cantidad );
+                    
+                    productoEnCarrito.cantidad= color.cantidad;
+                    
+                  }
+                }
+              });
+            
+          } 
+        });
+      
+      carritoGuardado = await productoEnCarrito.save();
+    
+
+
+
+    }
+
+
 
     objetoRespuesta.msg =
       "Producto agregado correctamente al carrito. Id: " + carritoGuardado._id;
