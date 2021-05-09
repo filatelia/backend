@@ -39,7 +39,8 @@ const crearProducto = async (req, res = response) => {
       id_usuario,
       nombre_producto,
       categoria,
-      tarifa_envio,
+      tarifa_envio_lima,
+      tarifa_envio_provincias,
       cantidad_productos,
       tamanios,
     } = req.body;
