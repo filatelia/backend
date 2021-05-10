@@ -15,6 +15,7 @@ const {
   agregarAlCarrito,
   listarProductosCarritoUsuario,
   eliminarProductoCarrito,
+  cantidadProductosCarritoF
 } = require("../../funciones/tienda");
 const {
   crearNuevaCategoria,
@@ -835,6 +836,30 @@ const quitarProductoCarritoCtr = async (req, res = response) => {
   }
 };
 
+const mostrarProductosCarritoCantidadCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    const { idUsuario } = req.params;
+    var cantidadProductosCarrito = await cantidadProductosCarritoF(idUsuario);
+
+    return res.json(cantidadProductosCarrito);
+    
+
+  } catch (error) {
+    console.log("Error en catch mostrarProductosCarritoCantidadCtr "+error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch mostrarProductosCarritoCantidadCtr";
+
+    return res.json(objetoRespuesta);
+  }
+}
+
 module.exports = {
   crearProducto,
   crearCategoria,
@@ -855,4 +880,5 @@ module.exports = {
   agregarAlCarritoCtr,
   mostrarProductosCarritoCtr,
   quitarProductoCarritoCtr,
+  mostrarProductosCarritoCantidadCtr
 };
