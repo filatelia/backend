@@ -84,12 +84,14 @@ const listarProductosPorIdCliente = async (id_usuario) => {
         descripcion: null,
         categoria: null,
         stock_total: null,
+        foto_principal:null
       });
 
       producto._id = data._id;
       producto.nombre = data.nombre_producto;
       producto.descripcion = data.descripcion;
       producto.categoria = data.categoria.nombre_categoria;
+      producto.foto_principal = data.foto_principal.imagen_url;
 
       var contador = 0;
       data.tamanios.map((re) => {
