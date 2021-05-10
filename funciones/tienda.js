@@ -487,6 +487,35 @@ const eliminarProductoCarrito = async (_id) => {
   }
 };
 
+const cantidadProductosCarritoF = async(usuario) => {
+
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      cantidadPCarrito: null,
+      tipo_error: null,
+    });
+
+    var productosCarritoEnBD = await Carrito.find( { usuario } );
+    
+    objetoRespuesta.msg = "Consulta ejecutada correctamente.";
+    objetoRespuesta.cantidadPCarrito = productosCarritoEnBD.length;
+    
+    return objetoRespuesta;
+    
+
+
+  } catch (error) {
+    console.log("Error en catch cantidadProductosCarrito "+error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch cantidadProductosCarrito ";
+
+    return objetoRespuesta;
+  }
+}
+
 module.exports = {
   crearNuevoProducto,
   listarProductosPorIdCliente,
@@ -499,4 +528,5 @@ module.exports = {
   agregarAlCarrito,
   listarProductosCarritoUsuario,
   eliminarProductoCarrito,
+  cantidadProductosCarritoF
 };

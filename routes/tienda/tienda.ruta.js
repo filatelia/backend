@@ -29,6 +29,7 @@ const {
   agregarAlCarritoCtr,
   mostrarProductosCarritoCtr,
   quitarProductoCarritoCtr,
+  mostrarProductosCarritoCantidadCtr
 } = require("../../controllers/tienda/productos.controlador");
 
 const router = Router();
@@ -122,11 +123,20 @@ router.get("/producto/lista-deseos/estado/", [], VerificarEnListaDeseosCtr);
 //
 //
 
-/////// AÑADIR AL CARRITO /////////
+///////////////////////////// AÑADIR AL CARRITO ///////////////////////////////
+///
+///
+///
+
 router.post("/pagos/carrito/", [], agregarAlCarritoCtr);
 
 /////// MOSTRAR PRODUCTOS DEL CARRITO POR ID USUARIO /////////
 router.get("/pagos/carrito/:idUsuario", [], mostrarProductosCarritoCtr);
+
+
+/////// MOSTRAR PRODUCTOS DEL CARRITO POR ID USUARIO /////////
+router.get("/pagos/carrito/cantidad/:idUsuario", [], mostrarProductosCarritoCantidadCtr);
+
 
 /////// QUITAR PRODUCTO DEL CARRITO /////////
 router.delete("/pagos/carrito/:idItemCarrito", [], quitarProductoCarritoCtr);

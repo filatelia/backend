@@ -365,6 +365,14 @@ content-type: application/json
 }
 
 ###
+//Listar CANTIDAD productos en carrito por id usuario.
+get http://localhost:3000/api/tienda/pagos/carrito/cantidad/60774b251e87731fecedabba
+content-type: application/json
+
+{
+}
+
+###
 //Quitar producto de carrito de compras.
 delete http://localhost:3000/api/tienda/pagos/carrito/609073c6c12bc61f88aaf448
 content-type: application/json
