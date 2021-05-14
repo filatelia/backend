@@ -82,3 +82,11 @@ GET https://openexchangerates.org/api/convert/19999.95/GBP/EUR?app_id=2753f0ce42
 content-type: application/json
 {
 }
+
+
+###
+
+    
+get http://localhost:3000/api/pruebas/guardar-base64/
+content-type: application/json
+//x-rapidapi-key: '4b7432b598mshcef6a4d4e6c9593p1e598djsn536b309ce076

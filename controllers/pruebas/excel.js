@@ -2,8 +2,8 @@ const Excel = require('exceljs');
 const { response } = require('express');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { procesarExcelPruebas } = require('../../controllers/catalogo/catalogo.controlador')
-const axios = require("axios");
+
+var axios = require("axios").default;
 
 const fs = require('fs');
 var mongoose = require('mongoose');
@@ -126,7 +126,24 @@ for (let index = 1; index < totalEstampillas+1; index++) {
     });
 };
 
+const guardarImagenDirectorioBase64 = async (req, res=response) =>{
+console.log("Entramos");
+  var options = {
+    method: 'GET',
+    url: 'https://openlibra.com/es/book/download/interface-circuits-for-microsensor-integrated-systems-2/?dl=true'
+   
+  };
+  
+  axios.request(options).then(function (response) {
+    return res.send(response.data);
+    console.log(response.data);
+  }).catch(function (error) {
+    console.error(error);
+  });
+
+}
 
 module.exports = {
   generarExcel,
+  guardarImagenDirectorioBase64
 }

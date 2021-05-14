@@ -9,14 +9,14 @@ const Path = require("path");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 const { getPaisByName } = require("../catalogo/pais.controlador");
 const Pais = require("../../models/catalogo/paises");
-const { crearTema, enviarCorreos } = require("../../middlewares/index.middle");
+const { crearTema, enviarCorreos } = require("../../funciones/index.middle");
 const { isValidObjectId } = require("mongoose");
-const { retornarDatosJWT } = require("../../middlewares/index.middle");
+const { retornarDatosJWT } = require("../../funciones/index.middle");
 const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
 const Solicitud = require("../../models/solicitudes/solicitudes.model");
 const { ObjectId } = require("mongoose").Types;
-const { validarCamposGeneral, isValidObjectIdGeneral } = require("../../middlewares/validar-campos");
-const { consultarCatalogosIdUsuario, buscarIdCatConIdTema, buscarIdCatConIdPais } = require("../../middlewares/catalogo");
+const { validarCamposGeneral, isValidObjectIdGeneral } = require("../../funciones/validar-campos");
+const { consultarCatalogosIdUsuario, buscarIdCatConIdTema, buscarIdCatConIdPais } = require("../../funciones/catalogo");
 
 const crearCatalogo = async (req, res = response) => {
   try {

@@ -2,7 +2,7 @@ const { response } = require("express");
 const {
   validarCamposGeneral,
   isValidObjectIdGeneral,
-} = require("../../middlewares/validar-campos");
+} = require("../../funciones/validar-campos");
 const {
   crearNuevoProducto,
   listarProductosPorIdCliente,
@@ -12,18 +12,27 @@ const {
   actuaizarProductoBD,
   listarProductosPorIdProducto,
   eliminarProductoYAsociados,
-} = require("../../middlewares/tienda");
+  agregarAlCarrito,
+  listarProductosCarritoUsuario,
+  eliminarProductoCarrito,
+  cantidadProductosCarritoF
+} = require("../../funciones/tienda");
 const {
   crearNuevaCategoria,
   consultarTodasCategorias,
   consultarCategoriaIdCategoria,
-} = require("../../middlewares/categoria");
+} = require("../../funciones/categoria");
 const {
   crearImagenDirectorio,
   guadarImagenEnBD,
   asociarImagenDeProductoConIdImagen,
-} = require("../../middlewares/subir_imagen");
-const { todasMonedasPaypalMD, consultarConvertirMonedaTiempoReal } = require("../../middlewares/paypal");
+  cambioImagenPrincipalProducto,
+} = require("../../funciones/subir_imagen");
+const {
+  todasMonedasPaypalMD,
+  consultarConvertirMonedaTiempoReal,
+} = require("../../funciones/paypal");
+const { retornarIdClienteConJWT } = require("../../funciones/validar-jwt");
 
 const crearProducto = async (req, res = response) => {
   try {
@@ -31,26 +40,24 @@ const crearProducto = async (req, res = response) => {
       id_usuario,
       nombre_producto,
       categoria,
-      precio_normal,
-      cantidad_productos,
-      tarifa_envio,
-      moneda_producto,
+      tarifa_envio_lima,
+      tarifa_envio_provincias,
       cantidad_productos,
       tamanios,
     } = req.body;
-    console.log("cantidad", cantidad_productos);
 
-    var { fotos_producto } = req.files;
+    var { fotos_producto } = req.body;
 
     var tipo = typeof cantidad_productos;
     // console.log("Tipo ->", tipo);
     // if(tipo == "string") cantidad_productos = JSON.parse(cantidad_productos);
 
-    if (!Array.isArray(req.files.fotos_producto)) {
+    if (!Array.isArray(req.body.fotos_producto)) {
       console.log("no es array");
-      req.files.fotos_producto = [req.files.fotos_producto];
+      req.body.fotos_producto = [req.body.fotos_producto];
     }
-    var fotos_producto = req.files.fotos_producto;
+    var fotos_producto = req.body.fotos_producto;
+    console.log("");
 
     console.log("- Guardando Producto");
     ///////// VALIDACIONES ////////
@@ -61,15 +68,13 @@ const crearProducto = async (req, res = response) => {
     var arrayIdsValidar = [];
     arrayCamposValidar.push(nombre_producto);
     arrayCamposValidar.push(categoria);
-    arrayCamposValidar.push(precio_normal);
     arrayCamposValidar.push(fotos_producto);
-    arrayCamposValidar.push(cantidad_productos);
-    arrayCamposValidar.push(tarifa_envio);
-    arrayCamposValidar.push(moneda_producto);
+    arrayCamposValidar.push(tarifa_envio_lima);
+    arrayCamposValidar.push(tarifa_envio_provincias);
     arrayCamposValidar.push(tamanios);
     arrayCamposValidar.push(id_usuario);
 
-    if (validarCamposGeneral(8, arrayCamposValidar) != true) {
+    if (validarCamposGeneral(6, arrayCamposValidar) != true) {
       return res.json({
         ok: false,
         msg: "Debes enviar los datos obligatorios.",
@@ -82,9 +87,6 @@ const crearProducto = async (req, res = response) => {
         msg: "Debes enviar un array de fotos_producto.",
       });
 
-    if (!Array.isArray(tamanios))
-      return res.json({ ok: false, msg: "Debes enviar un array de tamaños." });
-
     arrayIdsValidar.push(categoria);
     arrayIdsValidar.push(id_usuario);
 
@@ -96,9 +98,10 @@ const crearProducto = async (req, res = response) => {
         msg: "Debes enviar los ids válidos.",
       });
     }
+    console.log(" ⚫ Creando producto nuevo.");
 
-    /////CREANDO IMAGEN DE PRODUCTO /////
-    var imagenes = req.files.fotos_producto;
+    ///CREANDO IMAGEN DE PRODUCTO /////
+    var imagenes = req.body.fotos_producto;
     req.body.fotos_producto = [];
 
     console.log(" - Procesado imágenes");
@@ -133,18 +136,18 @@ const crearProducto = async (req, res = response) => {
     }
     console.log(" | Imagenes Ok.");
 
-    console.log("req.body.fotos_producto", req.body.fotos_producto);
-
-    console.log("fotos_producto", fotos_producto);
+    req.body.foto_principal = req.body.fotos_producto[0];
 
     /////////// CREANDO PRODUCTO ////////
     var nuevoProducto = await crearNuevoProducto(req.body);
     if (nuevoProducto.ok != true)
       return res.json({ ok: false, msg: nuevoProducto });
 
+    console.log("☑ Producto creado correctamente.");
     return res.json({
       ok: true,
       msg: nuevoProducto.msg,
+      producto_creado: nuevoProducto.producto._id,
     });
   } catch (error) {
     console.log("Error en catch de crearProducto | tienda controlador", error);
@@ -273,7 +276,7 @@ const agregarFotosProducto = async (req, res = response) => {
     const { id_producto } = req.body;
 
     /////CREANDO IMAGEN DE PRODUCTO /////
-    var imagenes = req.files.fotos_producto;
+    var imagenes = req.body.fotos_producto;
     if (!Array.isArray(imagenes)) imagenes = [imagenes];
     req.body.fotos_producto = [];
 
@@ -290,7 +293,7 @@ const agregarFotosProducto = async (req, res = response) => {
         return res.json(imagenEnDirectorio);
       }
       console.log(
-        "  | Imagen " + (index + 1) + " guarda en servidor correctamente."
+        "  | Imagen " + (index + 1) + " guardada en servidor correctamente."
       );
 
       objImagen.name = imagenEnDirectorio.nombreImagen;
@@ -384,9 +387,17 @@ const listarTodosProductos = async (req, res = response) => {
       msg: null,
       tipo_error: null,
     });
+    var usuario = null;
 
+    // Leer el Token
+    const token = req.header('x-access-token');
+    if(token){
+      usuario = retornarIdClienteConJWT(token);
+        
+    }
+   
     ///Cuando todo sale ok/////
-    var productosBD = await listarTodosProductosBD();
+    var productosBD = await listarTodosProductosBD(usuario);
 
     return res.json(productosBD);
   } catch (error) {
@@ -394,6 +405,7 @@ const listarTodosProductos = async (req, res = response) => {
     objetoRespuesta.ok = false;
     objetoRespuesta.tipo_error = error;
     objetoRespuesta.msg = "Error en catch";
+    return res.json(objetoRespuesta);
   }
 };
 
@@ -404,11 +416,18 @@ const listarProductosIdCategoria = async (req, res = response) => {
       msg: null,
       tipo_error: null,
     });
+    const { idCat} = req.params;
+    var usuario = null;
 
-    const { idCat } = req.params;
+    // Leer el Token
+    const token = req.header('x-access-token');
+    if(token){
+      usuario = retornarIdClienteConJWT(token);
+        
+    }
 
     ///Cuando todo sale ok/////
-    var productosBD = await listarTodosProductosBDPorIdCategoria(idCat);
+    var productosBD = await listarTodosProductosBDPorIdCategoria(idCat, usuario);
 
     return res.json(productosBD);
   } catch (error) {
@@ -428,76 +447,48 @@ const modificarProducto = async (req, res = response) => {
       tipo_error: null,
     });
 
-    const {
-      id_producto,
-      nombre_producto,
-      descripcion,
-      categoria,
-      precio_normal,
-      precio_descuento,
-      cantidad_productos,
-      colores_hex,
-      tarifa_envio,
-      moneda_producto,
-      tamanios,
-    } = req.body;
+    const { id_producto, categoria } = req.body;
 
-    console.log("objetoRecibidoActualizar", req.body);
-    console.log("nombre_producto", nombre_producto);
-
-    ///////////////////// VALIDACIONES ///////////////////
-
+    ////Validaciones////
     var arrayCamposValidar = [];
     var arrayIdsValidar = [];
 
-    arrayCamposValidar.push(nombre_producto);
-    arrayCamposValidar.push(categoria);
-    arrayCamposValidar.push(precio_normal);
-    arrayCamposValidar.push(cantidad_productos);
-    arrayCamposValidar.push(tarifa_envio);
-    arrayCamposValidar.push(moneda_producto);
-    arrayCamposValidar.push(tamanios);
-    arrayCamposValidar.push(id_usuario);
+    arrayCamposValidar.push(id_producto);
 
-    if (!Array.isArray(tamanios))
-      return res.json({ ok: false, msg: "Debes enviar un array de tamaños." });
+    var validarCamposG = validarCamposGeneral(1, arrayCamposValidar);
+    if (!validarCamposG)
+      return res.json({ ok: false, msg: "Debes enviar el id del producto." });
 
-    arrayIdsValidar.push(categoria);
-    arrayIdsValidar.push(id_usuario);
-
-    if (
-      isValidObjectIdGeneral(arrayIdsValidar.length, arrayIdsValidar) != true
-    ) {
+    arrayIdsValidar.push(id_producto);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
       return res.json({
         ok: false,
-        msg: "Debes enviar los ids válidos.",
+        msg: "Debes enviar id producto válido válido.",
       });
+
+    if (categoria) {
+      arrayCamposValidar = [];
+      arrayCamposValidar.push(categoria);
+
+      var validarCamposGe = validarCamposGeneral(1, arrayCamposValidar);
+      if (!validarCamposGe)
+        return res.json({ ok: false, msg: "Debes enviar el id del producto." });
+
+      arrayIdsValidar = [];
+      arrayIdsValidar.push(categoria);
+
+      var validarIdse = isValidObjectIdGeneral(1, arrayIdsValidar);
+      if (!validarIdse)
+        return res.json({
+          ok: false,
+          msg: "Debes enviar id categoría válido.",
+        });
     }
 
-    //##////////////////// FIN VALIDACIONES ////////////////##///
+    var productoActuzado = await actuaizarProductoBD(req.body);
 
-    //////////////////// ACTUALIZANADO PRODUCTO /////////////////
-
-    /**
-     * Creando objeto con datos permitidos a actualizar
-     */
-
-    var objetoProducto = new Object({
-      id_producto: id_producto,
-      nombre_producto: nombre_producto,
-      descripcion: descripcion,
-      categoria: categoria,
-      precio_normal: precio_normal,
-      precio_descuento: precio_descuento,
-      cantidad_productos: cantidad_productos,
-      colores_hex: colores_hex,
-      tarifa_envio: tarifa_envio,
-      moneda_producto: moneda_producto,
-      tamanios: tamanios,
-    });
-
-    var productoActuzado = await actuaizarProductoBD(objetoProducto);
-    console.log("productoActuzado", productoActuzado);
+    return res.json(productoActuzado);
   } catch (error) {
     console.log("Error en catch");
     objetoRespuesta.ok = false;
@@ -523,6 +514,8 @@ const eliminarProductoIdProducto = async (req, res = response) => {
       return res.json({ ok: false, msg: "Debes enviar ids válidos." });
 
     ///Cuando todo sale ok/////
+    console.log("");
+    console.log("⚫ Eliminando producto.");
     var productosBD = await eliminarProductoYAsociados(idProducto);
 
     return res.json(productosBD);
@@ -534,6 +527,7 @@ const eliminarProductoIdProducto = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const mostrarProductoPorIdProducto = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -551,6 +545,21 @@ const mostrarProductoPorIdProducto = async (req, res = response) => {
 
     ///Cuando todo sale ok/////
     var productosBD = await listarProductosPorIdProducto(idProducto);
+    var valores = [];
+    var stock = 0;
+    productosBD.msg.tamanios.map((data) => {
+      if (data.precio_descuento) {
+        valores.push(data.precio_descuento);
+      } else {
+        valores.push(data.precio);
+      }
+      data.colores.map((dat) => (stock = stock + dat.cantidad));
+    });
+    var valorMinimo = Math.min(...valores);
+    var valorMaximo = Math.max(...valores);
+    productosBD.valorMaximo = valorMaximo;
+    productosBD.valorMinimo = valorMinimo;
+    productosBD.stock = stock;
 
     return res.json(productosBD);
   } catch (error) {
@@ -561,6 +570,7 @@ const mostrarProductoPorIdProducto = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const consultarTodasMonedasPaypalCtr = async (req, res = response) => {
   try {
     var objetoRespuesta = new Object({
@@ -582,13 +592,11 @@ const consultarTodasMonedasPaypalCtr = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
 const converirADolarPagarPaypalCtr = async (req, res = response) => {
   try {
     ///////ASIGNACIÓN DE DATO RECIBIDO ///////
     const { valor } = req.query;
-    
-
-    
 
     //////////// VALIDACIONES ////////////
     var arrayCamposValidar = [];
@@ -605,7 +613,7 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
       usd: null,
       tipo_error: null,
     });
-    
+
     if (!validarCamposG) {
       objetoRespuesta.ok = false;
       objetoRespuesta.msg = "Debes enviar un valor a convertir.";
@@ -613,7 +621,6 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
 
       return res.json(objetoRespuesta);
     }
-
 
     //////// CONVERSIÓN PEN - USD //////
     var conversion = await consultarConvertirMonedaTiempoReal(valor);
@@ -636,6 +643,223 @@ const converirADolarPagarPaypalCtr = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
 };
+
+const valorInicialFinalProductoCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    const { idProducto } = req.params;
+    var arrayCamposValidar = [];
+    var arrayIdsValidar = [];
+
+    arrayCamposValidar.push(idProducto);
+
+    var validarCamposG = validarCamposGeneral(1, arrayCamposValidar);
+    if (!validarCamposG)
+      return res.json({ ok: false, msg: "Debes enviar los datos necesarios." });
+
+    arrayIdsValidar.push(idProducto);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    var productoBD = await listarProductosPorIdProducto(idProducto);
+    console.log("productoBD", productoBD);
+    if (!productoBD.ok) return res.json(productoBD);
+
+    var valores = [];
+    var stock = 0;
+    productoBD.msg.tamanios.map((data) => {
+      if (data.precio_descuento) {
+        valores.push(data.precio_descuento);
+      } else {
+        valores.push(data.precio);
+      }
+      data.colores.map((dat) => (stock = stock + dat.cantidad));
+    });
+    var valorMinimo = Math.min(...valores);
+    var valorMaximo = Math.max(...valores);
+
+    return res.json({
+      ok: true,
+      precioMinimo: valorMinimo,
+      precioMaximo: valorMaximo,
+      stock: stock,
+    });
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    console.log("Error en catch " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch ";
+    return objetoRespuesta;
+  }
+};
+
+const cambiarImagenPrincipalProductoCtr = async (req, res = response) => {
+  try {
+    console.log("Decibidos ->", req.body);
+
+    const { id_producto, id_foto } = req.body;
+
+    const cambioImagenPrincipal = await cambioImagenPrincipalProducto(
+      id_producto,
+      id_foto
+    );
+
+    return res.json(cambioImagenPrincipal);
+
+    ///Cuando todo sale ok/////
+  } catch (error) {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    console.log("Error en catch cambiarImagenPrincipalProductoCtr " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch cambiarImagenPrincipalProductoCtr";
+    return res.json(objetoRespuesta);
+  }
+};
+
+const agregarAlCarritoCtr = async (req, res = response) => {
+  console.log("Agregando producto a carrito de compras");
+
+  try {
+    const { producto, usuario, id_tamanio, id_color, cantidad } = req.body;
+
+    var arrayCamposValidar = [];
+    var arrayIdsValidar = [];
+
+    arrayCamposValidar.push(producto);
+    arrayCamposValidar.push(usuario);
+    arrayCamposValidar.push(id_tamanio);
+    arrayCamposValidar.push(id_color);
+    arrayCamposValidar.push(cantidad);
+
+    var validarCamposG = validarCamposGeneral(5, arrayCamposValidar);
+    if (!validarCamposG)
+      return res.json({ ok: false, msg: "Debes enviar los datos necesarios." });
+
+    arrayIdsValidar.push(producto);
+    arrayIdsValidar.push(usuario);
+    arrayIdsValidar.push(id_tamanio);
+    arrayIdsValidar.push(id_color);
+
+    var validarIds = isValidObjectIdGeneral(4, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    var carrito = await agregarAlCarrito(req.body);
+    console.log(" | Producto agregado correctamente al carrito.");
+
+    return res.json(carrito);
+  } catch (error) {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    console.log("Error en catch agregarAlCarritoCtr. " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch agregarAlCarritoCtr. ";
+
+    return res.json(objetoRespuesta);
+  }
+};
+
+const mostrarProductosCarritoCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+    const { idUsuario } = req.params;
+
+    var arrayIdsValidar = [];
+    arrayIdsValidar.push(idUsuario);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    ///Cuando todo sale ok/////
+    var productosBD = await listarProductosCarritoUsuario(idUsuario);
+
+    return res.json(productosBD);
+  } catch (error) {
+    console.log("Error en catch mostrarProductosCarritoCtr", error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch mostrarProductosCarritoCtr";
+    return res.json(objetoRespuesta);
+  }
+};
+
+const quitarProductoCarritoCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+    const { idItemCarrito } = req.params;
+
+    var arrayIdsValidar = [];
+    arrayIdsValidar.push(idItemCarrito);
+    var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
+    if (!validarIds)
+      return res.json({ ok: false, msg: "Debes enviar ids válidos." });
+
+    ///Cuando todo sale ok/////
+    console.log("");
+    console.log("⚫ Eliminando producto.");
+    var productosBD = await eliminarProductoCarrito(idItemCarrito);
+
+    return res.json(productosBD);
+  } catch (error) {
+    console.log("Error en catch eliminarProductoIdProducto", error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch eliminarProductoIdProducto";
+    return res.json(objetoRespuesta);
+  }
+};
+
+const mostrarProductosCarritoCantidadCtr = async (req, res = response) => {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+
+    const { idUsuario } = req.params;
+    var cantidadProductosCarrito = await cantidadProductosCarritoF(idUsuario);
+
+    return res.json(cantidadProductosCarrito);
+    
+
+  } catch (error) {
+    console.log("Error en catch mostrarProductosCarritoCantidadCtr "+error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = ""+error;
+    objetoRespuesta.msg = "Error en catch mostrarProductosCarritoCantidadCtr";
+
+    return res.json(objetoRespuesta);
+  }
+}
+
 module.exports = {
   crearProducto,
   crearCategoria,
@@ -651,4 +875,10 @@ module.exports = {
   mostrarProductoPorIdProducto,
   consultarTodasMonedasPaypalCtr,
   converirADolarPagarPaypalCtr,
+  valorInicialFinalProductoCtr,
+  cambiarImagenPrincipalProductoCtr,
+  agregarAlCarritoCtr,
+  mostrarProductosCarritoCtr,
+  quitarProductoCarritoCtr,
+  mostrarProductosCarritoCantidadCtr
 };

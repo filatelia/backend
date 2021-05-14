@@ -8,8 +8,8 @@ const {obtenerIdCatPaisTema, listarCatalogosIdUsuario,  mostrarCatalogoPais,most
     crearCatalogo, mostrarCatalogo, eliminarCatalogo, 
     editarCatExcel } = require('../../controllers/catalogo/catalogo.controlador');
 const { subirEstampillasExcel } = require('../../controllers/catalogo/estampillas.controlador');
-const { verificarTemaYCrearlo } = require('../../middlewares/excel');
-const { validarJWT,validarDeJWTRoleAdmin } = require('../../middlewares/index.middle');
+const { verificarTemaYCrearlo } = require('../../funciones/excel');
+const { validarJWT,validarDeJWTRoleAdmin } = require('../../funciones/index.middle');
 
 
 

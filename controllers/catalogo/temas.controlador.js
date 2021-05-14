@@ -1,8 +1,8 @@
 const { response } = require("express");
-const { buscarTema } = require("../../middlewares/temas");
+const { buscarTema } = require("../../funciones/temas");
 const Tema = require("../../models/catalogo/temas");
 const Catalogo = require("../../models/catalogo/catalogo");
-const { buscarSolicitudIdTema } = require("../../middlewares/solicitudes");
+const { buscarSolicitudIdTema } = require("../../funciones/solicitudes");
 
 const getTemas = async (req, res) => {
   var temas = [];
@@ -126,6 +126,7 @@ const updateTema = async (req, res = response) => {
     });
   }
 };
+
 const validarDatosRecibidosMostrarDatosDuenio = async (
   req,
   res = response,

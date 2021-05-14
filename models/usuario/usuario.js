@@ -70,7 +70,6 @@ const UsuarioSchema = Schema(
     pais_usuario: {
       type: Schema.Types.ObjectId,
       ref: "Pais",
-      required: true,
       autopopulate: true,
     },
     codigopostal: {

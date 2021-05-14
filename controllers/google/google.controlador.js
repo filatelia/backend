@@ -3,18 +3,16 @@ const {
   accederGoogleSheetHojaFotoEstampillas,
   accederGoogleSheetHojaVariantes,
 } = require("../../credenciales_google_apis/conexion.google");
-const path = require("path");
-const fs = require("fs");
 const {
   guardarImagenGoogleSeet,
   crearImagenDirectorio,
-} = require("../../middlewares/subir_imagen");
+} = require("../../funciones/subir_imagen");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 const {
   eliminarEstampillaPorCodigo,
-} = require("../../middlewares/estampillas");
+} = require("../../funciones/estampillas");
 
-const { crearMuchasVariantesErrores, asociarVariantesErroresEstampilla } = require("../../middlewares/variantes_errores")
+const { crearMuchasVariantesErrores, asociarVariantesErroresEstampilla } = require("../../funciones/variantes_errores")
 
 
 const googlePruebas = async (req, res = response) => {
