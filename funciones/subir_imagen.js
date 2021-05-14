@@ -244,18 +244,17 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
             console.log("error ->", err);
           });
 
-
         return objetoRespuesta;
       }
       /////// FIN PROCESO //////
 
-      /////// PROCESO DE RETORNAR EL ERROR PARA TIPOS DE IMAGEN NO ACPETADOS //////
-      else {
-        console.log("tipoImagen -> ", tipoImagen);
-        objetoRespuesta.msg = "Tipo de imagen no aceptado.";
-        return objetoRespuesta;
-      }
-      /////// FIN PROCESO //////
+      // /////// PROCESO DE RETORNAR EL ERROR PARA TIPOS DE IMAGEN NO ACPETADOS //////
+      // else {
+      //   console.log("tipoImagen -> ", tipoImagen);
+      //   objetoRespuesta.msg = "Tipo de imagen no aceptado.";
+      //   return objetoRespuesta;
+      // }
+      // /////// FIN PROCESO //////
     }
 
     /////// ASIGNANDO NOMBRE ÚNICO DE IMAGEN //////
@@ -265,6 +264,7 @@ async function crearImagenDirectorio(tipoImagen, idImagen) {
 
     //descargando y guardado imagen en directorio servidor
     if (tipoImagen == "variante_error" && idImagen == null) {
+
       urlImagenBD = "imagenes/predeterminadas/sin-imagen.jpg";
     } else {
       console.log("id imagen -> ", idImagen);
@@ -338,8 +338,6 @@ async function desasociarImagenDeProductoConIdImagen(_id, id_foto) {
       });
 
       if (contador != productoBD.fotos_producto) {
-        
-
         if (!productoBD.foto_principal) {
           productoBD.foto_principal = arrayImagenes[0];
         }
@@ -413,19 +411,15 @@ async function cambioImagenPrincipalProducto(_id, foto_principal) {
       objetoRespuesta.tipo_error = "Elemento no encontrado";
 
       return objetoRespuesta;
-      
     }
 
-    var existe =  false;
-    productoBD.fotos_producto.map(data =>
-      {
+    var existe = false;
+    productoBD.fotos_producto.map((data) => {
+      if (data._id == foto_principal) existe = true;
+    });
 
-        if(data._id == foto_principal) existe = true;
-      });
-
-      console.log("Existe -> ", existe);
-      if(existe){
-
+    console.log("Existe -> ", existe);
+    if (existe) {
       productoBD.foto_principal = foto_principal;
       await productoBD.save();
 
@@ -433,19 +427,13 @@ async function cambioImagenPrincipalProducto(_id, foto_principal) {
       objetoRespuesta.msg = "Imagen principal cambiada correctamente.";
 
       return objetoRespuesta;
+    } else {
+      objetoRespuesta.ok = false;
+      objetoRespuesta.msg =
+        "La imagen que deseas agregar como prinicpal debe estar asociada al producto.";
 
-      }else{
-
-        objetoRespuesta.ok = false;
-        objetoRespuesta.msg = "La imagen que deseas agregar como prinicpal debe estar asociada al producto.";
-  
-        return objetoRespuesta;
-    
-
-      }
-  
-  
-    
+      return objetoRespuesta;
+    }
 
     ///Cuando todo sale ok/////
   } catch (error) {
