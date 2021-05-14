@@ -2,29 +2,23 @@ const { Schema, model } = require("mongoose");
 
 const manco_listSchema = Schema(
   {
-      name: {
-          type: String,
-          required: true,
-          unique: true
-      },
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
     id_usuario: {
       type: Schema.Types.ObjectId,
       ref: "Usuarios",
       required: true,
       autopopulate: true,
     },
-    id_estampilla: {
-      type: Schema.Types.ObjectId,
-      ref: "Estampillas",
-      required: true,
-      autopopulate: true,
-    },
-    estado_estampilla: {
+    estado: {
       type: String,
-      default: "Es indiferente",
+      default: "public",
     },
   },
-  { collection: "bdfc_manco_list" }
+  { collection: "bdfc_manco_list_cat" }
 );
 manco_listSchema.plugin(require("mongoose-autopopulate"));
 
@@ -34,4 +28,4 @@ manco_listSchema.method("toJSON", function () {
   return object;
 });
 
-module.exports = model("Manco_list", manco_listSchema);
+module.exports = model("Manco_list_cat", manco_listSchema);

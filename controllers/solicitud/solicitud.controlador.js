@@ -1,29 +1,25 @@
 const { response } = require("express");
 const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
 const Solicitud = require("../../models/solicitudes/solicitudes.model");
-const { retornarDatosJWT } = require("../../middlewares/validar-jwt");
+const { retornarDatosJWT } = require("../../funciones/validar-jwt");
 const Usuario = require("../../models/usuario/usuario");
-const Pais = require("../../models/catalogo/paises");
+
 const Catalogo = require("../../models/catalogo/catalogo");
+const colors = require("colors");
 const {
   eliminarEstampillasConIdCatalogo,
-} = require("../../middlewares/estampillas");
-const { eliminarCatalogo } = require("../../middlewares/catalogo");
-const { consultarDatosConCorreo } = require("../../middlewares/usuario");
-const { buscarNombreTipoCatalogo } = require("../../middlewares/tipo_catalogo");
-const { buscarTema } = require("../../middlewares/temas");
-const { buscarPaisPorNombre } = require("../../middlewares/paises");
+} = require("../../funciones/estampillas");
+const { eliminarCatalogo } = require("../../funciones/catalogo");
+
+const { buscarTema, crearNuevoTema } = require("../../funciones/temas");
+
 const {
   crearPrimeraSolicitud,
   crearSegundaSolicitud,
   crearSolicitudAdmin,
-} = require("../../middlewares/solicitudes");
-const { crearCatalogo } = require("../../middlewares/catalogo");
+} = require("../../funciones/solicitudes");
 
-const {
-  enviarCorreos,
-  enviarCorreoAprobacion,
-} = require("../../middlewares/index.middle");
+const { enviarCorreoAprobacion } = require("../../funciones/index.middle");
 
 const crearSolicitud = async (req, res) => {
   try {
@@ -38,8 +34,17 @@ const crearSolicitud = async (req, res) => {
       pais_catalogo_solicitud,
       tema_catalogo_solicitud,
     } = req.body;
+
+    console.log("req.body", req.body);
+
+    console.log("nombre_catalogo_solicitud ->", nombre_catalogo_solicitud);
+    console.log("tipo_catalogo_solicitud ->", tipo_catalogo_solicitud);
+    console.log("pais_catalogo_solicitud ->", pais_catalogo_solicitud);
+    console.log("tema_catalogo_solicitud ->", tema_catalogo_solicitud);
+
     //Con el token se busca el correo.
     const correo = retornarDatosJWT(token);
+
     var usuarioBDA = await Usuario.findOne({ email: correo });
     if (usuarioBDA.roleuser == "admin") {
       var solicitudAdmin = await crearSolicitudAdmin(
@@ -65,6 +70,23 @@ const crearSolicitud = async (req, res) => {
     }
 
     if (!id_solicitud || id_solicitud == null) {
+      console.log(colors.red("primera solicitud"));
+
+      var existeTema = await buscarTema(tema_catalogo_solicitud);
+      if (existeTema == null) {
+        console.log("crear un catalogo nuevo");
+
+        var ter = await crearNuevoTema(tema_catalogo_solicitud);
+        console.log("tema_catalogo_solicitud -->", tema_catalogo_solicitud);
+        console.log("ter", ter);
+      } else {
+        console.log("tema duplicado");
+
+        return res.json({
+          ok: false,
+          msg: "Tema duplicado",
+        });
+      }
       var prime = await crearPrimeraSolicitud(
         nombre_catalogo_solicitud,
         tipo_catalogo_solicitud,
@@ -99,7 +121,7 @@ const crearSolicitud = async (req, res) => {
       ok: false,
       mensaje: "No se ha podido crear la solicitud",
       ubicado_error: "Controller -> tipo_solicitud.js -> catch",
-      error: e,
+      error: "" + e,
     });
   }
 };

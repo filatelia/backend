@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+</head>
+
+<body>
+    <form id="formulario" enctype="multipart/form-data">
+
+        <input type="file" id="inp" name="fotos_producto" multiple id="">
+
+
+    </form>
+    <button onclick="enviar()" class="btn btn-success">Enviar</button>
+
+
+    <script>
+
+        var tamanios = [];
+        tamanios.push("Medio 293x330x70 mm.");
+        tamanios.push("Grande 493x730x100 mm.");
+        tamanios.push("Pequeño 193x130x30 mm.");
+
+        var objColorCantidad = new Object();
+
+        tamanios.map(data => {
+            objColorCantidad[data] = [null];
+        });
+
+        console.log("objColorCantidad", objColorCantidad);
+
+
+
+
+        ////////// Pequeño 193x130x30 mm. /////
+        var arrObjetos = [];
+
+
+        var objinterno = new Object();
+        objinterno.color = "negro";
+        objinterno.cantidad = 10;
+        objinterno.valor_individual = 300;
+        arrObjetos.push(objinterno);
+
+        var objinterno = new Object();
+
+        objinterno.color = "amarillo";
+        objinterno.cantidad = 2;
+        objinterno.valor_individual = 300;
+        arrObjetos.push(objinterno);
+        var objinterno = new Object();
+
+        objinterno.color = "dorado";
+        objinterno.cantidad = 6;
+        objinterno.valor_individual = 300;
+        arrObjetos.push(objinterno);
+
+        objColorCantidad["Pequeño 193x130x30 mm."] = arrObjetos;
+
+
+
+        ////////// Medio 293x330x70 mm. /////
+        arrObjetos = [];
+
+        var objinterno = new Object();
+        objinterno.color = "azul";
+        objinterno.cantidad = 1;
+        objinterno.valor_individual = 500;
+        arrObjetos.push(objinterno);
+
+
+        var objinterno = new Object();
+        objinterno.color = "verde";
+        objinterno.cantidad = 12;
+        objinterno.valor_individual = 500;
+        arrObjetos.push(objinterno);
+
+        objColorCantidad["Medio 293x330x70 mm."] = arrObjetos;
+
+
+        ////////// Grande 493x730x100 mm. /////
+        arrObjetos = [];
+
+        var objinterno = new Object();
+        objinterno.color = "gris";
+        objinterno.cantidad = 11;
+        objinterno.valor_individual = 700;
+        arrObjetos.push(objinterno);
+
+
+        var objinterno = new Object();
+        objinterno.color = "blanco";
+        objinterno.cantidad = 8;
+        objinterno.valor_individual = 700;
+        arrObjetos.push(objinterno);
+
+        objColorCantidad["Grande 493x730x100 mm."] = arrObjetos;
+
+
+
+        console.log("objColorCantidad", objColorCantidad);
+
+        function enviar() {
+            //Taemos el formulario
+            //Traemos los datos del input file multiple
+            var fotos_producto = document.getElementById("inp");
+
+            var tamanios = [];
+            tamanios.push("Medio 293x330x70 mm.");
+            tamanios.push("Grande 493x730x100 mm.");
+            tamanios.push("Pequeño 193x130x30 mm.");
+
+            objetoTamanioColor = new Object();
+
+            tamanios.map(data => {
+                objetoTamanioColor[data];
+            });
+
+            var colores_hex = [];
+            colores_hex.push("#F07459");
+            colores_hex.push("#465690");
+            colores_hex.push("#A00082");
+
+            /////ASIGNANDO VALORES/////
+
+            var formData = new FormData(document.getElementById("formulario"));
+
+            formData.append("id_usuario", "60775d7eddb0b610f83d117a");
+            formData.append("nombre_producto", "Estampillas Azules");
+            formData.append("descripcion", "Éste es un producto de prueba");
+            formData.append("categoria", "6085cba8ac8965069884f067");
+            formData.append("precio_normal", 1500);
+            formData.append("precio_descuento", 1354);
+            formData.append("cantidad_productos", 12);
+            colores_hex.map(data => formData.append("colores_hex", data));
+            formData.append("tarifa_envio", 40);
+            formData.append("moneda_producto", "USD");
+            tamanios.map(data => formData.append("tamanios", data));
+
+            const Http = new XMLHttpRequest();
+            const url = 'http://localhost:3000/api/tienda/producto';
+            Http.open("POST", url);
+
+            Http.send(formData);
+
+            Http.onreadystatechange = (e) => {
+                console.log("Http.responseText", Http.responseText);;
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

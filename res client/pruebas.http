@@ -1,0 +1,92 @@
+
+post http://localhost:3000/api/pruebas/agregar
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
+
+{
+   
+"id_mancolist_cat": "607c4d33b3475e18bab23c94",
+"ids_estampillas": ["6079569b2b31e0bbd49351c0", "6079569c2b31e0bbd49351c1"]
+}
+
+
+###
+
+//Mostrar estampillas mancolistaEnBD
+
+post http://localhost:3000/api/pruebas/?id=607c4d33b3475e18bab23c94
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
+
+{
+   
+"id_mancolist_cat": "607c4d33b3475e18bab23c94"
+}
+
+###
+
+//Generar formato excel con id catalogo
+
+post http://localhost:3000/api/pruebas/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
+
+{
+    "idCatalogo": "60790e04ca4f448aca44f90a"
+}
+
+
+###
+
+//Generar formato excel con id catalogo
+
+post http://localhost:3000/api/pruebas/recibir-excel/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
+
+{
+    "idCatalogo": "60790e04ca4f448aca44f90a"
+}
+
+
+###
+//Pruebas con googleapis
+
+post http://localhost:3000/api/pruebas/google/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
+
+{
+}
+
+
+###
+
+
+    
+GET https://openexchangerates.org/api/latest.json?app_id=2753f0ce42a641188e6b96a31977228e
+
+content-type: application/json
+{
+
+}
+
+
+###
+
+
+    
+GET https://openexchangerates.org/api/convert/19999.95/GBP/EUR?app_id=2753f0ce42a641188e6b96a31977228e
+
+
+content-type: application/json
+{
+}
+
+
+###
+
+    
+get http://localhost:3000/api/pruebas/guardar-base64/
+content-type: application/json
+//x-rapidapi-key: '4b7432b598mshcef6a4d4e6c9593p1e598djsn536b309ce076

@@ -1,15 +1,16 @@
 
+
 //Nueva solicitud Cliente
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODE1MjU1LCJleHAiOjE2MTY5MDE2NTV9.OdErLHGmg3EV64LM1hUKUxcKOqkf0DVjVtglM5az6AY
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwN2RiZjY4Nzg1ZWY1MThjMGEzYWVkOSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4ODUzNzY4LCJleHAiOjE2MTg5NDAxNjh9.tg5fEnobIBAEnrB7npPJ-cvY4mf7C0yRX7pmRdBfWZk
 
 {
 
-"nombre_catalogo_solicitud": "Prueba para video", 
-"tipo_catalogo_solicitud" :"605e0c253da4940844a1c938", 
-"pais_catalogo_solicitud" : "Peru",
-"tema_catalogo_solicitud": "Video"
+"nombre_catalogo_solicitud": "Catalogo Reina Victoria", 
+"tipo_catalogo_solicitud" :"607da0b37bd2c72eb025ae6a", 
+//"pais_catalogo_solicitud" : "Peru",
+"tema_catalogo_solicitud": "Reina Victoria"
 
 }
 
@@ -17,51 +18,56 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 //Nueva solicitud admion
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyIsImVtYWlsIjoiYWxleGlzMTFkaW1lbkBnbWFpbC5jb20iLCJfaWQiOiI2MDc3NGIyNTFlODc3MzFmZWNlZGFiYmEiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxOTU0ODEwOCwiZXhwIjoxNjE5NjM0NTA4fQ.4_TrDxMe6PdBqFEOaV5DwHIGz8SwuxUCE-iGT06Wi1s
 
 {
 
 "nombre_catalogo_solicitud": "Prueba para aprobar", 
-"tipo_catalogo_solicitud" :"605e0c253da4940844a1c938", 
-"tema_catalogo_solicitud": "Video"
+"tipo_catalogo_solicitud" :"605fc7fef45d98d0fcfc7892", 
+"tema_catalogo_solicitud": "Vidasdassdfeo martes.ww"
 
 }
 
 ###
-
-//Cuando se envia solo la solicitud, es para crear una segunda.
-post http://localhost:3000/api/solicitudes/
+post https://api.filateliaperu.com/api/solicitudes/
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2ODE1MjU1LCJleHAiOjE2MTY5MDE2NTV9.OdErLHGmg3EV64LM1hUKUxcKOqkf0DVjVtglM5az6AY
+
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUBjbGllbnRlLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2MzYzMjY4LCJleHAiOjE2MTY0NDk2Njh9.GU8zH-jnt1kRSabkcyUwP8u5Nj4l1zfIPLs_VoHf-6w
 
 {
 
-"id_solicitud": "605ea693c6e32a1e4c7e5f24"
+"catalogo_nombre": "Cat prueba con correo", //No oblicagotio
+"pais" : "Peru", //Obligatorio, seleciconar desde lista plegable y enviar nombre
+"valor_catalogo" :"" //Nop obligatorio
+
 }
+
+
 ###
 
 post http://localhost:3000/api/solicitudes/aprobacion
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjgxMjcxNiwiZXhwIjoxNjE2ODk5MTE2fQ.b36OT00b6EoaIz1hy4gxBLFvdu4zICaFuENk0U70HXQ
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4ODU0MzQ5LCJleHAiOjE2MTg5NDA3NDl9.G99gk59tsvzEcqgZvI6BeNWIKto0QtIGTSssj8LYKHo
 
 {
-   "id_solicitud": "605ebc0f84b18e192c4c1260",
-   "mensaje_rechazo": "Se rechaza porque incumple con las políticas internas"
-}
-###
+   "id_solicitud": "607dbf9e785ef518c0a3aedb"
 
+}
+
+###
 //Consultar todas las solicitudes del usuario logado
+
 get https://api.filateliaperu.com/api/solicitudes/mis-solicitudes/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiR2FicmllbCBHcmFjaWEgTWFycXVleiIsImVtYWlsIjoiY2xpZW50ZUBjbGllbnRlLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2MzYzMjY4LCJleHAiOjE2MTY0NDk2Njh9.GU8zH-jnt1kRSabkcyUwP8u5Nj4l1zfIPLs_VoHf-6w
 
-###
-//Cnsultar todas las solicitudes existentes, solo para admin 
+
 get https://api.filateliaperu.com/api/solicitudes
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
 
-###
+
+
 //para rechazar
 post http://localhost:3000/api/solicitudes/aprobacion
 content-type: application/json
@@ -73,10 +79,7 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 
 ###
 //Para aprobar
-post http://localhost:3000/api/solicitudes/aprobacion
-content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjQ0Nzg3NywiZXhwIjoxNjE2NTM0Mjc3fQ.iNwQDUHWvYKxJhtG3KF9D0ZNiU7rPFSnVaYayZJKRy0
 
-{
-   "id_solicitud": "6059f8653cef5204b8b7f16e"
-}
+get http://localhost:3000/api/moderacion/tipos-estados-reporte/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImFkbWluaXN0cmFkb3JAeW9wbWFpbC5jb20iLCJfaWQiOiI2MDc3NGFjZTFlODc3MzFmZWNlZGFiYjkiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxODUxODEzOSwiZXhwIjoxNjE4NjA0NTM5fQ.5fhm3fMli7QOEs_Ut6ekmDB9XzSuXUzDAGCQ7V09ZUU

@@ -1,0 +1,17 @@
+get http://localhost:3000/api/reportes/tipos-estados-reporte/
+content-type: application/json
+
+{
+
+}
+
+
+###
+post http://localhost:3000/api/estampillas/editar-individual
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyIsImVtYWlsIjoiYWxleGlzMTFkaW1lbkBnbWFpbC5jb20iLCJfaWQiOiI2MDc3NGIyNTFlODc3MzFmZWNlZGFiYmEiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxOTAxODczMCwiZXhwIjoxNjE5MTA1MTMwfQ.WdXnMcI7sV3aSx5Q7qcnuN888Z7szwQJuvLuD43aWjk
+
+{
+    "idEstampilla": "607e0aae51f7fb33db4069b9",
+    "CATEGORIA": "Sellos Postales"
+}

@@ -9,11 +9,14 @@ const Path = require("path");
 const Estampillas = require("../../models/catalogo/estampillas.modelo");
 const { getPaisByName } = require("../catalogo/pais.controlador");
 const Pais = require("../../models/catalogo/paises");
-const { crearTema, enviarCorreos } = require("../../middlewares/index.middle");
+const { crearTema, enviarCorreos } = require("../../funciones/index.middle");
 const { isValidObjectId } = require("mongoose");
-const { retornarDatosJWT } = require("../../middlewares/index.middle");
+const { retornarDatosJWT } = require("../../funciones/index.middle");
 const Tipo_solicitud = require("../../models/solicitudes/tipoEstadoSolicitud.model");
 const Solicitud = require("../../models/solicitudes/solicitudes.model");
+const { ObjectId } = require("mongoose").Types;
+const { validarCamposGeneral, isValidObjectIdGeneral } = require("../../funciones/validar-campos");
+const { consultarCatalogosIdUsuario, buscarIdCatConIdTema, buscarIdCatConIdPais } = require("../../funciones/catalogo");
 
 const crearCatalogo = async (req, res = response) => {
   try {
@@ -122,7 +125,7 @@ const crearCatalogo = async (req, res = response) => {
       }
     }
 
-  await crearSolicitud(idCatalogo);
+    await crearSolicitud(idCatalogo);
     console.log("Contador: ", contador);
     if (inCompletos.length == 0 && contador == 0) {
       return res.json({
@@ -177,8 +180,8 @@ const crearCatalogo = async (req, res = response) => {
   }
 };
 async function crearSolicitud(id_catalogo) {
-console.log("Id catalogo", id_catalogo);
-var id_solicitud = await Catalogo.findOne({_id:id_catalogo});
+  console.log("Id catalogo", id_catalogo);
+  var id_solicitud = await Catalogo.findOne({ _id: id_catalogo });
 
   console.log("Id solicitud desde excel", id_solicitud);
   if (id_solicitud._id && id_solicitud.solicitud != null) {
@@ -199,9 +202,12 @@ var id_solicitud = await Catalogo.findOne({_id:id_catalogo});
       abreviacionSolicitud.tipoEstadoSolicitud_id = _id;
       console.log("Abreviacion: ", abreviacionSolicitud);
       var solicitudActuaizada = await abreviacionSolicitud.save();
-      await enviarCorreos(null, solicitudActuaizada.usuario_id.email, solicitudActuaizada.usuario_id.name,
+      await enviarCorreos(
+        null,
+        solicitudActuaizada.usuario_id.email,
+        solicitudActuaizada.usuario_id.name,
         solicitudActuaizada.tipoEstadoSolicitud_id.descripcion
-        ); 
+      );
 
       return solicitudActuaizada;
     }
@@ -294,28 +300,97 @@ const mostrarCatalogoPais = async (req, res) => {
 //Mostrar catalogo por rango de años
 const mostrarCatalogoAnio = async (req, res) => {
   const { anioI, anioF } = req.params;
+  const { pais, tema } = req.query;
   try {
+    var query_cat = {};
+    if (pais && pais != "") {
+      query_cat.pais = ObjectId(pais.trim());
+    } else if (tema && tema != "") {
+      query_cat.tema_catalogo = ObjectId(tema);
+    }
+    var catalogo = await Catalogo.find(query_cat, {
+      tema_catalogo: 0,
+      solicitud: 0,
+      tipo_catalogo: 0,
+      pais: 0,
+    });
+    var id_catalogo = "";
+    if (!catalogo || catalogo.length == 0) throw "error list";
+    id_catalogo = ObjectId(catalogo[0]._id);
+
     if (Number(anioI) && Number(anioF)) {
-      console.log("anio f", Number(anioF));
-      const catalogoCompleto = await Estampillas.find({
+      const estampillas = await Estampillas.find({
         $and: [
           {
-            Anio: {
+            ANIO: {
               $gte: Number(anioI),
             },
           },
-
           {
-            Anio: {
+            ANIO: {
               $lte: Number(anioF),
             },
           },
+          { CATALOGO: id_catalogo },
         ],
-      });
+      }).count();
+      console.log(id_catalogo);
+      const catalogoCompleto = await Estampillas.aggregate([
+        {
+          $addFields: {
+            regex: {
+              $regexFind: {
+                input: "$ANIO",
+                regex: "^\\d+",
+              },
+            },
+          },
+        },
+        {
+          $set: {
+            anio: {
+              $convert: {
+                input: "$regex.match",
+                to: "int",
+              },
+            },
+          },
+        },
+        {
+          $match: {
+            $and: [
+              {
+                anio: {
+                  $gte: Number(anioI),
+                },
+              },
+              {
+                anio: {
+                  $lte: Number(anioF),
+                },
+              },
+              { CATALOGO: id_catalogo },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: "$anio",
+          },
+        },
+        {
+          $project: {
+            anio: "$_id",
+          },
+        },
+      ]);
 
       res.json({
         ok: true,
-        catalogoPorPais: catalogoCompleto,
+        data: catalogoCompleto,
+        total: estampillas,
+        start: Number(anioI),
+        end: Number(anioF),
       });
     } else {
       res.json({
@@ -339,8 +414,7 @@ const mostrarCatalogo = async (req, res) => {
   for (let index = 0; index < catalogoCompleto.length; index++) {
     const element = catalogoCompleto[index]._id;
     var nuevoCat = await Estampillas.find({ Catalogo: element });
-
-    cat.push(nuevoCat);
+    if (nuevoCat.length > 0) cat.push(nuevoCat);
   }
 
   return res.json({
@@ -353,7 +427,7 @@ const eliminarCatalogo = async (req, res) => {
   try {
     console.log("entramos a eliminar", id);
 
-    const eliminarElementoCatalogo = await Estampillas.findOneAndDelete(id);
+    const eliminarElementoCatalogo = await Estampillas.remove({ _id: id });
     console.log("elemento eliminado:", eliminarElementoCatalogo);
 
     return res.json({
@@ -393,7 +467,7 @@ const mostrarMisCatalogos = async (req, res) => {
 const mostrarMisEstampillas = async (req, res) => {
   var id_catalogo = req.query.id_catalogo;
 
-  var estampillasCat = await Estampillas.find({ Catalogo: id_catalogo });
+  var estampillasCat = await Estampillas.find({ CATALOGO: id_catalogo });
 
   return res.json({
     ok: true,
@@ -401,35 +475,30 @@ const mostrarMisEstampillas = async (req, res) => {
   });
 };
 
-const mostrarCatalogoId = async (req, res) =>{
+const mostrarCatalogoId = async (req, res) => {
   var id_solicitud = req.params.id;
   console.log("id_solicitud", id_solicitud);
 
-  if(!id_solicitud || id_solicitud == null || !isValidObjectId(id_solicitud) ){
-
+  if (!id_solicitud || id_solicitud == null || !isValidObjectId(id_solicitud)) {
     return res.json({
       ok: false,
-      msg: "Debes enviar una solicitud valido"
+      msg: "Debes enviar una solicitud valido",
     });
   }
 
-  var catalogo = await Catalogo.findOne({solicitud:id_solicitud});
+  var catalogo = await Catalogo.findOne({ solicitud: id_solicitud });
   if (catalogo == null) {
-    return res.json(
-      {
-        ok:false,
-        msg: "No existe el catalogo que deseas buscar"
-      }
-    );
+    return res.json({
+      ok: false,
+      msg: "No existe el catalogo que deseas buscar",
+    });
   }
 
-  return res.json(
-    {
-      ok: true,
-      catalogo: catalogo
-    }
-  );
-}
+  return res.json({
+    ok: true,
+    catalogo: catalogo,
+  });
+};
 
 //funciones
 function procesarExcel(exc) {
@@ -440,12 +509,27 @@ function procesarExcel(exc) {
     const nombreHoja = ex.SheetNames;
     let datos = excel.utils.sheet_to_json(ex.Sheets[nombreHoja[0]]);
     var datosValidos = new Array();
-    var datosValidados = validarCamposExcel(datos);
+    //var datosValidados = validarCamposExcel(datos);
 
-    return datosValidados;
+    return datos;
   } catch (e) {
     console.log("error: ", e);
   }
+}
+
+//funciones
+function procesarExcelPruebas(tmp) {
+  // try {
+  //   const ex = excel.readFile(tmp);
+  //   const ex = excel.readFile(tmp);
+  //   const nombreHoja = ex.SheetNames;
+  //   let datos = excel.utils.sheet_to_json(ex.Sheets[nombreHoja[0]]);
+  //   var datosValidos = new Array();
+  //   //var datosValidados = validarCamposExcel(datos);
+  //   return datos;
+  // } catch (e) {
+  //   console.log("error: ", e);
+  // }
 }
 
 //Se validan los campos del excel que vienen vacios o defectuosos
@@ -570,8 +654,178 @@ async function buscandoUrlImgCat(name) {
   }
 }
 
+const estampillaPage = async (req, res) => {
+  try {
+    let { perpage, page, tipo, pais, tema, anios, q, start, end } = req.query;
+    page = parseInt(page) || 1;
+    perpage = parseInt(perpage) || 10;
+    var query = {};
+    var query_cat = {};
+    if (pais && pais != "") {
+      query_cat.pais = ObjectId(pais.trim());
+    } else if (tema && tema != "") {
+      query_cat.tema_catalogo = ObjectId(tema);
+    }
+
+    var catalogo = await Catalogo.find(query_cat, {
+      tema_catalogo: 0,
+      solicitud: 0,
+      tipo_catalogo: 0,
+      pais: 0,
+    });
+    var id_catalogo = "";
+    if (!catalogo || catalogo.length == 0) throw "error list";
+
+    if (anios && anios != "") {
+      anios = JSON.parse(anios);
+      query = { $or: [] };
+      anios.forEach((element) => {
+        query.$or.push({
+          ANIO: element,
+        });
+      });
+    }
+
+    if (q && q != "") {
+      if (!query.$or) query.$or = [];
+      console.log(isNaN(q));
+      if (!isNaN(q)) {
+        query.$or.push({
+          ANIO: q,
+        });
+      } else {
+        query.$or.push({
+          Descripcion: { $regex: q, $options: "i" },
+        });
+        query.$or.push({
+          Descripcion_de_la_serie: { $regex: q, $options: "i" },
+        });
+        query.$or.push({
+          Valor_Facial: { $regex: q, $options: "i" },
+        });
+        query.$or.push({
+          Codigo: { $regex: q, $options: "i" },
+        });
+      }
+    }
+    if (start != 0 && end != 0) {
+      query.$and = [
+        {
+          ANIO: {
+            $gte: Number(start),
+          },
+        },
+        {
+          ANIO: {
+            $lte: Number(end),
+          },
+        },
+      ];
+    }
+
+    id_catalogo = catalogo[0]._id;
+    query.CATALOGO = ObjectId(id_catalogo);
+    var estampillas = await Estampillas.find(query, { CATALOGO: 0 })
+      .skip(perpage * page - perpage)
+      .limit(perpage);
+    var count = await Estampillas.find(query).count();
+    res.status(200).send({
+      data: estampillas,
+      current: page,
+      pages: Math.ceil(count / perpage),
+    });
+  } catch ($e) {
+    res.status(400).send({
+      msg: $e,
+      ok: false,
+    });
+  }
+};
+const listarCatalogosIdUsuario = async (req, res) => {
+  const { idUsuario, asd } = req.params;
+
+  var ArrayElementos = new Array();
+
+  ArrayElementos.push(idUsuario);
+  var validación = validarCamposGeneral(1, ArrayElementos);
+
+  if (validación != true) {
+    return res.json({
+      ok: false,
+      msg: "Debes enviar los datos obligatorios.",
+    });
+  }
+  var catalogoIDUsuario = await consultarCatalogosIdUsuario(idUsuario);
+
+  if (catalogoIDUsuario.length == 0) {
+    return res.json({
+      ok: false,
+      msg: "El usuario reportado no tiene catalogos",
+    });
+  } else {
+    if (catalogoIDUsuario == false) {
+      return res.json({
+        ok: false,
+        msg: "Error en consulta de catalogos.",
+      });
+    } else {
+      return res.json({
+        ok: true,
+        msg: catalogoIDUsuario,
+      });
+    }
+  }
+};
+const obtenerIdCatPaisTema = async (req, res= response) => {
+
+  var aValidar = [];
+  const { id, tipo  } = req.query;
+  aValidar.push(id);
+  aValidar.push(tipo);
+  var validacionExistencia = validarCamposGeneral(2, aValidar);
+  if (validacionExistencia != true) {
+    return res.json(
+      {
+        ok: false,
+        msg: "Debes enviar los datos obligatorios"
+      });
+    
+  }
+
+  var validarObjet = isValidObjectIdGeneral(1, aValidar);
+  if (validarObjet != true) {
+    return res.json(
+      {
+        ok: false,
+        msg: "Debes enviar un id válido"
+      });
+    
+  }
+var idCat = "";
+  if(tipo == "tema"){
+     idCat = await buscarIdCatConIdTema(id);
+    
+  }else{
+    if (tipo== "pais") {
+      idCat = await buscarIdCatConIdPais(id);
+      
+    } else {
+      idCat = tipo+" no es un tipo aceptado."
+      return res.json({
+        ok: false,
+        msg: idCat
+      })
+    
+    }
+  }
+
+  return res.json({
+    ok: true,
+    msg: idCat
+  });
 
 
+}
 module.exports = {
   crearCatalogo,
   mostrarCatalogo,
@@ -581,5 +835,11 @@ module.exports = {
   mostrarCatalogoAnio,
   mostrarMisCatalogos,
   mostrarMisEstampillas,
-  mostrarCatalogoId
+  mostrarCatalogoId,
+  estampillaPage,
+  procesarExcel,
+  crearSolicitud,
+  procesarExcelPruebas,
+  listarCatalogosIdUsuario,
+  obtenerIdCatPaisTema
 };

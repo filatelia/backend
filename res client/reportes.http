@@ -1,0 +1,10 @@
+
+//Generar formato excel con id catalogo y cantidad de estampillas
+post http://localhost:3000/api/reportes/generar-excel/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4NDMxMTEwLCJleHAiOjE2MTg1MTc1MTB9.GxUU3TMZVZxznFAIrm07R6S6R8eid0vZU3tgheW8LOo
+
+{
+    "idCatalogo": "60822a112e13b9a988cf51c1",
+    "cantidad":"3"
+}

@@ -13,23 +13,26 @@ const UsuarioSchema = Schema(
       type: String,
       required: true,
     },
+    
+    reputacion: {
+      type: Number,
+      required: true,
+      default: 100
+    },
 
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    tipo_catalogo: {
+    tipo_catalogo: [{
       type: Schema.Types.ObjectId,
       ref: "TipoCatalogo",
-      required: true,
       autopopulate: true,
-    },
+    }],
     temas: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Tema",
-        autopopulate: true,
+        type: String,
       },
     ],
 
@@ -46,7 +49,7 @@ const UsuarioSchema = Schema(
     },
     telefono: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
@@ -67,13 +70,11 @@ const UsuarioSchema = Schema(
     pais_usuario: {
       type: Schema.Types.ObjectId,
       ref: "Pais",
-      required: true,
       autopopulate: true,
     },
     codigopostal: {
       type: String,
     },
-
     roleuser: {
       type: String,
       default: "cliente",
@@ -82,6 +83,11 @@ const UsuarioSchema = Schema(
       type: Boolean,
       default: true,
     },
+    token: {
+      type: String,
+      default: '',
+    },
+    
   },
   { collection: "bdfu_usuarios" }
 );

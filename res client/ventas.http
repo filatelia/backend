@@ -1,0 +1,63 @@
+
+post http://localhost:3000/api/solicitudes/
+content-type: application/json
+
+{
+"tipo_venta": "Catalogo Publicado",
+"abreviacion": "ACE2",
+"descripcion" : "El catalogo es público para todos"
+}
+
+
+###
+
+post http://localhost:3000/api/ventas/datos-envio
+content-type: application/json
+
+{
+    "usuario": "60774b251e87731fecedabba",
+    "telefono": "+573147733106",
+    "direccion_completa": "Cra 7 # 10-72, Popayan Cauca. Colombia.",
+    "otras_indicaciones": "Casa 12, esquinera.",
+    "codigo_postal": "000057"
+}
+
+
+###
+///Consuiltar datos de envio
+get http://localhost:3000/api/ventas/datos-envio/60774b251e87731fecedabba
+content-type: application/json
+
+{
+
+}
+
+
+###
+/// Crear nueva venta ///
+
+post http://localhost:3000/api/ventas
+content-type: application/json
+
+{
+ "comprador": "60774b251e87731fecedabba",
+ "tipo_pago": 0,
+ "productos": [
+     {
+         "producto": "609407aa446569f3b46e3ce8",
+         "id_tamanio": "6096ba05479db684f038c871",
+         "id_color": "6096ba05479db684f038c872",
+         "cantidad": 1,
+         "tipo_envio": "Lima",
+         "valor_envio": 30
+     },
+          {
+         "producto": "609587f3eb0ae529f6241af7",
+         "id_tamanio": "609587f3eb0ae529f6241af8",
+         "id_color": "609587f3eb0ae529f6241af9",
+         "cantidad": 1,
+         "tipo_envio": "Provincias",
+         "valor_envio": 20
+     }
+     ]
+}

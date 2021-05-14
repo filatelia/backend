@@ -1,22 +1,18 @@
 require("dotenv").config();
-const Color = require('colors');
+const Color = require("colors");
 
 const express = require("express");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
-const {
-  verificarBanderasPaises,
-  verificarTipoSolicitudYCrearla,
-  initial_setup,
-} = require("./middlewares/setup");
+const { initial_setup } = require("./funciones/setup");
 const { dbConnection } = require("./database/config");
 const path = require("path");
-const { Promise } = require("mongoose");
+
 const { promises } = require("dns");
 // Crear el servidor de express
 const app = express();
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -26,7 +22,7 @@ app.use(express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 
 // Lectura y parseo del body
-app.use(express.json());
+app.use(express.json({ limit: "50mb", extended: true }));
 
 //carga de archivos con fileupload
 app.use(
@@ -62,13 +58,26 @@ app.use(
 app.use("/api/catalogo/uploads/excel", require("./routes/catalogo/catalogo"));
 app.use("/api/catalogo/", require("./routes/catalogo/mostrarImgs"));
 app.use("/api/catalogo/manco_list/", require("./routes/catalogo/manco_list"));
-app.use("/api/catalogo/tipo-catalogo", require("./routes/catalogo/tipo_catalogo"));
+app.use(
+  "/api/catalogo/tipo-catalogo",
+  require("./routes/catalogo/tipo_catalogo")
+);
 app.use("/api/solicitudes/", require("./routes/solicitudes/solicitudes.route"));
+app.use("/api/estampillas/", require("./routes/catalogo/estampillas.ruta"));
+app.use(
+  "/api/variantes-errores/",
+  require("./routes/catalogo/variantes_errrores.ruta")
+);
+app.use("/api/reportes/", require("./routes/reportes/formato-excel.ruta"));
 
-app.use("/api/pruebas", require("./routes/pruebas/excel"));
+app.use("/api/pruebas/", require("./routes/pruebas/excel"));
+app.use("/api/moderacion/", require("./routes/moderacion/moderacion.ruta"));
 
 //app.use( '/api/catalogo/temas', require('./routes/catalogo/temas') );
 app.use("/api/login", require("./routes/auth/auth"));
+app.use("/api/tienda", require("./routes/tienda/tienda.ruta"));
+app.use("/api/paypal", require("./routes/tienda/paypal.ruta"));
+app.use("/api/ventas", require("./routes/tienda/ventas.ruta"));
 
 app.listen(process.env.PORT, () => {
   console.log("Servidor corriendo en puerto " + process.env.PORT);

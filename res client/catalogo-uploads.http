@@ -7,13 +7,14 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3000/api/catalogo/paises/all
+GET https://api.filateliaperu.com/api/catalogo/paises
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlJvZHJpZ29PbGFndWUiLCJlbWFpbCI6ImRvcmFkb0Bkb3JhZG8uY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTU1NzQzNzIsImV4cCI6MTYxNTY2MDc3Mn0.WISxDXznCiPqbjLzAOL-lHVS8db-hfV9DC_AJQSO1ds
 
 
 
 ###
+
 get http://localhost:3000/api/catalogo/uploads
 content-type: application/json
 
@@ -27,12 +28,11 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 
 
 ###
-get http://localhost:3000/api/catalogo/uploads/excel/mis-estampillas
+get http://localhost:3000/api/catalogo/uploads/excel/mis-estampillas/607861c8f8f3f570dc270da0
 content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiUGFyYSBwcnVlYmFzIGVudmlvIGVtYWlsIiwiZW1haWwiOiJwcnVlYmFzLWZpbGF0ZWxpYUB5b3BtYWlsLmNvbSIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE2NTI3NjkwLCJleHAiOjE2MTY2MTQwOTB9.2TBGwCr-zPrbp3eE5l1nu8DejH91-D75uCe16O3k5jw
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
 
 {
-    "id_catalogo": "605a6a396b9551150612f502"
 }
 
 ###
@@ -40,3 +40,37 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGU
 get http://localhost:3000/api/catalogo/uploads/excel/catalogos/605a6a396b9551150612f501
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MjAzODQsImV4cCI6MTYxNjcwNjc4NH0.jEE8D9gd1zDNWfZsiKUS2YcCncJpdmiLmccucDR5z6Q
+
+
+
+###
+DELETE http://localhost:3000/api/catalogo/uploads/excel/607e17fb51f7fb33db4069f4
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiBTb2x1Y2lvbmVzIiwiZW1haWwiOiJjbHViQHlvcG1haWwuY29tIiwiZXN0YWRvIjp0cnVlLCJpYXQiOjE2MTY2MjAzODQsImV4cCI6MTYxNjcwNjc4NH0.jEE8D9gd1zDNWfZsiKUS2YcCncJpdmiLmccucDR5z6Q
+
+{
+    
+}
+
+
+###
+
+get http://localhost:3000/api/catalogo/uploads/excel/catalogos-id-usuario/60774b621e87731fecedabbb
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
+
+{
+
+}
+
+###
+//Consultatr id cat con id pais o id tema
+
+
+get http://localhost:3000/api/catalogo/uploads/excel/obtener-id-catalogo?tipo=pais&id=6053ed14e8b8240da847beaa
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
+
+{
+
+}

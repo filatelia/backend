@@ -1,11 +1,13 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../../models/usuario/usuario");
+const Pais = require("../../models/catalogo/paises");
+
 const {
   eliminarImagenServidor,
   crearImagen,
   retornarDatosJWT,
-} = require("../../middlewares/index.middle");
+} = require("../../funciones/index.middle");
 const { isValidObjectId } = require("mongoose");
 
 const getUsuario = async (req, res) => {
@@ -18,25 +20,76 @@ const getUsuario = async (req, res) => {
     usuarios,
   });
 };
+const getUsuarioId = async (req, res) => {
+  console.log("entramos");
+  const token = req.header("x-access-token");
+  console.log("token ->", token);
+
+  const email = retornarDatosJWT(token);
+ console.log("email->", email);
+  try {
+    if (email != null) {
+      const user = await Usuario.findOne(
+        { email },
+        {
+          _id: 1,
+          name: 1,
+          email: 1,
+          apellidos: 1,
+          nickname: 1,
+          tipo_catalogo: 0,
+          pais_usuario: 0,
+          
+          
+        }
+      );
+      console.log("User", user);
+     return res.status(200).send({
+        ok: true,
+        data: user,
+      });
+    }
+    throw "not token";
+  } catch (error) {
+    console.log("Error en catch", error);
+    res.status(500).send({
+      ok: false,
+      msg: ""+error,
+    });
+  }
+};
 
 //Función para crear un usuario.
+const buscarPaisNombre = async (names) => {
+  //const para_buscar = names.toLowerCase().replace( /[^-A-Za-z0-9]+/g, '' );
+  const para_buscar = names.toLowerCase().replace(/\s+/g, "");
+
+  console.log("PARA BUSCAR", para_buscar);
+
+  const paisEncontrado = await Pais.findOne({ para_buscar });
+  return paisEncontrado;
+};
 
 const createUsuario = async (req, res = response) => {
-  const { email, password } = req.body;
+  const { email, password, pais_usuario } = req.body;
   try {
+    var pais = await buscarPaisNombre(pais_usuario);
+    console.log(pais);
+    if (!pais) throw { msg: "pais no encontrado", ok: false };
     const usuario_ = new Usuario(req.body);
 
     const salt = bcrypt.genSaltSync();
     usuario_.password = bcrypt.hashSync(password, salt);
+    usuario_.pais_usuario = pais._id;
     usuario_.imagenP =
       "/imagenes/predeterminadas/" + usuario_.roleuser + ".png";
     console.log("antes de guardar: ", usuario_);
     // Guardar usuario
-    await usuario_.save();
+    var usuarioGuardado = await usuario_.save();
 
     res.json({
       ok: true,
-      usuario_,
+      msg: usuarioGuardado,
     });
   } catch (error) {
     console.log(error);
@@ -90,9 +143,7 @@ const updateUusuario = async (req, res = response) => {
     // Actualizaciones
 
     urlImagen = new Object();
-    var {
-      ...campos
-    } = req.body;
+    var { ...campos } = req.body;
 
     // Leer el Token
     const token = req.header("x-access-token");
@@ -131,8 +182,6 @@ const updateUusuario = async (req, res = response) => {
       email: emailByToken,
     });
 
-
-
     console.log("codigo zip", campos.codigopostal);
     console.log("usuarioBdDesdeEmailToken ->", usuarioBdDesdeEmailToken);
 
@@ -165,14 +214,12 @@ const updateUusuario = async (req, res = response) => {
       //Como sabemos que ya se borró, si sera necesario la imagen, ya asignamos la nueva imagen
       campos.imagenP = urlImagen.url;
     }
-const uid = usuarioBdDesdeEmailToken._id;
-    const usuarioActualizado = await Usuario.findByIdAndUpdate( uid, campos, 
-      {
-        new: true
-      } );
+    const uid = usuarioBdDesdeEmailToken._id;
+    const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, {
+      new: true,
+    });
 
-
-  //  await usuarioBdDesdeEmailToken.save();
+    //  await usuarioBdDesdeEmailToken.save();
     return res.json({
       ok: true,
       msg: "Se ha actualizado el usuario correctamente",
@@ -193,4 +240,5 @@ module.exports = {
   createUsuario,
   deleteUsuario,
   updateUusuario,
+  getUsuarioId,
 };

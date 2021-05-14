@@ -1,3 +1,15 @@
+//Actualizar el estado en el que se busca la estampill
+
+post http://localhost:3000/api/catalogo/manco_list/
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
+
+{
+"estado_estampilla": "Nuevo",
+"id_estampilla": "607956972b31e0bbd49351b9",
+"id_manco_list": "607c4d33b3475e18bab23c94"
+}
+###
 post https://api.filateliaperu.com/api/catalogo/manco_list/
 content-type: application/json
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
@@ -5,6 +17,15 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 {
 "id_estampilla": "60563642f18135feed5084e0",
 "estado_estampilla": "Usada" 
+}
+###
+post http://localhost:3000/api/catalogo/manco_list/validar/
+content-type: application/json
+x-access-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFsZXhpcyIsImVtYWlsIjoiYWxleGlzMTFkaW1lbkBnbWFpbC5jb20iLCJfaWQiOiI2MDc3NGIyNTFlODc3MzFmZWNlZGFiYmEiLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxODYwNzk2NywiZXhwIjoxNjE4Njk0MzY3fQ.LqxmkXbG_-Vc3RmdX6LzTGSS6WUHNt8rhdx5vHwhjE0
+
+{
+"id_categoria_estampilla":"6079fe845d2dd0c10653862c", 
+"id_estampilla":["607920f1ca4f448aca44f923", "607920f1ca4f448aca44f921"]
 }
 
 ###
@@ -15,7 +36,7 @@ content-type: application/json
 
 }
 ###
-post http://localhost:3000/api/catalogo/manco_list/listar
+get http://localhost:3000/api/catalogo/manco_list/listar/6079fe845d2dd0c10653862c
 content-type: application/json
 x-access-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IlBlcGl0byBQZXJleiIsImVtYWlsIjoiZG9yYWRvQGRvcmFkby5jb20iLCJlc3RhZG8iOnRydWUsImlhdCI6MTYxNjI4NjA0MiwiZXhwIjoxNjE2MzcyNDQyfQ.bqUlA8ooSvLMyYXkuVrjWiV5xzK7sSduLU7_YA4Yr9M
 
@@ -40,5 +61,53 @@ content-type: application/json
 
 {
     
+
+}
+
+###
+
+get http://localhost:3000/api/catalogo/manco_list/tipos-estado-estampilla/listar
+
+content-type: application/json
+
+{
+
+}
+
+###
+
+post http://localhost:3000/api/catalogo/manco_list/eliminar-muchas
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
+
+{
+    "arrayIdEstampillas": ["607e86b3a270d2123c9e63c1", "607f9868120bc1188060165b", "607f9871120bc1188060165d"], 
+    "idCategoriaEstampilla": "607e86aea270d2123c9e63bf"  
+}
+
+
+
+###
+//Paginacion de mancolistas
+get http://localhost:3000/api/catalogo/manco_list/paginacion?idCategoriaMancolista=6079fe845d2dd0c10653862c&pagina=2&porPagina=6
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE5MTEzMzc2LCJleHAiOjE2MTkxOTk3NzZ9.RzM1kRUpo-fAROkukH0ZtxGIGMYzcmims1pV9izE5Qc
+
+{
+}
+
+
+###
+
+
+post http://localhost:3000/api/catalogo/manco_list/agregar-serie
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiwibmFtZSI6IkFkbWluaXN0cmFkb3IiLCJlbWFpbCI6ImZpbGF0ZWxpYS5iYWNrZW5kQGdtYWlsLmNvbSIsIl9pZCI6IjYwN2RiYTYwZWVlOTc4MTJlMDBhMDAyYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjE4OTc1NTQ3LCJleHAiOjE2MTkwNjE5NDd9.UfWEUEOeWyrZnpZLVfn_f2ogQXcnWVQmDo25NZvUCC8
+
+{
+    "id_mancolist_cat": "6080963d5ba984f3e2647141",
+    "id_catalogo": "60794bdc1e9ed4b8fb638957"
+
+
 
 }

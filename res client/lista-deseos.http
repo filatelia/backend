@@ -1,0 +1,41 @@
+//AGREDANDO PRODUCTO A LISTA DE DESEOS
+post http://localhost:3000/api/tienda/producto/lista-deseos/
+content-type: application/json
+
+{
+
+"usuario": "60775d7eddb0b610f83d117a", 
+"producto": "608cbef96b03cc0f28a4f1fa"
+
+}
+
+###
+
+//QUITANDO PRODUCTO DE LISTA DE DESEOS
+delete http://localhost:3000/api/tienda/producto/lista-deseos/60775d7eddb0b610f83d117a
+content-type: application/json
+
+{
+
+}
+
+###
+//VERIFICANDO PRODUCTO DE LISTA DE DESEOS
+GET http://localhost:3000/api/tienda/producto/lista-deseos/estado/?idusuario=60775d7eddb0b610f83d117a&idproducto=608cbef96b03cc0f28a6f1fa
+content-type: application/json
+
+{
+
+}
+
+###
+
+//listando PRODUCTOs DE LISTA DE DESEOS
+GET http://localhost:3000/api/tienda/producto/lista-deseos/todos
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImNsaWVudGUiLCJuYW1lIjoiQ2x1YiIsImVtYWlsIjoiY2x1YkB5b3BtYWlsLmNvbSIsIl9pZCI6IjYwNzc0YjYyMWU4NzczMWZlY2VkYWJiYiIsImVzdGFkbyI6dHJ1ZSwiaWF0IjoxNjIwNTEyMzEzLCJleHAiOjE2MjA1OTg3MTN9.oHzC9XpB569RFx0g8Mq33TXJynOjvJX_sm1JeayHLeU
+
+{
+
+}
+
+###
