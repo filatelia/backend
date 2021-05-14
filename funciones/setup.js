@@ -12,7 +12,7 @@ const TipoEsperadoEstampilla = require("../models/catalogo/tipoEsperadoEstampill
 const {buscarPaisPorNombre} = require("../funciones/paises");
 const { verificarCrearTodasMonedas } = require("./moneda");
 const { crearTipoPagoPredeterminados } = require("./tipo-pago");
-const { verificarCrearEstadosVenta } = require("./ventas");
+const { verificarCrearEstadosVenta } = require("./estado-venta");
 
 const initial_setup = async () => {
   console.log("");

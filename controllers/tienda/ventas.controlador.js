@@ -3,7 +3,7 @@ const {
   crearDatosEnvio,
   mostrarDatosEnvioIdUsuario,
   crearNuevaVenta,
-  restarProductosVendidos
+  restarProductosVendidos,
 } = require("../../funciones/ventas");
 const {
   validarCamposGeneral,
@@ -12,19 +12,13 @@ const {
 const Color = require("colors");
 const { listarProductosPorIdProducto } = require("../../funciones/tienda");
 const crearVenta = async (req, res = response) => {
-  function ExceptionUsuario(mensaje) {
-    this.mensaje = mensaje;
-    this.nombre = "ExceptionUsuario";
- }
- 
   var objetoRespuesta = new Object({
     ok: true,
     msg: null,
     tipo_error: null,
   });
 
-  const { comprador, productos } = req.body;
-  console.log("productos", productos.length);
+  const { comprador, productos, tipo_pago } = req.body;
   if (!productos || !Array.isArray(productos) || productos.length == 0) {
     (objetoRespuesta.ok = false),
       (objetoRespuesta.msg = "Error en los datos recibidos.");
@@ -34,6 +28,18 @@ const crearVenta = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
   try {
+    var estado_venta = null;
+
+    /////////// indicando tipo de pago ////////
+    if (tipo_pago === 0) {
+      req.body.estado_venta = 0;
+    }
+    /////////// indicando tipo de pago ////////
+    if (tipo_pago === 1) {
+      req.body.estado_venta = 3;
+      
+    }
+
     /////Consultando datos de envio////
     var datosEnvioBD = await mostrarDatosEnvioIdUsuario(comprador);
     if (!datosEnvioBD.ok) return res.json(datosEnvioBD);
@@ -45,50 +51,47 @@ const crearVenta = async (req, res = response) => {
       var productoBD = await listarProductosPorIdProducto(element.producto);
       if (!productoBD.ok) {
         throw productoBD.msg;
-        
       }
-      var contadorTamanios= 0;
+      var contadorTamanios = 0;
 
       productoBD.msg.tamanios.map((tamanios) => {
-
         if (tamanios._id == element.id_tamanio) {
           var contadorColor = 0;
 
-          if(tamanios.precio_descuento){
-            req.body.productos[index].valor_producto_individual = tamanios.precio_descuento;
-          }else{
-            req.body.productos[index].valor_producto_individual = tamanios.precio;
+          if (tamanios.precio_descuento) {
+            req.body.productos[index].valor_producto_individual =
+              tamanios.precio_descuento;
+          } else {
+            req.body.productos[index].valor_producto_individual =
+              tamanios.precio;
           }
-          req.body.productos[index].valor_total_productos = req.body.productos[index].valor_producto_individual * element.cantidad ;
-          req.body.productos[index].valor_total =req.body.productos[index].valor_total_productos + element.valor_envio ;
+          req.body.productos[index].valor_total_productos =
+            req.body.productos[index].valor_producto_individual *
+            element.cantidad;
+          req.body.productos[index].valor_total =
+            req.body.productos[index].valor_total_productos +
+            element.valor_envio;
 
           tamanios.colores.map((color) => {
-            
             if (color.id == element.id_color) {
               if (element.cantidad > color.cantidad) {
-                                 
-                  throw  "La cantidad que deseas comprar excede el stock actual.";
-                   
+                throw "La cantidad que deseas comprar excede el stock actual.";
               }
-              
             } else {
               contadorColor = contadorColor + 1;
             }
           });
 
           if (contadorColor == tamanios.length) {
-            
-           throw "El Color enviado no existe en tamaño proporcionado, actualiza la página por favor.";
+            throw "El Color enviado no existe en tamaño proporcionado, actualiza la página por favor.";
           }
-        }else{
-          contadorTamanios =  contadorTamanios +1 ;
-
+        } else {
+          contadorTamanios = contadorTamanios + 1;
         }
-        
       });
 
       if (contadorTamanios == productoBD.msg.tamanios.length) {
-        throw "No existe el tamaño que asignaste al producto."
+        throw "No existe el tamaño que asignaste al producto.";
       }
     }
 
@@ -97,14 +100,18 @@ const crearVenta = async (req, res = response) => {
 
     var nuevaVenta = await crearNuevaVenta(req.body);
 
-    for (let index = 0; index < nuevaVenta.productos.length; index++) {
-      const element = nuevaVenta.productos[index];
+    for (let index = 0; index < nuevaVenta.venta.productos.length; index++) {
+      const element = nuevaVenta.venta.productos[index];
 
-      var restar = await restarProductosVendidos(element);
-      
+      var restar = await restarProductosVendidos(
+        element.producto._id,
+        element.id_tamanio,
+        element.id_color,
+        element.cantidad
+      );
     }
 
-    return res.json(nuevaVenta);
+    return res.json(restar);
   } catch (error) {
     console.log(
       Color.red(
@@ -123,12 +130,8 @@ const crearVenta = async (req, res = response) => {
 const crearDatosEnvioCtr = async (req, res = response) => {
   console.log("Creando datos de envío");
 
-  const {
-    usuario,
-    telefono,
-    direccion_completa,
-    otras_indicaciones,
-  } = req.body;
+  const { usuario, telefono, direccion_completa, otras_indicaciones } =
+    req.body;
 
   try {
     var arrayCamposValidar = [];
