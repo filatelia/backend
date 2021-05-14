@@ -86,7 +86,7 @@ const crearProducto = async (req, res = response) => {
         });
       }
     }
-    tamanios = arrayColores;
+    req.body.tamanios = arrayColores;
 
     
     arrayCamposValidar.push(nombre_producto);
