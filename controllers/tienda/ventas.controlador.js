@@ -11,6 +11,10 @@ const {
 } = require("../../funciones/validar-campos");
 const Color = require("colors");
 const { listarProductosPorIdProducto } = require("../../funciones/tienda");
+
+
+
+
 const crearVenta = async (req, res = response) => {
   var objetoRespuesta = new Object({
     ok: true,

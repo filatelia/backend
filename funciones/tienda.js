@@ -87,11 +87,16 @@ const listarProductosPorIdCliente = async (id_usuario) => {
         foto_principal:null
       });
 
+
+      if (data.foto_principal.imagen_url == null) {
+        data.foto_principal.imagen_url = '';
+      }
+
       producto._id = data._id;
       producto.nombre = data.nombre_producto;
       producto.descripcion = data.descripcion;
       producto.categoria = data.categoria.nombre_categoria;
-      producto.foto_principal = data.foto_principal.imagen_url;
+      producto.foto_principal = data.foto_principal.imagen_url? data.foto_principal.imagen_url: '';
 
       var contador = 0;
       data.tamanios.map((re) => {
