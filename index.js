@@ -78,6 +78,7 @@ app.use("/api/login", require("./routes/auth/auth"));
 app.use("/api/tienda", require("./routes/tienda/tienda.ruta"));
 app.use("/api/paypal", require("./routes/tienda/paypal.ruta"));
 app.use("/api/ventas", require("./routes/tienda/ventas.ruta"));
+app.use("/api/pagos", require("./routes/pagos/pagos.ruta"));
 
 app.listen(process.env.PORT, () => {
   console.log("Servidor corriendo en puerto " + process.env.PORT);
