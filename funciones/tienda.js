@@ -87,6 +87,11 @@ const listarProductosPorIdCliente = async (id_usuario) => {
         foto_principal:null
       });
 
+
+      if (data.foto_principal.imagen_url == null) {
+        data.foto_principal.imagen_url = '';
+      }
+
       producto._id = data._id;
       producto.nombre = data.nombre_producto;
       producto.descripcion = data.descripcion;
