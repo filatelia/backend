@@ -14,6 +14,16 @@ const ventasSchema = Schema(
       required: true,
       autopopulate: true,
     },
+    tipo_pago:{
+      type:Number,
+      required: true,
+
+    },
+    
+    estado_venta:{
+      type:Number,
+      required: true,
+    },
 
     productos: [
       {

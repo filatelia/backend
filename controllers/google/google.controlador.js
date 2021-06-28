@@ -79,6 +79,7 @@ const googleSheetVariantesErrores = async (arrayEstampillas) => {
   var arrayAgreagar = [];
   var arrayEliminar = [];
   //////////SEPARANDO LAS IMAGENES DEL CATALOGO SOLICITADO ////////////
+  console.log("hoja", hoja);
   hoja.map((data) => {
     var objeto = new Object();
     var foto = "";

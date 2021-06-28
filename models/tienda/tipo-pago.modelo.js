@@ -7,6 +7,12 @@ const tipo_pagoSchema = Schema(
       required: true,
       uniqued: true,
     },
+    value: {
+      type: Number,
+
+      required: true,
+      uniqued: true,
+    },
   },
   { collection: "bdfc_tipos_pago" }
 );

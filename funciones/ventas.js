@@ -1,5 +1,4 @@
 const Datos_envio = require("../models/tienda/datos-envio.modelo");
-const EstadosVenta = require("../models/tienda/estado-venta-modelo");
 const Ventas = require("../models/tienda/ventas.modelo");
 const { listarProductosPorIdProducto } = require("./tienda");
 
@@ -81,58 +80,20 @@ async function mostrarDatosEnvioIdUsuario(usuario) {
   }
 }
 
-async function verificarCrearEstadosVenta() {
-  console.log("- Verificando existencia de estados venta en BD.");
-
-  var estadosVentaBD = await EstadosVenta.find();
-  if (estadosVentaBD.length == 0) {
-    console.log(" | No se han encontrado estados venta en BD.");
-
-    var estadosBD = await EstadosVenta.insertMany([
-      {
-        nombre_estado: "Pago Rechazado",
-        cod: 1,
-        descripcion:
-          "El vendor ha verificado el pago y ha concluido que el pago es procedente.",
-      },
-      {
-        nombre_estado: "Pago Aceptado - Por Enviar",
-        cod: 2,
-        descripcion:
-          "El pago ha sido verificado correctamente, el producto está en preparación para envío.",
-      },
-      {
-        nombre_estado: "Pago Aceptado - Producto Enviado",
-        cod: 3,
-        descripcion:
-          "El pago ha sido verificado correctamente, el producto va en camino.",
-      },
-      {
-        nombre_estado: "Exitosa - Producto Entregado",
-        cod: 4,
-        descripcion:
-          "La venta se ha concretado correctamente, el producto ya se encuentra en manos del comprador.",
-      },
-    ]);
-
-    console.log(
-      "   | Se han creado " + estadosBD.length + " estados venta en BD."
-    );
-  } else {
-    console.log(" | Estados venta en BD. OK");
-  }
-}
 
 async function crearNuevaVenta(objetoVenta) {
   try {
     var objetoRespuesta = new Object({
       ok: true,
       msg: null,
+      venta: null,
       tipo_error: null,
     });
 
     var objVentas = new Ventas(objetoVenta);
-    await objVentas.save();
+   var venta = await objVentas.save();
+
+   objetoRespuesta.venta = venta;
 
     objetoRespuesta.msg = "Venta creada correctamente.";
 
@@ -148,16 +109,45 @@ async function crearNuevaVenta(objetoVenta) {
   }
 }
 
-async function restarProductosVendidos(producto) {
-  
+async function restarProductosVendidos(producto, idTamanio, idColor, cantidad) {
+  try {
+    var objetoRespuesta = new Object({
+      ok: true,
+      msg: null,
+      tipo_error: null,
+    });
+    var productoBD = await listarProductosPorIdProducto(producto);
 
-  
+    for (let index = 0; index < productoBD.msg.tamanios.length; index++) {
+      const tamanio = productoBD.msg.tamanios[index];
 
+      if (tamanio._id == idTamanio) {
+        for (let item = 0; item < tamanio.colores.length; item++) {
+
+          const color = tamanio.colores[item];
+        
+          if (color._id == idColor) {
+            color.cantidad = color.cantidad - cantidad;
+
+            await productoBD.msg.save();
+            objetoRespuesta.msg = "Venta realizada correctamente, se ha actualizado la cantidad de productos.";
+            return objetoRespuesta;
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.log("Error en catch restarProductosVendidos " + error);
+    objetoRespuesta.ok = false;
+    objetoRespuesta.tipo_error = "" + error;
+    objetoRespuesta.msg = "Error en catch restarProductosVendidos ";
+    return objetoRespuesta;
+  }
 }
 module.exports = {
   crearDatosEnvio,
   mostrarDatosEnvioIdUsuario,
-  verificarCrearEstadosVenta,
+
   crearNuevaVenta,
-  restarProductosVendidos
+  restarProductosVendidos,
 };

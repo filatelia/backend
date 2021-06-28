@@ -56,6 +56,7 @@ const crearProducto = async (req, res = response) => {
       console.log("no es array");
       req.body.fotos_producto = [req.body.fotos_producto];
     }
+
     var fotos_producto = req.body.fotos_producto;
     console.log("");
 
@@ -66,12 +67,33 @@ const crearProducto = async (req, res = response) => {
 
     var arrayCamposValidar = [];
     var arrayIdsValidar = [];
+    arrayColores = [];
+
+    for (let index = 0; index < tamanios.length; index++) {
+      const element = tamanios[index];
+      if(element.colores.length >0 ){
+        arrayColores.push(element);
+
+      }
+      
+    }
+
+    if(arrayColores.length == 0){
+      {
+        return res.json({
+          ok: false,
+          msg: "Debes enviar los datos obligatorios.",
+        });
+      }
+    }
+    req.body.tamanios = arrayColores;
+
+    
     arrayCamposValidar.push(nombre_producto);
     arrayCamposValidar.push(categoria);
     arrayCamposValidar.push(fotos_producto);
     arrayCamposValidar.push(tarifa_envio_lima);
     arrayCamposValidar.push(tarifa_envio_provincias);
-    arrayCamposValidar.push(tamanios);
     arrayCamposValidar.push(id_usuario);
 
     if (validarCamposGeneral(6, arrayCamposValidar) != true) {

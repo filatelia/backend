@@ -4,9 +4,13 @@ const estados_ventaSchema = Schema(
     nombre_estado: {
       type: String,
       required: true,
+      unique: true
+
     },
-    cod: {
+    value: {
         type: Number,
+        required: true,
+        unique: true
       },
     descripcion: {
       type: String,
