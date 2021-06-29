@@ -2,6 +2,7 @@ const request = require("request");
 const funcionesPaypal = require("../../funciones/paypal");
 const CuentaPaypal = require("../../models/pagos/cuentaPaypal");
 const { retornarIdClienteConJWT } = require("../../funciones/validar-jwt");
+const Ventas = require("../../models/tienda/ventas.modelo");
 
 function autenticarPaypal(params) {}
 
@@ -84,29 +85,34 @@ const crearPago = async (req, res) => {
 
 const executePayment = async (req, res) => {
       const token = req.query.token;
-      const idUsuario = req.query.idUsuario;
-      console.log("idUsuario ->>>>", idUsuario);
-  var cuentaBD = await CuentaPaypal.findOne({ usuario: idUsuario });
+  //     const idUsuario = req.query.idUsuario;
+  //     console.log("idUsuario ->>>>", idUsuario);
+  // var cuentaBD = await CuentaPaypal.findOne({ usuario: idUsuario });
+  var  auth = {
+    username: process.env.CLIENTE_PAYPAL,
+    password: process.env.SECRET_PAYPAL
 
-  var auth = {
-    user: cuentaBD.client,
-    pass: cuentaBD.secret,
-  };
-  console.log("auth ->", auth);
-  console.log("..");
-  console.log("..");
+  }
   console.log("token: ", token);
-  request.post(
+  var re= await request.post(
     `${process.env.PAYPAL_API}/v2/checkout/orders/${token}/capture`,
     {
       auth,
       body: {},
       json: true,
     },
-    (err, response) => {
-      res.json({ data: response });
+    async (err, response) => {
+
+      return response;
+    
+
     }
   );
+  console.log("re ->", re.data);
+
+   await Ventas.findOneAndUpdate({idProcesoPagoPaypal:token}, {estado_venta:3});
+
+  return res.json({ data: re });
 };
 
 const configurarPaypal = async (req, res) => {
