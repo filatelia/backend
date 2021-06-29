@@ -205,7 +205,7 @@ const crearVenta = async (req, res = response) => {
     if (obj.data) {
       for (const iterator of obj.data.links) {
         if (iterator.rel == "approve" ) {
-        data = iterator.href;
+        data = iterator.href+"&idUsuario="+idUsuario;
           
         }
         
