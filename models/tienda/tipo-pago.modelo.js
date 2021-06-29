@@ -13,6 +13,10 @@ const tipo_pagoSchema = Schema(
       required: true,
       uniqued: true,
     },
+    estado: {
+      type: Boolean,
+      default: false,
+    },
   },
   { collection: "bdfc_tipos_pago" }
 );

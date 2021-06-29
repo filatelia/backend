@@ -59,10 +59,25 @@ async function consultarConvertirMonedaTiempoReal(valor) {
       objetoRespuesta.tipo_error = "Error api datosConversion";
       return objetoRespuesta;
     }
-
+    
     //////CONSULTA OK, -> CONVERSIÓN /////
+    
 
-    var monedaEnUsd  = monedaEnUsd = (valor * datosConversion.data.rates['PEN']);
+    
+
+    var  monedaEnUsd = ( valor / datosConversion.data.rates['PEN'] );
+
+    var aSumar = monedaEnUsd * 0.024682596023; 
+
+    console.log(" A sumar ", aSumar);
+
+  
+    var to = monedaEnUsd + aSumar;
+
+    monedaEnUsd = to;
+
+
+
   
 
     console.log("Monead en usd", monedaEnUsd);

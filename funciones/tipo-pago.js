@@ -12,10 +12,12 @@ const crearTipoPagoPredeterminados = async () => {
       {
         nombre: "Transferencia Bancaria.",
         value: 0,
+        estado: false
       },
       {
         nombre: "Paypal.",
         value: 1,
+        estado: false
       },
     ]);
 

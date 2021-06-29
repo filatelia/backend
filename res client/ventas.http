@@ -43,19 +43,12 @@ content-type: application/json
  "comprador": "60774b251e87731fecedabba",
  "tipo_pago": 0,
  "productos": [
-     {
-         "producto": "609407aa446569f3b46e3ce8",
-         "id_tamanio": "6096ba05479db684f038c871",
-         "id_color": "6096ba05479db684f038c872",
-         "cantidad": 1,
-         "tipo_envio": "Lima",
-         "valor_envio": 30
-     },
+
           {
-         "producto": "609587f3eb0ae529f6241af7",
-         "id_tamanio": "609587f3eb0ae529f6241af8",
-         "id_color": "609587f3eb0ae529f6241af9",
-         "cantidad": 1,
+         "producto": "60da608a6a83d20bbf40eab0",
+         "id_tamanio": "60da608a6a83d20bbf40eab1",
+         "id_color": "60da608a6a83d20bbf40eab2",
+         "cantidad": 2,
          "tipo_envio": "Provincias",
          "valor_envio": 20
      }

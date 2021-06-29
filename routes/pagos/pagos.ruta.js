@@ -7,7 +7,7 @@
  
  const router = Router();
  const { crearCuentaBancaria, ConsultarCuentaBancaria, editarCuentaBancaria, eliminarCuentaBancaria } = require("../../controllers/pagos/cuentasBancarias.controlador");
-const { crearPago, executePayment } = require("../../controllers/paypal/paypal.controlador")
+const { crearPago, executePayment, configurarPaypal, consultarPaypal } = require("../../controllers/paypal/paypal.controlador")
 
  router.post("/bancos/crear-cuenta", crearCuentaBancaria);
  router.get("/bancos/cuenta/:usuario", ConsultarCuentaBancaria);
@@ -15,6 +15,9 @@ const { crearPago, executePayment } = require("../../controllers/paypal/paypal.c
  router.delete("/bancos/cuenta/:usuario", eliminarCuentaBancaria);
  router.post("/compra", crearPago);
  router.get("/execute-payment", executePayment);
+ router.post("/configurar-paypal", configurarPaypal);
+ router.get("/credenciales-paypal", consultarPaypal);
+
  
 
  
