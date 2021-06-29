@@ -1,4 +1,6 @@
 
+
+
 post http://localhost:3000/api/solicitudes/
 content-type: application/json
 
@@ -34,7 +36,6 @@ content-type: application/json
 
 }
 
-
 ###
 /// Crear nueva venta ///
 
@@ -44,9 +45,9 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xldXNlciI6ImFkbWluIiw
 
 {
  "comprador": "60774b251e87731fecedabba",
- "tipo_pago": 0,
+ "tipo_pago": 1,
  "nombreProducto": "Moneda de Oro",
- "total" : 450,
+ "total" : 100,
 
  "productos": [
 

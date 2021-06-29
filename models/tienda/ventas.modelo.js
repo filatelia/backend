@@ -19,6 +19,11 @@ const ventasSchema = Schema(
       required: true,
 
     },
+    idProcesoPagoPaypal:{
+      type:String,
+      required: true,
+
+    },
     
     estado_venta:{
       type:Number,
