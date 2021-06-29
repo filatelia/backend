@@ -85,6 +85,7 @@ const crearPago = async (req, res) => {
 const executePayment = async (req, res) => {
       const token = req.query.token;
       const idUsuario = req.query.idUsuario;
+      console.log("idUsuario ->>>>", idUsuario);
   var cuentaBD = await CuentaPaypal.findOne({ usuario: idUsuario });
 
   var auth = {
