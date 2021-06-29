@@ -30,7 +30,7 @@ const crearVenta = async (req, res = response) => {
     tipo_error: null,
   });
 
-  var { comprador, productos, tipo_pago, nombreProducto, total } = req.body;
+  var { comprador, productos, tipo_pago, total } = req.body;
   if (!productos || !Array.isArray(productos) || productos.length == 0) {
     (objetoRespuesta.ok = false),
       (objetoRespuesta.msg = "Error en los datos recibidos.");
@@ -42,12 +42,7 @@ const crearVenta = async (req, res = response) => {
   try {
     const token = req.header("x-access-token");
 
-    if (!nombreProducto) {
-      return res.json({
-        ok: false,
-        msg: "Debes enviar el nombre del producto.",
-      });
-    }
+   
     if (!total) {
       return res.json({
         ok: false,
