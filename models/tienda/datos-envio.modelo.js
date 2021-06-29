@@ -5,7 +5,6 @@ const datos_envioSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "Usuarios",
       required: true,
-      autopopulate: true,
     },
 
     telefono: {
@@ -23,9 +22,18 @@ const datos_envioSchema = Schema(
       required: true,
     },
 
-    codigo_postal: {
+    departamento: {
       type: String,
     },
+    provincia: {
+      type: String,
+    },
+
+    distrito: {
+      type: String,
+    },
+
+
   },
   {
     collection: "bdfc_datos_envio",
@@ -38,6 +46,5 @@ datos_envioSchema.method("toJSON", function () {
 
   return object;
 });
-datos_envioSchema.plugin(require("mongoose-autopopulate"));
 
 module.exports = model("datos_envio", datos_envioSchema);

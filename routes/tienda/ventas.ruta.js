@@ -11,6 +11,6 @@ const router = Router();
 
 router.post("/", [], crearVenta);
 router.post("/datos-envio/", [], crearDatosEnvioCtr);
-router.get("/datos-envio/:idDatosEnvio", [], mostrarDatosEnvioCtr);
+router.get("/datos-envio/:idUsuario", [], mostrarDatosEnvioCtr);
 
 module.exports = router;

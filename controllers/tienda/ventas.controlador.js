@@ -11,9 +11,14 @@ const {
 } = require("../../funciones/validar-campos");
 const Color = require("colors");
 const { listarProductosPorIdProducto } = require("../../funciones/tienda");
-
-
-
+const {
+  crearPago,
+  consultarConvertirMonedaTiempoReal,
+} = require("../../funciones/paypal");
+const { retornarIdClienteConJWT } = require("../../funciones/validar-jwt");
+const CuentaPaypal = require("../../models/pagos/cuentaPaypal");
+const request = require("request");
+const axios = require('axios').default;
 
 const crearVenta = async (req, res = response) => {
   var objetoRespuesta = new Object({
@@ -22,7 +27,7 @@ const crearVenta = async (req, res = response) => {
     tipo_error: null,
   });
 
-  const { comprador, productos, tipo_pago } = req.body;
+  var { comprador, productos, tipo_pago, nombreProducto, total } = req.body;
   if (!productos || !Array.isArray(productos) || productos.length == 0) {
     (objetoRespuesta.ok = false),
       (objetoRespuesta.msg = "Error en los datos recibidos.");
@@ -32,16 +37,97 @@ const crearVenta = async (req, res = response) => {
     return res.json(objetoRespuesta);
   }
   try {
-    var estado_venta = null;
 
+
+    const token = req.header("x-access-token");
+
+    if (!nombreProducto) {
+      return res.json({
+        ok: false,
+        msg: "Debes enviar el nombre del producto.",
+      });
+    }
+    if (!total) {
+      return res.json({
+        ok: false,
+        msg: "Debes enviar el valor total del producto.",
+      });
+    }
+    if (!token) {
+      return res.json({
+        ok: false,
+        msg: "Debes estas logado.",
+      });
+    }
+
+    var estado_venta = null;
+      var obj = {}
+      var data = {};
     /////////// indicando tipo de pago ////////
     if (tipo_pago === 0) {
       req.body.estado_venta = 0;
     }
     /////////// indicando tipo de pago ////////
     if (tipo_pago === 1) {
-      req.body.estado_venta = 3;
-      
+     
+
+      var idUsuario = retornarIdClienteConJWT(token);
+
+      var totalConver = await consultarConvertirMonedaTiempoReal(total);
+      total = totalConver.usd.toFixed(2);
+
+      const body = {
+        intent: "CAPTURE",
+        purchase_units: [
+          {
+            amount: {
+              currency_code: "USD", //https://developer.paypal.com/docs/api/reference/currency-codes/
+              value: total,
+            },
+          },
+        ],
+        application_context: {
+          brand_name: `Filatelia Peruana - ${nombreProducto}`,
+          landing_page: "NO_PREFERENCE", // Default, para mas informacion https://developer.paypal.com/docs/api/orders/v2/#definition-order_application_context
+          user_action: "PAY_NOW", // Accion para que en paypal muestre el monto del pago
+          return_url: `${process.env.API}api/pagos/execute-payment`, // Url despues de realizar el pago
+          cancel_url: `${process.env.API}api/cancel-payment`, // Url despues de realizar el pago
+        },
+      };
+
+      var cuentaBD = await CuentaPaypal.findOne({ usuario: idUsuario });
+
+      var auth = {
+        user: cuentaBD.client,
+        pass: cuentaBD.secret,
+      };
+      console.log("auth ->", auth);
+
+
+      request.post(
+        `${process.env.PAYPAL_API}/v2/checkout/orders`,
+        {
+          auth,
+          body,
+          json: true,
+        },
+        (err, response) => {
+          var ok = false;
+
+          
+          console.log("estatus compra -> ", ok);
+           obj.ok = true;
+           obj.data= response.body;
+           console.log("objjjjjj -> ", obj);
+
+        
+          
+        }
+      );
+
+    
+
+      req.body.estado_venta = 0;
     }
 
     /////Consultando datos de envio////
@@ -114,8 +200,24 @@ const crearVenta = async (req, res = response) => {
         element.cantidad
       );
     }
+    console.log("pago paypal!!!!!!!", obj);
 
-    return res.json(restar);
+    if (obj.data) {
+      for (const iterator of obj.data.links) {
+        if (iterator.rel == "approve" ) {
+        data = iterator.href;
+          
+        }
+        
+      }
+    }else{
+      data = "No aplica para este medio de pago"
+    }
+
+  
+      console.log("data ->", data);
+
+    return res.json({ restar, url_paypal:data });
   } catch (error) {
     console.log(
       Color.red(
@@ -180,17 +282,18 @@ const mostrarDatosEnvioCtr = async (req, res = response) => {
       msg: null,
       tipo_error: null,
     });
-    const { idDatosEnvio } = req.params;
+    const { idUsuario } = req.params;
 
     var arrayIdsValidar = [];
-    arrayIdsValidar.push(idDatosEnvio);
+    arrayIdsValidar.push(idUsuario);
     var validarIds = isValidObjectIdGeneral(1, arrayIdsValidar);
     if (!validarIds)
       return res.json({ ok: false, msg: "Debes enviar ids válidos." });
 
     ///Cuando todo sale ok/////
-    var productosBD = await mostrarDatosEnvioIdUsuario(idDatosEnvio);
+    var productosBD = await mostrarDatosEnvioIdUsuario(idUsuario);
 
+    //productosBD.datos_envio.usuario =
     return res.json(productosBD);
   } catch (error) {
     console.log("Error en catch mostrarDatosEnvioCtr", error);
